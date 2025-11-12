@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Bhai — Freelance Work Finder</title>
+    
+    <!-- AdSense Placeholder - Approval ke baad uncomment kar dena -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6575643228502924" crossorigin="anonymous"></script> -->
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --accent: #22d3ee;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%);
+            min-height: 100vh;
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* Search & Filters */
+        .search-section {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .search-container {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .category-select {
+            padding: 1rem 1.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .quick-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tag-btn:hover {
+            background: var(--gradient);
+            transform: translateY(-2px);
+        }
+
+        /* Platform Grid */
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .platform-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border-left: 4px solid var(--accent);
+        }
+
+        .platform-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .platform-card:hover::before {
+            left: 100%;
+        }
+
+        .platform-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);
+        }
+
+        .platform-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-icon {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .platform-info {
+            flex: 1;
+        }
+
+        .platform-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+        }
+
+        .platform-desc {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .platform-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .platform-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+        }
+
+        .platform-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .visit-btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .visit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .details-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .details-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .platform-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease;
+            margin-top: 1rem;
+        }
+
+        .platform-details.open {
+            max-height: 500px;
+        }
+
+        .details-content {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .details-content p {
+            margin-bottom: 1rem;
+        }
+
+        .details-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* AdSense Placeholders */
+        .ad-placeholder {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed var(--glass-border);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            margin: 2rem 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid var(--glass-border);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.3rem;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gradient);
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Language Indicator */
+        .language-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            z-index: 1000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .platforms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .platform-card {
+                padding: 1.5rem;
+            }
+
+            .platform-actions {
+                flex-direction: column;
+            }
+
+            .stats-bar {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                min-width: 100px;
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Indicator -->
+    <div class="language-indicator" id="languageIndicator">
+        🌐 Loading...
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 class="page-title" id="pageTitle">AI Bhai — Freelance Work Finder</h1>
+            <p class="page-subtitle" id="pageSubtitle">Find Real Freelance Work — Free Signup, No Upfront Fees</p>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number" id="totalPlatforms">0</div>
+                <div class="stat-label">Platforms</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Free Signup</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="activeFilters">0</div>
+                <div class="stat-label">Active Filters</div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔎 Search: fiverr, india, design, no upfront...">
+                <select id="categorySelect" class="category-select">
+                    <option value="all">🧩 All Categories</option>
+                    <option value="design">🎨 Design</option>
+                    <option value="writing">✍️ Writing</option>
+                    <option value="video">🎥 Video</option>
+                    <option value="voice">🎤 Voice</option>
+                    <option value="marketing">📣 Marketing/SEO</option>
+                    <option value="coding">👨‍💻 Coding/Tech</option>
+                    <option value="data">📊 Data/Analytics</option>
+                    <option value="general">🌐 General</option>
+                    <option value="india">🇮🇳 India Focus</option>
+                </select>
+            </div>
+            
+            <div class="quick-tags" id="quickTags">
+                <!-- Quick tags will be loaded from JSON -->
+            </div>
+        </section>
+
+        <!-- AdSense Placeholder 1 -->
+        <div class="ad-placeholder">
+            <!-- AdSense Code will be placed here after approval -->
+            📢 Ad Space - AdSense approval ke baad yahaan code add karen
+        </div>
+
+        <!-- Platforms Grid -->
+        <main id="platformsContainer">
+            <div class="loading">
+                <span>Loading Freelance Platforms</span>
+                <div class="loading-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- AdSense Placeholder 2 -->
+        <div class="ad-placeholder">
+            <!-- AdSense Code will be placed here after approval -->
+            📢 Ad Space - AdSense approval ke baad yahaan code add karen
+        </div>
+
+        <!-- Transparency Note -->
+        <div class="platform-card">
+            <div class="details-content">
+                <p><strong>📝 Note:</strong> <span id="transparencyNote">Signup is free; most platforms take commission after project completion. For safety, never pay upfront; work on escrow/milestones; avoid chat/payment outside platforms.</span></p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer" id="footer">
+            Built by <strong>AI Bhai</strong> — "Find work, showcase skills, increase earnings." ✨
+        </footer>
+    </div>
+
+<script>
+    // Freelance Work Finder System
+    class FreelanceWorkFinder {
+        constructor() {
+            this.currentLanguage = 'en';
+            this.pageData = null;
+            this.filteredPlatforms = [];
+            this.baseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/freelance-work-finder/';
+            
+            this.initializePage();
+        }
+
+        // Language detection
+        syncWithWebsiteLanguage() {
+            if (typeof window.getCurrentLanguage === 'function') {
+                return window.getCurrentLanguage();
+            }
+            
+            const savedLang = localStorage.getItem('preferredLanguage');
+            if (savedLang && ['en', 'hi', 'ur', 'mr'].includes(savedLang)) {
+                return savedLang;
+            }
+            
+            // Default to Hindi if browser language is Hindi
+            const browserLang = navigator.language.split('-')[0];
+            if (['hi', 'ur', 'mr'].includes(browserLang)) {
+                return browserLang;
+            }
+            
+            return 'en';
+        }
+
+        // Fetch page data
+        async fetchPageData(language) {
+            try {
+                const timestamp = new Date().getTime();
+                const response = await fetch(`${this.baseURL}${language}.json?t=${timestamp}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log(`Loaded freelance data for ${language}:`, data);
+                return data;
+            } catch (error) {
+                console.error('Error fetching page data:', error);
+                
+                // Fallback to English
+                if (language !== 'en') {
+                    return this.fetchPageData('en');
+                }
+                
+                throw error;
+            }
+        }
+
+        // Update page content
+        updatePageContent() {
+            if (!this.pageData) return;
+
+            // Update titles and texts
+            document.getElementById('pageTitle').textContent = this.pageData.pageTitle;
+            document.getElementById('pageSubtitle').textContent = this.pageData.pageSubtitle;
+            document.getElementById('transparencyNote').textContent = this.pageData.transparencyNote;
+            document.getElementById('footer').innerHTML = this.pageData.footerText;
+            document.title = this.pageData.pageTitle;
+
+            // Update search placeholder
+            document.getElementById('searchInput').placeholder = this.pageData.searchPlaceholder;
+
+            // Update category options
+            const categorySelect = document.getElementById('categorySelect');
+            categorySelect.innerHTML = `
+                <option value="all">${this.pageData.categoryAll}</option>
+                <option value="design">${this.pageData.categoryDesign}</option>
+                <option value="writing">${this.pageData.categoryWriting}</option>
+                <option value="video">${this.pageData.categoryVideo}</option>
+                <option value="voice">${this.pageData.categoryVoice}</option>
+                <option value="marketing">${this.pageData.categoryMarketing}</option>
+                <option value="coding">${this.pageData.categoryCoding}</option>
+                <option value="data">${this.pageData.categoryData}</option>
+                <option value="general">${this.pageData.categoryGeneral}</option>
+                <option value="india">${this.pageData.categoryIndia}</option>
+            `;
+
+            // Update quick tags
+            const quickTagsContainer = document.getElementById('quickTags');
+            quickTagsContainer.innerHTML = this.pageData.quickTags.map(tag => 
+                `<button class="tag-btn" onclick="workFinder.quickSearch('${tag.toLowerCase()}')">#${tag}</button>`
+            ).join('');
+
+            // Update stats
+            document.getElementById('totalPlatforms').textContent = this.pageData.platforms.length;
+        }
+
+        // Get category icon
+        getCategoryIcon(category) {
+            const icons = {
+                'design': '🎨',
+                'writing': '✍️',
+                'video': '🎥',
+                'voice': '🎤',
+                'marketing': '📣',
+                'coding': '👨‍💻',
+                'data': '📊',
+                'india': '🇮🇳',
+                'general': '🌐'
+            };
+            return icons[category] || '🧩';
+        }
+
+        // Render platforms
+        renderPlatforms(platforms = this.pageData?.platforms || []) {
+            const container = document.getElementById('platformsContainer');
+            this.filteredPlatforms = platforms;
+
+            if (!platforms.length) {
+                container.innerHTML = `
+                    <div class="platform-card" style="text-align: center; padding: 3rem;">
+                        <h3>No platforms found</h3>
+                        <p>Try adjusting your search filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="platforms-grid">
+                    ${platforms.map(platform => `
+                        <div class="platform-card">
+                            <div class="platform-header">
+                                <div class="platform-icon">${this.getCategoryIcon(platform.category)}</div>
+                                <div class="platform-info">
+                                    <h3 class="platform-name">${platform.name}</h3>
+                                    <p class="platform-desc">${platform.description}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="platform-tags">
+                                <span class="platform-tag">#${platform.category}</span>
+                                ${platform.tags.map(tag => `<span class="platform-tag">#${tag}</span>`).join('')}
+                            </div>
+                            
+                            <div class="platform-actions">
+                                <a href="${platform.url}" target="_blank" rel="noopener nofollow" class="visit-btn">
+                                    ${this.pageData.visitButton}
+                                </a>
+                                <button class="details-btn" onclick="workFinder.toggleDetails('${platform.id}')">
+                                    ${this.pageData.detailsButton}
+                                </button>
+                            </div>
+                            
+                            <div class="platform-details" id="details-${platform.id}">
+                                <div class="details-content">
+                                    <p><strong>${this.pageData.howItWorks}:</strong> ${platform.details}</p>
+                                    <p><strong>${this.pageData.safetyTip}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Update active filters count
+            const searchValue = document.getElementById('searchInput').value;
+            const categoryValue = document.getElementById('categorySelect').value;
+            let activeCount = 0;
+            if (searchValue) activeCount++;
+            if (categoryValue !== 'all') activeCount++;
+            document.getElementById('activeFilters').textContent = activeCount;
+        }
+
+        // Toggle platform details
+        toggleDetails(platformId) {
+            const detailsElement = document.getElementById(`details-${platformId}`);
+            detailsElement.classList.toggle('open');
+        }
+
+        // Apply filters
+        applyFilters() {
+            if (!this.pageData) return;
+
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            const categoryFilter = document.getElementById('categorySelect').value;
+
+            const filtered = this.pageData.platforms.filter(platform => {
+                const matchesSearch = !searchQuery || 
+                    platform.name.toLowerCase().includes(searchQuery) ||
+                    platform.description.toLowerCase().includes(searchQuery) ||
+                    platform.details.toLowerCase().includes(searchQuery) ||
+                    platform.tags.some(tag => tag.toLowerCase().includes(searchQuery)) ||
+                    platform.category.toLowerCase().includes(searchQuery);
+
+                const matchesCategory = categoryFilter === 'all' || platform.category === categoryFilter;
+
+                return matchesSearch && matchesCategory;
+            });
+
+            this.renderPlatforms(filtered);
+        }
+
+        // Quick search with tag
+        quickSearch(tag) {
+            document.getElementById('searchInput').value = tag;
+            this.applyFilters();
+        }
+
+        // Update language indicator
+        updateLanguageIndicator() {
+            const languageNames = {
+                'en': 'English 🇺🇸',
+                'hi': 'Hindi 🇮🇳', 
+                'ur': 'Urdu 🇵🇰',
+                'mr': 'Marathi 🇮🇳'
+            };
+            document.getElementById('languageIndicator').textContent = 
+                `🌐 ${languageNames[this.currentLanguage]}`;
+        }
+
+        // Language change handler
+        async handleLanguageChange(newLanguage) {
+            if (newLanguage !== this.currentLanguage) {
+                this.currentLanguage = newLanguage;
+                await this.loadPageData(newLanguage);
+                this.updatePageContent();
+                this.renderPlatforms();
+                this.updateLanguageIndicator();
+            }
+        }
+
+        // Load page data
+        async loadPageData(language) {
+            try {
+                this.pageData = await this.fetchPageData(language);
+            } catch (error) {
+                console.error('Failed to load page data:', error);
+            }
+        }
+
+        // Setup language listener
+        setupLanguageListener() {
+            // Listen for language change events
+            document.addEventListener('languageChanged', (event) => {
+                this.handleLanguageChange(event.detail.language);
+            });
+
+            // Sync with website language every second
+            setInterval(() => {
+                const newLang = this.syncWithWebsiteLanguage();
+                if (newLang !== this.currentLanguage) {
+                    this.handleLanguageChange(newLang);
+                }
+            }, 1000);
+        }
+
+        // Initialize page
+        async initializePage() {
+            this.setupLanguageListener();
+            
+            // Set initial language
+            this.currentLanguage = this.syncWithWebsiteLanguage();
+            this.updateLanguageIndicator();
+            
+            // Load data and render
+            await this.loadPageData(this.currentLanguage);
+            this.updatePageContent();
+            this.renderPlatforms();
+
+            // Setup event listeners
+            document.getElementById('searchInput').addEventListener('input', () => this.applyFilters());
+            document.getElementById('categorySelect').addEventListener('change', () => this.applyFilters());
+
+            console.log('Freelance Work Finder initialized with language:', this.currentLanguage);
+        }
+    }
+
+    // Initialize the application
+    let workFinder;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        workFinder = new FreelanceWorkFinder();
+    });
+
+    // Fallback initialization
+    setTimeout(() => {
+        if (!workFinder) {
+            workFinder = new FreelanceWorkFinder();
+        }
+    }, 2000);
+</script>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fire Dialogues - Part 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #06b6d4;
+            --accent: #22d3ee;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%);
+            min-height: 100vh;
+            color: var(--light);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .page-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .page-subtitle {
+            font-size: 1.4rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Shayari Grid */
+        .shayari-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .shayari-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            border-left: 5px solid var(--accent);
+        }
+
+        .shayari-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .shayari-card:hover::before {
+            left: 100%;
+        }
+
+        .shayari-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.2);
+        }
+
+        .shayari-content {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            text-align: center;
+            font-style: italic;
+        }
+
+        .shayari-signature {
+            text-align: right;
+            color: var(--accent);
+            font-weight: 600;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .shayari-category {
+            display: inline-block;
+            background: var(--gradient);
+            color: var(--dark);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .share-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .share-btn {
+            background: var(--gradient);
+            color: var(--dark);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            border-top: 1px solid var(--glass-border);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.3rem;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gradient);
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .shayari-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .shayari-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="page-title" id="pageTitle">Fire Dialogues - Part 2</h1>
+            <p class="page-subtitle" id="pageSubtitle">Blue flames of wisdom and power</p>
+        </div>
+
+        <div id="contentContainer">
+            <div class="loading">
+                <span>Loading Fire Dialogues</span>
+                <div class="loading-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer" id="footer">
+            Blue fire edition from Deepak Chauhan × AI Bhai
+        </div>
+    </div>
+
+    <script>
+        // Fire Dialogues Page System - Part 2
+        class FireDialoguesPage {
+            constructor(partNumber = 2) {
+                this.currentLanguage = 'en';
+                this.pageData = null;
+                this.partNumber = partNumber;
+                this.baseURL = './assets/fire-dialogues/';
+                
+                this.initializePage();
+            }
+
+            // Get daily shayari indices (10 per day)
+            getDailyShayariIndices() {
+                const startDate = new Date('2024-01-01');
+                const today = new Date();
+                const diffTime = Math.abs(today - startDate);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                const indices = [];
+                for (let i = 0; i < 10; i++) {
+                    indices.push((diffDays * 10 + i) % 100);
+                }
+                return indices;
+            }
+
+            // Language detection
+            syncWithWebsiteLanguage() {
+                if (typeof window.getCurrentLanguage === 'function') {
+                    return window.getCurrentLanguage();
+                }
+                
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (savedLang && ['en', 'hi', 'ur', 'mr'].includes(savedLang)) {
+                    return savedLang;
+                }
+                
+                return 'en';
+            }
+
+            // Fetch page data
+            async fetchPageData(language) {
+                try {
+                    const timestamp = new Date().getTime();
+                    const response = await fetch(`${this.baseURL}part${this.partNumber}-${language}.json?t=${timestamp}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    console.log('Loaded Part 2 data:', data);
+                    return data;
+                } catch (error) {
+                    console.error('Error fetching page data:', error);
+                    
+                    // Fallback to English
+                    if (language !== 'en') {
+                        return this.fetchPageData('en');
+                    }
+                    
+                    // Ultimate fallback
+                    return this.getFallbackData();
+                }
+            }
+
+            // Fallback data
+            getFallbackData() {
+                return {
+                    pageTitle: "Fire Dialogues - Part 2",
+                    pageSubtitle: "Blue flames of wisdom and power",
+                    footerText: "Blue fire edition from Deepak Chauhan × AI Bhai",
+                    shayaris: [
+                        {
+                            content: "Samundar ki gehrai jaise meri soch, lehar jaise mera junoon",
+                            signature: "- Deepak Chauhan",
+                            category: "Depth"
+                        },
+                        {
+                            content: "Aasman ko chhoone ka iraada nahi, aasman ko apna banana hai",
+                            signature: "- AI Bhai",
+                            category: "Ambition"
+                        },
+                        {
+                            content: "Har muskil ne sikha di, asli takat kya hoti hai",
+                            signature: "- Deepak Chauhan",
+                            category: "Strength"
+                        },
+                        {
+                            content: "Mere vichar ocean ki tarah gehre, lekin stormy nahi peaceful",
+                            signature: "- AI Bhai",
+                            category: "Wisdom"
+                        },
+                        {
+                            content: "Zindagi ki leharon se dar kar nahi, unhe enjoy karna seekha",
+                            signature: "- Deepak Chauhan",
+                            category: "Positivity"
+                        },
+                        {
+                            content: "Blue flame ki tarah quiet but powerful, visible but mysterious",
+                            signature: "- AI Bhai",
+                            category: "Mystery"
+                        },
+                        {
+                            content: "Success ki journey ocean cross karne jaisi, har wave ek naya challenge",
+                            signature: "- Deepak Chauhan",
+                            category: "Journey"
+                        },
+                        {
+                            content: "Mere confidence ka temperature kabhi kam nahi hota",
+                            signature: "- AI Bhai",
+                            category: "Consistency"
+                        },
+                        {
+                            content: "Duniya kehte hai impossible, main kehta hoon try karte hain",
+                            signature: "- Deepak Chauhan",
+                            category: "Optimism"
+                        },
+                        {
+                            content: "Blue fire burns the hottest, just like my determination",
+                            signature: "- AI Bhai",
+                            category: "Determination"
+                        }
+                    ]
+                };
+            }
+
+            // Get today's shayaris
+            getTodaysShayaris() {
+                if (!this.pageData || !this.pageData.shayaris) return [];
+                
+                const indices = this.getDailyShayariIndices();
+                return indices.map(index => 
+                    this.pageData.shayaris[index % this.pageData.shayaris.length]
+                ).filter(shayari => shayari);
+            }
+
+            // Share individual shayari
+            shareShayari(shayari) {
+                const shareText = `${shayari.content}\n\n${shayari.signature}\n\nShared from Fire Dialogues Part ${this.partNumber}`;
+                const shareUrl = window.location.href;
+
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Fire Dialogue - Part 2',
+                        text: shareText,
+                        url: shareUrl
+                    });
+                } else {
+                    this.copyShayari(shayari);
+                }
+            }
+
+            // Copy shayari text
+            async copyShayari(shayari) {
+                const copyText = `${shayari.content}\n\n${shayari.signature}`;
+                
+                try {
+                    await navigator.clipboard.writeText(copyText);
+                    this.showToast('Shayari copied to clipboard!');
+                } catch (err) {
+                    this.showToast('Failed to copy shayari');
+                }
+            }
+
+            // Show toast message
+            showToast(message) {
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #333;
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 25px;
+                    z-index: 10000;
+                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.remove();
+                    }
+                }, 3000);
+            }
+
+            // Render page content
+            renderPageContent() {
+                const shayaris = this.getTodaysShayaris();
+                const container = document.getElementById('contentContainer');
+
+                if (!shayaris.length) {
+                    container.innerHTML = '<div class="error-message">No shayaris available for today</div>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="shayari-grid">
+                        ${shayaris.map(shayari => `
+                            <div class="shayari-card">
+                                <div class="shayari-content">"${shayari.content}"</div>
+                                <div class="shayari-signature">${shayari.signature}</div>
+                                <div class="shayari-category">${shayari.category}</div>
+                                <div class="share-section">
+                                    <button class="share-btn" onclick="fireDialoguesPage.shareShayari(${JSON.stringify(shayari).replace(/"/g, '&quot;')})">
+                                        <span>📤</span> Share
+                                    </button>
+                                    <button class="share-btn" onclick="fireDialoguesPage.copyShayari(${JSON.stringify(shayari).replace(/"/g, '&quot;')})">
+                                        <span>📋</span> Copy
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Update page titles
+            updatePageTitles() {
+                if (!this.pageData) return;
+
+                if (this.pageData.pageTitle) {
+                    document.getElementById('pageTitle').textContent = this.pageData.pageTitle;
+                    document.title = this.pageData.pageTitle;
+                }
+                if (this.pageData.pageSubtitle) {
+                    document.getElementById('pageSubtitle').textContent = this.pageData.pageSubtitle;
+                }
+                if (this.pageData.footerText) {
+                    document.getElementById('footer').textContent = this.pageData.footerText;
+                }
+            }
+
+            // Language change handler
+            async handleLanguageChange(newLanguage) {
+                if (newLanguage !== this.currentLanguage) {
+                    this.currentLanguage = newLanguage;
+                    await this.loadPageData(newLanguage);
+                    this.updatePageTitles();
+                    this.renderPageContent();
+                }
+            }
+
+            // Load page data
+            async loadPageData(language) {
+                try {
+                    this.pageData = await this.fetchPageData(language);
+                    console.log(`Fire Dialogues Part ${this.partNumber} data loaded for language:`, language);
+                } catch (error) {
+                    console.error('Failed to load page data:', error);
+                }
+            }
+
+            // Setup language listener
+            setupLanguageListener() {
+                document.addEventListener('languageChanged', (event) => {
+                    this.handleLanguageChange(event.detail.language);
+                });
+
+                setInterval(() => {
+                    const newLang = this.syncWithWebsiteLanguage();
+                    if (newLang !== this.currentLanguage) {
+                        this.handleLanguageChange(newLang);
+                    }
+                }, 1000);
+            }
+
+            // Initialize page
+            async initializePage() {
+                this.setupLanguageListener();
+                
+                this.currentLanguage = this.syncWithWebsiteLanguage();
+                await this.loadPageData(this.currentLanguage);
+                this.updatePageTitles();
+                this.renderPageContent();
+
+                console.log(`Fire Dialogues Part ${this.partNumber} initialized with language:`, this.currentLanguage);
+            }
+        }
+
+        // Initialize Part 2
+        let fireDialoguesPage;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fireDialoguesPage = new FireDialoguesPage(2);
+        });
+
+        // Fallback initialization
+        setTimeout(() => {
+            if (!fireDialoguesPage) {
+                fireDialoguesPage = new FireDialoguesPage(2);
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
