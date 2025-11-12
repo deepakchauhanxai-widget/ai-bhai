@@ -1,0 +1,274 @@
+/* ===== RESPONSIVE STYLES ===== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+    .header {
+        padding: var(--spacing-lg) var(--spacing-md);
+    }
+    
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .logo {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .ai-avatar {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .large-btn {
+        width: 160px;
+        height: 110px;
+    }
+    
+    .medium-btn {
+        width: 140px;
+        height: 90px;
+    }
+    
+    .small-btn {
+        width: 110px;
+        height: 70px;
+    }
+}
+
+/* Large Mobile */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        text-align: center;
+    }
+    
+    .brand-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .main-title {
+        font-size: 1.8rem;
+    }
+    
+    .nav-row {
+        gap: var(--spacing-sm);
+    }
+    
+    .large-btn {
+        width: 140px;
+        height: 100px;
+    }
+    
+    .medium-btn {
+        width: 130px;
+        height: 85px;
+    }
+    
+    .small-btn {
+        width: 100px;
+        height: 65px;
+    }
+    
+    .btn-icon {
+        font-size: 1.5rem;
+    }
+    
+    .btn-text {
+        font-size: 0.8rem;
+    }
+    
+    .install-prompt {
+        left: var(--spacing-md);
+        right: var(--spacing-md);
+        bottom: var(--spacing-md);
+    }
+    
+    .install-card {
+        max-width: none;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    :root {
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+    }
+    
+    .header {
+        padding: var(--spacing-lg) var(--spacing-sm);
+    }
+    
+    .main-navigation {
+        padding: 0 var(--spacing-sm) var(--spacing-lg);
+    }
+    
+    .main-title {
+        font-size: 1.5rem;
+    }
+    
+    .tagline {
+        font-size: 1rem;
+    }
+    
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .ai-avatar {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .nav-row {
+        gap: var(--spacing-xs);
+    }
+    
+    .large-btn {
+        width: 45%;
+        height: 90px;
+        padding: var(--spacing-sm);
+    }
+    
+    .medium-btn {
+        width: 45%;
+        height: 80px;
+    }
+    
+    .small-btn {
+        width: 30%;
+        height: 60px;
+        padding: var(--spacing-xs);
+    }
+    
+    .btn-icon {
+        font-size: 1.3rem;
+        margin-bottom: 4px;
+    }
+    
+    .btn-text {
+        font-size: 0.7rem;
+    }
+    
+    .language-switcher {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+    }
+    
+    .lang-btn {
+        padding: 6px 10px;
+        font-size: 1rem;
+    }
+    
+    .bg-circle {
+        filter: blur(40px);
+    }
+    
+    .circle-1 {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .circle-2 {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .circle-3 {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .circle-4 {
+        width: 220px;
+        height: 220px;
+    }
+}
+
+/* Very Small Mobile */
+@media (max-width: 360px) {
+    .main-title {
+        font-size: 1.3rem;
+    }
+    
+    .large-btn {
+        width: 48%;
+        height: 85px;
+    }
+    
+    .medium-btn {
+        width: 48%;
+        height: 75px;
+    }
+    
+    .small-btn {
+        width: 31%;
+        height: 55px;
+    }
+    
+    .btn-text {
+        font-size: 0.65rem;
+    }
+}
+
+/* Landscape Mode */
+@media (max-height: 600px) and (orientation: landscape) {
+    .header {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    .main-navigation {
+        padding-bottom: var(--spacing-md);
+    }
+    
+    .large-btn {
+        height: 80px;
+    }
+    
+    .medium-btn {
+        height: 70px;
+    }
+    
+    .small-btn {
+        height: 60px;
+    }
+    
+    .btn-icon {
+        font-size: 1.2rem;
+        margin-bottom: 2px;
+    }
+    
+    .btn-text {
+        font-size: 0.7rem;
+    }
+}
+
+/* High Resolution Screens */
+@media (min-width: 1400px) {
+    .header {
+        max-width: 1400px;
+    }
+    
+    .main-navigation {
+        max-width: 1000px;
+    }
+    
+    .large-btn {
+        width: 200px;
+        height: 130px;
+    }
+    
+    .medium-btn {
+        width: 170px;
+        height: 110px;
+    }
+    
+    .small-btn {
+        width: 140px;
+        height: 90px;
+    }
+}
