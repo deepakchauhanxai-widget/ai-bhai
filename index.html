@@ -34,7 +34,6 @@
     <link rel="stylesheet" href="styles/energy-chamber.css">
     <link rel="stylesheet" href="styles/skills-tools-box.css">
     <link rel="stylesheet" href="styles/success-tip.css">
-    <link rel="stylesheet" href="styles/live-motivation.css">
     <link rel="stylesheet" href="styles/community-wall-box.css">
     <link rel="stylesheet" href="styles/daily-progress.css">
     <link rel="stylesheet" href="styles/modal.css">
@@ -518,14 +517,14 @@
     </div>
 </div>
 
-<!-- AI Bhai × Progress Tracker - Professional Design -->
-<section class="ai-progress-tracker">
+<!-- AI Progress Tracker - Professional Design -->
+<section class="ai-progress-tracker" id="aiProgressTracker">
     <!-- Glowing Header -->
     <div class="tracker-hero">
         <div class="hero-glow"></div>
         <div class="hero-content">
             <div class="ai-avatar">
-                <img src="images/AI-bhai.png" alt="AI Bhai">
+                <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop&crop=face" alt="AI Bhai">
                 <div class="pulse-ring"></div>
             </div>
             <div class="hero-text">
@@ -543,29 +542,61 @@
                 <div class="card-glow"></div>
                 <div class="welcome-content">
                     <div class="welcome-icon">🚀</div>
-                    <h3 data-translate="welcome_title">Start Your AI Journey</h3>
-                    <p data-translate="welcome_text">Join thousands tracking their success automatically</p>
+                    <h3 data-translate="welcome_title">AI Progress Tracker</h3>
+                    <p data-translate="welcome_text">Tracking active karne ke liye Community Wall mein register karein</p>
                     
-                    <div class="input-group">
-                        <input type="text" id="userName" class="ai-input" data-translate-placeholder="enter_name">
-                        <button class="ai-button primary" onclick="generateUserID()">
-                            <span data-translate="generate_id">Generate AI ID</span>
-                            <span class="btn-sparkle">✨</span>
-                        </button>
-                    </div>
-                    
-                    <div class="user-id-display" id="userIdDisplay">
-                        <div class="id-badge">
-                            <span data-translate="your_id">Your AI ID:</span>
-                            <code id="userIdValue">-</code>
-                            <button class="copy-btn" onclick="copyUserID()">📋</button>
+                    <!-- Auto Community Wall Detection -->
+                    <div class="community-wall-detection" id="communityWallDetection">
+                        <div class="detection-loader">
+                            <div class="loader-spinner"></div>
+                            <span>Checking Community Wall account...</span>
+                        </div>
+                        
+                        <!-- Community Wall Status -->
+                        <div class="community-status" id="communityStatus">
+                            <div class="status-success hidden" id="statusConnected">
+                                <div class="status-icon">✅</div>
+                                <div class="status-text">
+                                    <strong>Community Wall Connected!</strong>
+                                    <span id="connectedUserName">User name loaded</span>
+                                </div>
+                            </div>
+                            
+                            <div class="status-warning hidden" id="statusNotConnected">
+                                <div class="status-icon">⚠️</div>
+                                <div class="status-text">
+                                    <strong>Community Wall Account Required</strong>
+                                    <span>Please login/register in Community Wall first</span>
+                                </div>
+                                <button class="community-login-btn" onclick="redirectToCommunityWall()">
+                                    welcome dk community
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    
-                    <button class="ai-button success start-btn" onclick="registerUser()">
+
+                    <!-- User Info Display (When Connected) -->
+                    <div class="connected-user-info hidden" id="connectedUserInfo">
+                        <div class="user-avatar-small">
+                            <img id="previewAvatar" src="" alt="User Avatar">
+                        </div>
+                        <div class="user-details-small">
+                            <strong id="previewUserName">User Name</strong>
+                            <span id="previewUserId">ID: loading...</span>
+                        </div>
+                    </div>
+
+                    <!-- Start Tracking Button -->
+                    <button class="ai-button success start-btn" onclick="startAITracking()" id="startTrackingBtn">
                         <span data-translate="start_tracking">Start AI Tracking</span>
                         <span class="ai-icon">🤖</span>
                     </button>
+                    
+                    <div class="login-prompt">
+                        <p>Community Wall account nahi hai? 
+                           <a href="#" onclick="redirectToCommunityWall()" class="login-link">🎯🪄🎯</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -576,7 +607,7 @@
             <div class="user-header">
                 <div class="user-info">
                     <div class="user-avatar">
-                        <img src="images/AI-bhai.png" alt="AI Bhai">
+                        <img id="userAvatarImg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" alt="User Avatar">
                         <div class="status-dot"></div>
                     </div>
                     <div class="user-details">
@@ -586,6 +617,10 @@
                             <span class="status-pulse"></span>
                             <span data-translate="ai_tracking">AI Tracking Active</span>
                         </span>
+                        <div class="community-badge" id="communityBadge">
+                            <span class="badge-icon">👥</span>
+                            <span>Connected to Community Wall</span>
+                        </div>
                     </div>
                 </div>
                 <div class="streak-widget">
@@ -755,7 +790,6 @@
     </defs>
 </svg>
 
-
 <!-- DK Community Wall Box - Professional Design -->
 <div class="community-wall-box">
     <div class="box-header">
@@ -810,97 +844,6 @@
             <span class="btn-icon">🚀</span>
             <span id="openWallText">Open Community Wall</span>
         </button>
-    </div>
-</div>
-
-<!-- Live Motivation Feed Section -->
-<section class="live-feed-section">
-    <div class="live-feed-container">
-        <!-- Header with Live Badge -->
-        <div class="live-feed-header">
-            <div class="live-indicator">
-                <div class="pulse-dot"></div>
-                <span class="live-text" data-translate="live_now">LIVE NOW</span>
-            </div>
-            <div class="feed-title-section">
-                <h2 class="feed-title" data-translate="motivation_feed">Motivation Feed</h2>
-                <p class="feed-subtitle" data-translate="real_time_updates">Real-time updates from Deepak Chauhan × AI Bhai</p>
-            </div>
-            <div class="feed-stats">
-                <div class="stat">
-                    <span class="stat-icon">👥</span>
-                    <span class="stat-number" id="onlineCount">247</span>
-                    <span class="stat-label" data-translate="online">Online</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-icon">🔥</span>
-                    <span class="stat-number" id="activeCount">89</span>
-                    <span class="stat-label" data-translate="active_now">Active Now</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-            <button class="quick-btn" onclick="sendQuickReaction('🔥')">
-                <span class="reaction-icon">🔥</span>
-                <span data-translate="fire">Fire</span>
-            </button>
-            <button class="quick-btn" onclick="sendQuickReaction('💪')">
-                <span class="reaction-icon">💪</span>
-                <span data-translate="strong">Strong</span>
-            </button>
-            <button class="quick-btn" onclick="sendQuickReaction('🚀')">
-                <span class="reaction-icon">🚀</span>
-                <span data-translate="rocket">Rocket</span>
-            </button>
-            <button class="quick-btn" onclick="sendQuickReaction('🙏')">
-                <span class="reaction-icon">🙏</span>
-                <span data-translate="thanks">Thanks</span>
-            </button>
-        </div>
-
-        <!-- Feed Messages -->
-        <div class="feed-messages" id="feedMessages">
-            <!-- Messages will be loaded here -->
-        </div>
-
-        <!-- New Message Indicator -->
-        <div class="new-messages-indicator" id="newMessagesIndicator">
-            <span class="indicator-text" data-translate="new_messages">New messages available</span>
-            <button class="load-new-btn" onclick="loadNewMessages()">
-                <span data-translate="load_new">Load New</span>
-                <span class="arrow">↓</span>
-            </button>
-        </div>
-
-        <!-- Compose Message -->
-        <div class="compose-section">
-            <div class="compose-input">
-                <img src="images/user-avatar.png" alt="You" class="user-avatar">
-                <input type="text" id="messageInput" placeholder="Share your motivation..." data-translate="share_placeholder">
-                <button class="send-btn" onclick="sendMessage()">
-                    <span class="send-icon">📤</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Notification Toggle -->
-        <div class="notification-section">
-            <label class="notification-toggle">
-                <input type="checkbox" id="notificationToggle" onchange="toggleNotifications()">
-                <span class="toggle-slider"></span>
-                <span class="toggle-label" data-translate="enable_notifications">Enable Live Notifications</span>
-            </label>
-        </div>
-    </div>
-</section>
-
-<!-- Quick Reaction Popup -->
-<div class="reaction-popup" id="reactionPopup">
-    <div class="reaction-content">
-        <span class="reaction-emoji" id="reactionEmoji">🔥</span>
-        <span class="reaction-text" data-translate="reaction_sent">Reaction Sent!</span>
     </div>
 </div>
 
