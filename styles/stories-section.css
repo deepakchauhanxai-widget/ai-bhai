@@ -1,0 +1,547 @@
+/* AI Bhai Stories Section Styles - Multi Color Theme */
+.stories-section {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.stories-box {
+    background: #000000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 25px;
+    padding: 30px;
+    position: relative;
+    
+    /* Multi-color Shadow */
+    box-shadow: 
+        0 15px 40px rgba(255, 105, 180, 0.25),
+        0 8px 25px rgba(30, 144, 255, 0.2),
+        0 5px 15px rgba(50, 205, 50, 0.15);
+}
+
+.stories-box::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        45deg,
+        #ff69b4, /* Hot Pink */
+        #1e90ff, /* Dodger Blue */
+        #32cd32, /* Lime Green */
+        #ffa500, /* Orange */
+        #ff69b4
+    );
+    border-radius: 27px;
+    z-index: -1;
+    opacity: 0.6;
+    filter: blur(12px);
+    animation: gradientBorder 4s ease infinite;
+    background-size: 400% 400%;
+}
+
+/* Header - Pink Theme */
+.stories-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+.stories-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff69b4, #ff1493, #c71585);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.stories-subtitle {
+    color: #ffb6c1; /* Light Pink */
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* Today's Story - Blue Theme */
+.today-story {
+    margin-bottom: 30px;
+}
+
+.story-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #1e90ff, #0077be);
+    border: none;
+    color: white;
+    padding: 18px 25px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(30, 144, 255, 0.4);
+}
+
+.story-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 144, 255, 0.6);
+}
+
+.story-icon {
+    font-size: 1.3rem;
+    color: #87cefa; /* Light Sky Blue */
+}
+
+.story-btn-text {
+    font-size: 1.1rem;
+}
+
+.story-content {
+    background: #000000 !important;
+    border-radius: 15px;
+    padding: 20px;
+    border-left: 4px solid #1e90ff;
+}
+
+.story-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e6f7ff; /* Light Blue */
+    font-style: italic;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.story-signature {
+    text-align: center;
+    font-weight: 600;
+    color: #87ceeb; /* Sky Blue */
+    font-size: 1rem;
+}
+
+/* Image Container - Rainbow Border */
+.story-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    
+    /* Rainbow border */
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #ff69b4, #1e90ff, #32cd32, #ffa500, #ff69b4) 1;
+    box-shadow: 
+        0 0 15px rgba(255, 105, 180, 0.4),
+        0 0 15px rgba(30, 144, 255, 0.4),
+        0 0 15px rgba(50, 205, 50, 0.4);
+}
+
+.story-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    position: relative;
+}
+
+.story-image:hover {
+    transform: scale(1.05);
+}
+
+.story-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid;
+    border-image: linear-gradient(45deg, #ff69b4, #1e90ff, #32cd32) 1;
+    border-radius: 13px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.story-image:hover::after {
+    box-shadow: 
+        0 0 20px rgba(255, 105, 180, 0.6),
+        0 0 20px rgba(30, 144, 255, 0.6),
+        0 0 20px rgba(50, 205, 50, 0.6);
+}
+
+/* Multi-color Design Line */
+.design-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        #ff69b4 20%, 
+        #1e90ff 40%,
+        #32cd32 60%,
+        #ffa500 80%, 
+        transparent 100%
+    );
+    transform: translateY(-50%);
+    z-index: 2;
+    box-shadow: 
+        0 0 10px rgba(255, 105, 180, 0.8),
+        0 0 10px rgba(30, 144, 255, 0.8);
+}
+
+.design-line::before {
+    content: '✦';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 1.5rem;
+    text-shadow: 
+        0 0 10px #ff69b4,
+        0 0 10px #1e90ff,
+        0 0 10px #32cd32;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 20px;
+    text-align: center;
+    z-index: 3;
+}
+
+.overlay-text {
+    color: white;
+    font-weight: 600;
+    font-size: 1.2rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+/* Memories Section - Green & Purple Theme */
+.memories-section {
+    margin-top: 25px;
+}
+
+.memories-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #32cd32, #9370db);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.memory-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #000000 !important;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border-left: 4px solid;
+}
+
+/* Different colors for each memory item */
+.memory-item:nth-child(1) {
+    border-left-color: #ff69b4; /* Pink */
+}
+
+.memory-item:nth-child(2) {
+    border-left-color: #1e90ff; /* Blue */
+}
+
+.memory-item:nth-child(3) {
+    border-left-color: #32cd32; /* Green */
+}
+
+.memory-item:nth-child(4) {
+    border-left-color: #ffa500; /* Orange */
+}
+
+.memory-item:hover {
+    background: #111111 !important;
+    transform: translateX(5px);
+}
+
+.memory-number {
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* Different number colors */
+.memory-item:nth-child(1) .memory-number {
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+}
+
+.memory-item:nth-child(2) .memory-number {
+    background: linear-gradient(135deg, #1e90ff, #0077be);
+}
+
+.memory-item:nth-child(3) .memory-number {
+    background: linear-gradient(135deg, #32cd32, #228b22);
+}
+
+.memory-item:nth-child(4) .memory-number {
+    background: linear-gradient(135deg, #ffa500, #ff8c00);
+}
+
+.memory-content {
+    flex: 1;
+}
+
+.memory-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* Different name colors */
+.memory-item:nth-child(1) .memory-name {
+    color: #ff69b4;
+}
+
+.memory-item:nth-child(2) .memory-name {
+    color: #1e90ff;
+}
+
+.memory-item:nth-child(3) .memory-name {
+    color: #32cd32;
+}
+
+.memory-item:nth-child(4) .memory-name {
+    color: #ffa500;
+}
+
+.memory-quote {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #e0e0e0;
+    margin: 0;
+}
+
+/* Footer - Gold Theme */
+.stories-footer {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 215, 0, 0.3);
+    text-align: center;
+}
+
+.footer-text {
+    color: #ffd700; /* Gold */
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.4;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Multi-color Animations */
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stories-box {
+    animation: fadeInUp 0.6s ease;
+}
+
+/* Multi-color Pulse Animation */
+@keyframes multiColorPulse {
+    0%, 100% {
+        box-shadow: 
+            0 15px 40px rgba(255, 105, 180, 0.25),
+            0 8px 25px rgba(30, 144, 255, 0.2),
+            0 5px 15px rgba(50, 205, 50, 0.15);
+    }
+    50% {
+        box-shadow: 
+            0 18px 45px rgba(255, 105, 180, 0.35),
+            0 10px 30px rgba(30, 144, 255, 0.25),
+            0 7px 20px rgba(50, 205, 50, 0.2);
+    }
+}
+
+.stories-box {
+    animation: fadeInUp 0.6s ease, multiColorPulse 4s ease-in-out infinite;
+}
+
+/* Design Line Animation */
+@keyframes lineGlow {
+    0%, 100% {
+        opacity: 0.8;
+        box-shadow: 
+            0 0 10px rgba(255, 105, 180, 0.8),
+            0 0 10px rgba(30, 144, 255, 0.8);
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 
+            0 0 20px rgba(255, 105, 180, 1),
+            0 0 20px rgba(30, 144, 255, 1);
+    }
+}
+
+.design-line {
+    animation: lineGlow 2s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stories-section {
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+    
+    .stories-box {
+        padding: 25px;
+    }
+    
+    .stories-title {
+        font-size: 1.8rem;
+    }
+    
+    .stories-subtitle {
+        font-size: 1rem;
+    }
+    
+    .story-btn {
+        padding: 15px 20px;
+        font-size: 1rem;
+    }
+    
+    .story-text {
+        font-size: 1rem;
+    }
+    
+    .memories-title {
+        font-size: 1.3rem;
+    }
+    
+    .memory-item {
+        padding: 12px;
+    }
+    
+    .memory-name {
+        font-size: 1rem;
+    }
+    
+    .memory-quote {
+        font-size: 0.9rem;
+    }
+    
+    .design-line::before {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stories-section {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+    
+    .stories-box {
+        padding: 20px;
+        background: #000000 !important;
+    }
+    
+    .stories-title {
+        font-size: 1.6rem;
+    }
+    
+    .story-btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .story-content {
+        padding: 15px;
+    }
+    
+    .memory-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .memory-number {
+        align-self: center;
+    }
+    
+    .footer-text {
+        font-size: 0.85rem;
+    }
+    
+    .design-line::before {
+        font-size: 1rem;
+    }
+}
+
+/* Performance optimization */
+@media (prefers-reduced-motion: reduce) {
+    .stories-box::before,
+    .stories-box,
+    .design-line {
+        animation: none;
+    }
+    
+    .story-btn:hover,
+    .memory-item:hover {
+        transform: none;
+    }
+    
+    .story-image:hover {
+        transform: none;
+    }
+}

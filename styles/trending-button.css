@@ -1,0 +1,160 @@
+/* Trending Button Section */
+.trending-button-section {
+    text-align: center;
+    margin: 50px 0;
+    padding: 0 20px;
+}
+
+.trending-stories-btn {
+    background: linear-gradient(135deg, 
+        #ff6b6b 0%, 
+        #ee5a24 25%, 
+        #ff9ff3 50%, 
+        #f368e0 75%, 
+        #ff9ff3 100%);
+    background-size: 200% 200%;
+    color: white;
+    border: none;
+    padding: 20px 40px;
+    border-radius: 60px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+        0 10px 30px rgba(255, 107, 107, 0.4),
+        0 0 0 0 rgba(255, 107, 107, 0.7);
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+    overflow: hidden;
+    animation: gradientShift 3s ease infinite, pulseGlow 2s ease-in-out infinite;
+}
+
+.trending-stories-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.4), 
+        transparent);
+    transition: left 0.6s;
+}
+
+.trending-stories-btn:hover::before {
+    left: 100%;
+}
+
+.trending-stories-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 
+        0 15px 40px rgba(255, 107, 107, 0.6),
+        0 0 20px 10px rgba(255, 107, 107, 0.3);
+    animation: none;
+}
+
+.trending-stories-btn:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.trending-icon {
+    font-size: 1.8rem;
+    animation: firePulse 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.8));
+}
+
+.trending-text {
+    font-size: 1.3rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+}
+
+.trending-arrow {
+    font-size: 1.6rem;
+    transition: all 0.3s ease;
+    animation: bounceRight 2s ease-in-out infinite;
+}
+
+.trending-stories-btn:hover .trending-arrow {
+    transform: translateX(8px) scale(1.2);
+    animation: none;
+}
+
+/* Animations */
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes pulseGlow {
+    0%, 100% { 
+        box-shadow: 
+            0 10px 30px rgba(255, 107, 107, 0.4),
+            0 0 0 0 rgba(255, 107, 107, 0.7);
+    }
+    50% { 
+        box-shadow: 
+            0 10px 30px rgba(255, 107, 107, 0.4),
+            0 0 0 10px rgba(255, 107, 107, 0);
+    }
+}
+
+@keyframes firePulse {
+    0%, 100% { 
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 5px rgba(255, 107, 107, 0.8));
+    }
+    25% { 
+        transform: scale(1.1) rotate(-5deg);
+        filter: drop-shadow(0 0 8px rgba(255, 69, 0, 1));
+    }
+    75% { 
+        transform: scale(1.1) rotate(5deg);
+        filter: drop-shadow(0 0 8px rgba(255, 140, 0, 1));
+    }
+}
+
+@keyframes bounceRight {
+    0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(3px); }
+}
+
+/* Mobile Responsive for Button */
+@media (max-width: 768px) {
+    .trending-button-section {
+        margin: 40px 0;
+    }
+    
+    .trending-stories-btn {
+        padding: 16px 30px;
+        font-size: 1.2rem;
+        gap: 12px;
+    }
+    
+    .trending-text {
+        font-size: 1.1rem;
+    }
+    
+    .trending-icon {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .trending-stories-btn {
+        padding: 14px 25px;
+        font-size: 1.1rem;
+        gap: 10px;
+        flex-direction: column;
+    }
+    
+    .trending-text {
+        font-size: 1rem;
+    }
+}
