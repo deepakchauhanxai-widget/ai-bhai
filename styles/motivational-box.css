@@ -1,0 +1,376 @@
+/* Motivational Box Styles for Home Page */
+.motivational-box-section {
+    max-width: 500px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.motivational-box {
+    background: #000000; /* Pure solid black */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 25px;
+    position: relative;
+    transition: transform 0.3s ease;
+    
+    /* Multi-color Shadow Glow */
+    box-shadow: 
+        0 0 25px rgba(255, 0, 128, 0.4),
+        0 0 45px rgba(121, 40, 202, 0.3),
+        0 0 65px rgba(0, 112, 243, 0.2),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+}
+
+.motivational-box::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        45deg,
+        #ff0080,
+        #7928ca,
+        #0070f3,
+        #00c6ff,
+        #ff0080
+    );
+    border-radius: 22px;
+    z-index: -1;
+    opacity: 0.6;
+    filter: blur(12px);
+    animation: gradientBorder 3s ease infinite;
+    background-size: 400% 400%;
+}
+
+.motivational-box::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 0, 128, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(121, 40, 202, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 112, 243, 0.04) 0%, transparent 50%);
+    border-radius: 20px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.motivational-box:hover {
+    transform: translateY(-5px);
+    background: #000000; /* Pure black on hover bhi */
+    box-shadow: 
+        0 0 35px rgba(255, 0, 128, 0.5),
+        0 0 55px rgba(121, 40, 202, 0.4),
+        0 0 75px rgba(0, 112, 243, 0.3),
+        inset 0 0 25px rgba(255, 255, 255, 0.08);
+}
+
+.motivational-box:hover::before {
+    opacity: 0.8;
+    filter: blur(15px);
+}
+
+/* Title */
+.box-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #ff0080, #7928ca, #0070f3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: textShine 3s ease-in-out infinite alternate;
+}
+
+/* Image Container - IMPROVED GREEN BORDER */
+.box-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    
+    /* Clean green border - no extra shadows */
+    border: 3px solid #00ff00;
+    box-shadow: 
+        0 0 15px rgba(0, 255, 0, 0.6),
+        inset 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.box-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Simple green border on hover */
+.box-image:hover {
+    transform: scale(1.05);
+}
+
+.box-image:hover::after {
+    border-color: rgba(0, 255, 0, 0.9);
+    box-shadow: 
+        0 0 20px rgba(0, 255, 0, 0.7),
+        inset 0 0 15px rgba(0, 255, 0, 0.4);
+}
+
+/* Instagram Trending Button */
+.instagram-trending-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 4px 15px rgba(220, 39, 67, 0.4),
+        0 0 10px rgba(255, 255, 255, 0.1);
+    z-index: 2;
+    
+    position: relative;
+    overflow: hidden;
+}
+
+.instagram-trending-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: left 0.5s ease;
+}
+
+.instagram-trending-btn:hover::before {
+    left: 100%;
+}
+
+.instagram-trending-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 20px rgba(220, 39, 67, 0.6),
+        0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.ig-icon {
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+}
+
+.ig-text {
+    white-space: nowrap;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Shayari Text */
+.box-shayari {
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+    font-style: italic;
+    margin-bottom: 20px;
+    padding: 0 10px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Action Buttons */
+.box-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.box-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.box-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.box-action-btn.like-btn:hover {
+    background: linear-gradient(135deg, #ff0080, #7928ca);
+}
+
+.box-action-btn.share-btn:hover {
+    background: linear-gradient(135deg, #0070f3, #00c6ff);
+}
+
+.box-action-btn.next-btn:hover {
+    background: linear-gradient(135deg, #00c853, #64dd17);
+}
+
+.box-action-btn .btn-icon {
+    font-size: 1.1rem;
+}
+
+.box-action-btn .btn-text {
+    white-space: nowrap;
+}
+
+/* Animations */
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes textShine {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 
+            0 0 25px rgba(255, 0, 128, 0.4),
+            0 0 45px rgba(121, 40, 202, 0.3),
+            0 0 65px rgba(0, 112, 243, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 30px rgba(255, 0, 128, 0.5),
+            0 0 50px rgba(121, 40, 202, 0.4),
+            0 0 70px rgba(0, 112, 243, 0.3);
+    }
+}
+
+/* Add subtle pulse animation to box */
+.motivational-box {
+    animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .motivational-box-section {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+    
+    .motivational-box {
+        padding: 20px;
+    }
+    
+    .box-title {
+        font-size: 1.3rem;
+    }
+    
+    .box-shayari {
+        font-size: 1rem;
+    }
+    
+    .instagram-trending-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .box-action-buttons {
+        gap: 10px;
+    }
+    
+    .box-action-btn {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .motivational-box::before {
+        filter: blur(8px);
+    }
+}
+
+@media (max-width: 480px) {
+    .motivational-box {
+        padding: 15px;
+        background: #000000; /* Pure black for mobile too */
+    }
+    
+    .box-title {
+        font-size: 1.2rem;
+    }
+    
+    .instagram-trending-btn {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .ig-text {
+        display: none;
+    }
+    
+    .box-action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .box-action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .motivational-box::before {
+        filter: blur(5px);
+    }
+}
+
+/* Performance optimization */
+@media (prefers-reduced-motion: reduce) {
+    .motivational-box::before,
+    .box-title,
+    .motivational-box {
+        animation: none;
+    }
+    
+    .instagram-trending-btn::before {
+        display: none;
+    }
+}
