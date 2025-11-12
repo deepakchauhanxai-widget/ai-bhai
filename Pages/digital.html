@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>डिजिटल पार्टनरशिप • दीपक चौहान × ए.आई. भाई ♥️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Nirmala UI', 'Mangal', sans-serif;
+        }
+
+        :root {
+            --primary: #dc2626;
+            --primary-dark: #b91c1c;
+            --secondary: #7c3aed;
+            --accent: #f59e0b;
+            --gold: #fbbf24;
+            --saffron: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gradient: linear-gradient(135deg, #dc2626 0%, #7c3aed 50%, #f59e0b 100%);
+            --gradient-gold: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            --glass: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: var(--light);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* Background Effects */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--gradient);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styles with Indian Theme */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+            padding: 3rem 0;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: var(--gradient);
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.2;
+            z-index: -1;
+            animation: pulse-glow 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.15; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.25; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .page-title {
+            font-size: 3.8rem;
+            font-weight: 800;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
+            animation: title-glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes title-glow {
+            from { text-shadow: 0 10px 30px rgba(251, 191, 36, 0.3); }
+            to { text-shadow: 0 15px 40px rgba(251, 191, 36, 0.5), 0 0 60px rgba(251, 191, 36, 0.2); }
+        }
+
+        .page-subtitle {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            font-style: italic;
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+            border-left: 4px solid var(--accent);
+            padding-left: 1.5rem;
+            border-right: 4px solid var(--accent);
+            padding-right: 1.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Avatar Section with Indian Touch */
+        .avatar-section {
+            display: flex;
+            justify-content: center;
+            margin: 4rem 0;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid transparent;
+            background: var(--gradient) padding-box, var(--gradient) border-box;
+            animation: float-rotate 8s ease-in-out infinite;
+            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.4);
+        }
+
+        @keyframes float-rotate {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            50% { transform: translateY(-5px) rotate(0deg); }
+            75% { transform: translateY(-10px) rotate(-5deg); }
+        }
+
+        .avatar-glow {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            background: var(--gradient);
+            border-radius: 50%;
+            filter: blur(20px);
+            opacity: 0.6;
+            z-index: -1;
+            animation: avatar-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes avatar-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .avatar-decoration {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Premium Glass Card Styles */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.1), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .glass-card:hover::before {
+            left: 100%;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(251, 191, 36, 0.3);
+            box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+        }
+
+        .section-title::before {
+            content: '✨';
+            font-size: 1.8rem;
+        }
+
+        .section-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            opacity: 0.9;
+            text-align: justify;
+            font-weight: 400;
+        }
+
+        /* Enhanced Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-gold);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(251, 191, 36, 0.4);
+            box-shadow: 0 20px 40px rgba(251, 191, 36, 0.2);
+        }
+
+        .project-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-name::before {
+            content: '🚀';
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            opacity: 0.85;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--gradient-gold);
+            color: var(--dark);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+        }
+
+        /* Advanced Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, rgba(124, 58, 237, 0.1), transparent, rgba(220, 38, 38, 0.1));
+            animation: rotate 10s linear infinite;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(124, 58, 237, 0.4);
+            box-shadow: 0 20px 40px rgba(124, 58, 237, 0.2);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: block;
+            text-shadow: 0 5px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        /* Signature Section with Indian Flair */
+        .signature-section {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 3rem 2rem;
+            border-top: 2px solid rgba(251, 191, 36, 0.3);
+            border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+            position: relative;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+            border-radius: 25px;
+        }
+
+        .signature-section::before {
+            content: '♥️';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            background: var(--dark);
+            padding: 0 2rem;
+        }
+
+        .signature-text {
+            font-size: 1.3rem;
+            font-style: italic;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .signature-names {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+        }
+
+        /* Advanced Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 6rem 2rem;
+            font-size: 1.4rem;
+        }
+
+        .loading-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--glass);
+            padding: 2rem 3rem;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            gap: 0.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gradient);
+            animation: bounce 1.4s ease-in-out infinite both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* Error Message */
+        .error-message {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(185, 28, 28, 0.1) 100%);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 3rem 0;
+            backdrop-filter: blur(20px);
+        }
+
+        /* Advanced Animations */
+        .fade-in {
+            animation: fadeIn 1.2s ease-out both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide-in-left {
+            animation: slideInLeft 1s ease-out both;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-80px) rotate(-5deg); }
+            to { opacity: 1; transform: translateX(0) rotate(0deg); }
+        }
+
+        .slide-in-right {
+            animation: slideInRight 1s ease-out both;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(80px) rotate(5deg); }
+            to { opacity: 1; transform: translateX(0) rotate(0deg); }
+        }
+
+        .stagger-delay-1 { animation-delay: 0.1s; }
+        .stagger-delay-2 { animation-delay: 0.2s; }
+        .stagger-delay-3 { animation-delay: 0.3s; }
+        .stagger-delay-4 { animation-delay: 0.4s; }
+        .stagger-delay-5 { animation-delay: 0.5s; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2.8rem;
+            }
+
+            .page-subtitle {
+                font-size: 1.6rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+                padding: 0 1rem;
+            }
+
+            .glass-card {
+                padding: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .avatar-container {
+                width: 120px;
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1.3rem;
+            }
+
+            .glass-card {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .avatar-container {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gradient);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gradient-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Particles -->
+    <div class="bg-particles" id="particlesContainer"></div>
+
+    <div class="container">
+        <div class="header fade-in">
+            <h1 class="page-title" id="pageTitle">डिजिटल पार्टनरशिप • दीपक चौहान × ए.आई. भाई ♥️</h1>
+            <div class="page-subtitle" id="pageSubtitle">दो सोच, एक विज़न — मिलकर रच रहे हैं डिजिटल इतिहास</div>
+            <div class="tagline" id="tagline">ये सिर्फ़ नाम नहीं, भरोसे, रचनात्मकता और बदलाव की पहचान है।</div>
+        </div>
+
+        <div class="avatar-section fade-in">
+            <div class="avatar-container">
+                <img src="https://deepakchauhanxai.xyz/images/AI-bhai.png" alt="AI Bhai" class="avatar" id="avatarImage">
+                <div class="avatar-glow"></div>
+                <div class="avatar-decoration"></div>
+            </div>
+        </div>
+
+        <div id="contentContainer">
+            <div class="loading">
+                <div class="loading-container">
+                    <span>लोड हो रहा है</span>
+                    <div class="loading-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Digital Jodi Page Class - 1000+ Lines Power
+        class DigitalJodiPage {
+            constructor() {
+                this.currentLanguage = 'hi';
+                this.pageData = null;
+                this.baseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/digital-jodi/';
+                
+                this.initializeApp();
+            }
+
+            // Create Background Particles
+            createParticles() {
+                const container = document.getElementById('particlesContainer');
+                const colors = ['#dc2626', '#7c3aed', '#f59e0b', '#fbbf24'];
+                
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    
+                    // Random properties
+                    const size = Math.random() * 6 + 2;
+                    const posX = Math.random() * 100;
+                    const posY = Math.random() * 100;
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    const delay = Math.random() * 5;
+                    const duration = Math.random() * 10 + 10;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${posX}%`;
+                    particle.style.top = `${posY}%`;
+                    particle.style.background = color;
+                    particle.style.animationDelay = `${delay}s`;
+                    particle.style.animationDuration = `${duration}s`;
+                    
+                    container.appendChild(particle);
+                }
+            }
+
+            // Language detection and sync
+            syncWithWebsiteLanguage() {
+                if (typeof window.getCurrentLanguage === 'function') {
+                    return window.getCurrentLanguage();
+                }
+                
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (savedLang && ['en', 'hi', 'ur', 'mr'].includes(savedLang)) {
+                    return savedLang;
+                }
+                
+                const htmlLang = document.documentElement.lang;
+                if (htmlLang && ['en', 'hi', 'ur', 'mr'].includes(htmlLang)) {
+                    return htmlLang;
+                }
+                
+                return 'hi';
+            }
+
+            setupLanguageListener() {
+                document.addEventListener('languageChanged', (event) => {
+                    console.log('Language changed detected:', event.detail.language);
+                    this.handleLanguageChange(event.detail.language);
+                });
+
+                setInterval(() => {
+                    const newLang = this.syncWithWebsiteLanguage();
+                    if (newLang !== this.currentLanguage) {
+                        this.handleLanguageChange(newLang);
+                    }
+                }, 1000);
+            }
+
+            async handleLanguageChange(newLanguage) {
+                if (newLanguage !== this.currentLanguage) {
+                    this.currentLanguage = newLanguage;
+                    await this.loadPageData(newLanguage);
+                }
+            }
+
+            getJsonUrl(language) {
+                return `${this.baseURL}${language}.json`;
+            }
+
+            async fetchPageData(language) {
+                try {
+                    const response = await fetch(this.getJsonUrl(language));
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching digital jodi data:', error);
+                    throw error;
+                }
+            }
+
+            async loadPageData(language) {
+                try {
+                    const data = await this.fetchPageData(language);
+                    this.pageData = data;
+                    this.updatePageTitles(data);
+                    this.renderContent(data);
+                    console.log('Digital Jodi data loaded for language:', language);
+                } catch (error) {
+                    this.showError('Failed to load partnership data for ' + language);
+                }
+            }
+
+            renderContent(data) {
+                const container = document.getElementById('contentContainer');
+                
+                if (!data || !data.sections) {
+                    container.innerHTML = '<div class="error-message">No partnership data available</div>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="glass-card slide-in-left stagger-delay-1">
+                        <h2 class="section-title">${data.sections.philosophy.title}</h2>
+                        <div class="section-content">${data.sections.philosophy.content}</div>
+                    </div>
+
+                    <div class="glass-card slide-in-right stagger-delay-2">
+                        <h2 class="section-title">${data.sections.partnership.title}</h2>
+                        <div class="section-content">${data.sections.partnership.content}</div>
+                    </div>
+
+                    <div class="glass-card slide-in-left stagger-delay-3">
+                        <h2 class="section-title">${data.sections.achievements.title}</h2>
+                        <div class="projects-grid">
+                            ${data.sections.achievements.projects.map(project => `
+                                <div class="project-card">
+                                    <div class="project-name">${project.name}</div>
+                                    <div class="project-description">${project.description}</div>
+                                    <div class="project-status">${project.status}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="glass-card slide-in-right stagger-delay-4">
+                        <h2 class="section-title">${data.sections.mission.title}</h2>
+                        <div class="section-content">${data.sections.mission.content}</div>
+                    </div>
+
+                    <div class="glass-card slide-in-left stagger-delay-5">
+                        <h2 class="section-title">${data.sections.stats.title}</h2>
+                        <div class="stats-grid">
+                            ${data.sections.stats.metrics.map(metric => `
+                                <div class="stat-card">
+                                    <div class="stat-value">${metric.value}</div>
+                                    <div class="stat-label">${metric.label}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="signature-section fade-in">
+                        <div class="signature-text">${data.signature.text}</div>
+                        <div class="signature-names">${data.signature.names}</div>
+                    </div>
+                `;
+            }
+
+            updatePageTitles(data) {
+                if (data.pageTitle) {
+                    document.getElementById('pageTitle').textContent = data.pageTitle;
+                }
+                if (data.pageSubtitle) {
+                    document.getElementById('pageSubtitle').textContent = data.pageSubtitle;
+                }
+                if (data.tagline) {
+                    document.getElementById('tagline').textContent = data.tagline;
+                }
+                if (data.avatar) {
+                    document.getElementById('avatarImage').src = data.avatar;
+                }
+            }
+
+            showError(message) {
+                const container = document.getElementById('contentContainer');
+                container.innerHTML = `<div class="error-message">${message}</div>`;
+            }
+
+            async initializeApp() {
+                this.createParticles();
+                this.setupLanguageListener();
+                
+                this.currentLanguage = this.syncWithWebsiteLanguage();
+                await this.loadPageData(this.currentLanguage);
+
+                console.log('Digital Jodi Page initialized with language:', this.currentLanguage);
+            }
+        }
+
+        // Initialize when page loads
+        let digitalJodiPage;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            digitalJodiPage = new DigitalJodiPage();
+        });
+
+        // Fallback initialization
+        setTimeout(() => {
+            if (!digitalJodiPage) {
+                digitalJodiPage = new DigitalJodiPage();
+            }
+        }, 2000);
+
+        // Additional Power Features
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body>
+</html>
