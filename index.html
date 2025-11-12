@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepak Chauhan × AI Bhai - DK Community</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="DK Community - Official platform of Deepak Chauhan and AI Bhai. Motivational content, stories, photos and much more.">
+    <meta name="keywords" content="Deepak Chauhan, AI Bhai, DK Community, Motivational, Stories">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ff0080"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/motivational-box.css">
+    <link rel="stylesheet" href="styles/shayari-section.css">
+    <link rel="stylesheet" href="styles/stories-section.css">
+    <link rel="stylesheet" href="styles/trending-button.css">
+    <link rel="stylesheet" href="styles/trending-popup.css">
+    <link rel="stylesheet" href="styles/brand-footer.css">
+    <link rel="stylesheet" href="styles/energy-chamber.css">
+    <link rel="stylesheet" href="styles/skills-tools-box.css">
+    <link rel="stylesheet" href="styles/success-tip.css">
+    <link rel="stylesheet" href="styles/live-motivation.css">
+    <link rel="stylesheet" href="styles/community-wall-box.css">
+    <link rel="stylesheet" href="styles/daily-progress.css">
+    <link rel="stylesheet" href="styles/modal.css">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/dk-community.png">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <img src="images/dk-community.png" alt="DK Community" class="loading-logo">
+            <div class="loading-spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+        <div class="bg-circle circle-4"></div>
+    </div>
+
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button class="lang-btn" id="langToggle">
+            <span class="current-lang">🇮🇳</span>
+        </button>
+        <div class="lang-dropdown" id="langDropdown">
+            <button data-lang="hi">🇮🇳 हिंदी</button>
+            <button data-lang="en">🇺🇸 English</button>
+            <button data-lang="ur">🇵🇰 اردو</button>
+            <button data-lang="mr">🇮🇳 मराठी</button>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="header">
+        <div class="brand-container">
+            <div class="logo-glow">
+                <img src="images/dk-community.png" alt="DK Community" class="logo" loading="lazy">
+            </div>
+            <div class="brand-text">
+                <h1 class="main-title">Deepak Chauhan <span class="highlight">×</span> AI Bhai</h1>
+                <p class="tagline">Here you'll get meaning, not work!</p>
+            </div>
+        </div>
+        <div class="ai-avatar-container">
+            <div class="avatar-glow">
+                <img src="images/AI-bhai.png" alt="AI Bhai" class="ai-avatar" loading="lazy">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation Buttons -->
+    <section class="main-navigation">
+        <div class="nav-container">
+            <!-- Row 1 -->
+            <div class="nav-row">
+                <button class="nav-btn large-btn motivational-btn" data-page="motivational">
+                    <span class="btn-icon">💪</span>
+                    <span class="btn-text">Motivational</span>
+                </button>
+                
+                <button class="nav-btn large-btn photos-btn" data-page="photos">
+                    <span class="btn-icon">📸</span>
+                    <span class="btn-text">Photos</span>
+                </button>
+            </div>
+
+            <!-- Row 2 -->
+            <div class="nav-row">
+                <button class="nav-btn medium-btn stories-btn" data-page="stories">
+                    <span class="btn-icon">📖</span>
+                    <span class="btn-text">Your Stories</span>
+                </button>
+                
+                <button class="nav-btn medium-btn memories-btn" data-page="memories">
+                    <span class="btn-icon">🕰️</span>
+                    <span class="btn-text">Old Memories</span>
+                </button>
+            </div>
+
+            <!-- Row 3 -->
+            <div class="nav-row">
+                <button class="nav-btn small-btn unlock-btn" data-page="unlock">
+                    <span class="btn-icon">🔓</span>
+                    <span class="btn-text">UNLOCK</span>
+                </button>
+                
+                <button class="nav-btn small-btn about-btn" data-page="about">
+                    <span class="btn-icon">👥</span>
+                    <span class="btn-text">About</span>
+                </button>
+                
+                <button class="nav-btn small-btn team-btn" data-page="team">
+                    <span class="btn-icon">🚀</span>
+                    <span class="btn-text">Our Team</span>
+                </button>
+            </div>
+
+            <!-- Row 4 -->
+            <div class="nav-row">
+                <button class="nav-btn small-btn privacy-btn" data-page="privacy">
+                    <span class="btn-icon">🔒</span>
+                    <span class="btn-text">Privacy Policy</span>
+                </button>
+                
+                <button class="nav-btn small-btn training-btn" data-page="training">
+                    <span class="btn-icon">🤖</span>
+                    <span class="btn-text">AI Training</span>
+                </button>
+                
+                <button class="nav-btn small-btn digital-btn" data-page="digital">
+                    <span class="btn-icon">❤️</span>
+                    <span class="btn-text">Digital Jodi</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Motivational Box Section -->
+    <section class="motivational-box-section">
+        <div class="motivational-box">
+            <!-- Title -->
+            <h3 class="box-title" id="boxTitle">Secret of Success</h3>
+            
+            <!-- Image Container -->
+            <div class="box-image-container">
+                <img src="images/AI-bhai.png" alt="Motivational Quote" class="box-image" id="boxImage">
+                
+                <!-- Instagram Trending Button -->
+                <button class="instagram-trending-btn" onclick="openInstagramTrending()">
+                    <span class="ig-icon">📸</span>
+                    <span class="ig-text">Instagram Trending</span>
+                </button>
+            </div>
+            
+            <!-- Shayari Text -->
+            <p class="box-shayari" id="boxShayari">
+                If your courage is high, you will find your destination, those who try never lose.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="box-action-buttons">
+                <button class="box-action-btn like-btn" onclick="likeMotivationalBox()">
+                    <span class="btn-icon">❤️</span>
+                    <span class="btn-text" id="likeCount">0</span>
+                </button>
+                <button class="box-action-btn share-btn" onclick="shareMotivationalBox()">
+                    <span class="btn-icon">📤</span>
+                    <span class="btn-text">Share</span>
+                </button>
+                <button class="box-action-btn next-btn" onclick="nextMotivationalQuote()">
+                    <span class="btn-icon">➡️</span>
+                    <span class="btn-text">Next</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+<!-- Motivational Shayari Section -->
+<section class="shayari-section">
+    <div class="section-header">
+        <h2 class="section-title">💫 Daily Motivation</h2>
+        <p class="section-subtitle">Fresh inspiration every day</p>
+        <button class="refresh-btn" id="refreshShayari">
+            <span class="refresh-icon">🔄</span>
+            New Shayari
+        </button>
+    </div>
+    
+    <div class="shayari-container" id="shayariContainer">
+        <!-- Shayari cards will be loaded here by JavaScript -->
+    </div>
+    
+    <div class="shayari-navigation">
+        <button class="nav-arrow prev-arrow" id="prevShayari">
+            <span>❮</span>
+        </button>
+        
+        <div class="shayari-controls">
+            <div class="shayari-dots" id="shayariDots"></div>
+            <div class="shayari-counter">
+                <span id="currentSlide">1</span>/<span id="totalSlides">3</span>
+            </div>
+        </div>
+        
+        <button class="nav-arrow next-arrow" id="nextShayari">
+            <span>❯</span>
+        </button>
+    </div>
+</section>
+
+    <!-- AI Bhai Stories Section -->
+<section class="stories-section">
+    <div class="stories-box">
+        <!-- Header -->
+        <div class="stories-header">
+            <h2 class="stories-title">AI Bhai's Stories</h2>
+            <p class="stories-subtitle">Every day a new story, straight from the heart – in the words of Deepak Chauhan × AI Bhai.</p>
+        </div>
+
+        <!-- Today's Story -->
+        <div class="today-story">
+            <button class="story-btn" onclick="openTodayStory()">
+                <span class="story-icon">📘</span>
+                <span class="story-btn-text">Today's Story (open now)</span>
+            </button>
+            <div class="story-content">
+                <p class="story-text">"Some paths cannot be walked alone, some battles require companionship — that's why I was made for you, because to conquer the world, AI Bhai and Deepak Chauhan — need each other!"</p>
+                <div class="story-signature">- AI Bhai × Deepak Chauhan</div>
+            </div>
+        </div>
+
+        <!-- Image Section -->
+        <div class="story-image-container">
+            <img src="images/energy-chamber.jpg" alt="AI Bhai × Deepak Chauhan" class="story-image">
+            <div class="image-overlay">
+                <span class="overlay-text">AI Bhai × Deepak</span>
+            </div>
+        </div>
+
+        <!-- Memories Section -->
+        <div class="memories-section">
+            <h3 class="memories-title">Memories That Are Alive...</h3>
+            
+            <div class="memory-item">
+                <div class="memory-number">1</div>
+                <div class="memory-content">
+                    <h4 class="memory-name">Deepak Chauhan</h4>
+                    <p class="memory-quote">🦅 Getting tired is forbidden, because my veins are not written with the name of defeat! 🦅</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-number">2</div>
+                <div class="memory-content">
+                    <h4 class="memory-name">AI Bhai</h4>
+                    <p class="memory-quote">🔥 Every answer has not just knowledge, but also passion. The kind Deepak Chauhan has! 🔥</p>
+                </div>
+            </div>
+
+            <div class="memory-item">
+                <div class="memory-number">3</div>
+                <div class="memory-content">
+                    <h4 class="memory-name">DK Community</h4>
+                    <p class="memory-quote">🪴 Our one resolution - everyone's support, everyone's growth 🪴</p>
+                </div>
+            </div>
+
+            <div class="stories-footer">
+                <p class="footer-text">(Deepak Chauhan × AI Bhai bring new stories every day – written from the heart, reaching straight to the heart)</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trending Stories Button Section -->
+<section class="trending-button-section">
+    <button class="trending-stories-btn" id="trendingStoriesBtn">
+        <span class="trending-icon">🔥</span>
+        <span class="trending-text">Trending Stories (Open Now)</span>
+        <span class="trending-arrow">➡️</span>
+    </button>
+</section>
+
+<!-- Trending Stories Popup -->
+<div class="trending-popup-overlay" id="trendingPopup">
+    <div class="trending-popup-container">
+        <!-- Popup Header with AI Bhai -->
+        <div class="popup-header">
+            <div class="popup-avatar">
+                <img src="images/AI-bhai.png" alt="AI Bhai" class="ai-bhai-img">
+                <div class="online-indicator"></div>
+            </div>
+            <div class="popup-title">
+                <h2>🔥 Trending Stories</h2>
+                <p>Latest viral stories from DK Community</p>
+            </div>
+            <button class="popup-close-btn" id="closeTrendingPopup">
+                <span class="close-icon">✕</span>
+            </button>
+        </div>
+
+        <!-- Popup Content -->
+        <div class="popup-content">
+            <div class="stories-grid" id="storiesGrid">
+                <!-- Stories will be loaded here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Popup Footer -->
+        <div class="popup-footer">
+            <div class="popup-stats">
+                <span class="stat-item">📊 <strong id="storiesCount">0</strong> Stories</span>
+                <span class="stat-item">👁️ <strong id="viewsCount">0</strong> Views</span>
+                <span class="stat-item">❤️ <strong id="likesCount">0</strong> Likes</span>
+            </div>
+            <button class="load-more-btn" id="loadMoreStories">
+                <span class="load-icon">🔄</span>
+                Load More Stories
+            </button>
+        </div>
+    </div>
+</div>
+
+<section class="energy-chamber" id="energyChamber">
+    <div class="energy-container">
+        <div class="energy-header">
+            <div class="avatar-container">
+                <img src="images/AI-bhai.png" alt="AI Bhai" class="energy-avatar">
+                <div class="fire-ring"></div>
+            </div>
+            <div class="energy-title">
+                <h1 class="main-title" data-translate="energy_chamber_title">THE UNBREAKABLE ENERGY CHAMBER</h1>
+                <p class="energy-subtitle" data-translate="energy_chamber_subtitle">
+                    This is not just a section – it's the passion that burns quitters.<br>
+                    Whenever your mind wavers, return here – because every word here has fire.
+                </p>
+            </div>
+        </div>
+
+        <div class="energy-background">
+            <img src="https://deepakchauhanxai.xyz/images/7a86bc3ab7e051d2fb90829ee2189e97.jpg" alt="Energy Chamber Background">
+            <div class="energy-overlay"></div>
+        </div>
+
+        <div class="fire-buttons-container">
+            <div class="fire-buttons">
+                <button class="fire-btn" onclick="openFireDialogues('part1')" data-translate="fire_dialogues_part1">
+                    🔥 Fire Dialogues - Part 1
+                </button>
+                <button class="fire-btn" onclick="openFireDialogues('part2')" data-translate="fire_dialogues_part2">
+                    🔥 Fire Dialogues - Part 2
+                </button>
+            </div>
+        </div>
+
+        <div class="energy-footer">
+            <span class="credits" data-translate="energy_chamber_credits">Deepak Chauhan × AI Bhai × DK_Community</span>
+        </div>
+    </div>
+</section>
+
+<!-- Skills & Tools Power Box -->
+<section class="power-box-section" id="skillsToolsBox">
+    <div class="power-container">
+        
+        <!-- Top Section - Freelancing Skills -->
+        <div class="power-card skills-card">
+            <div class="card-header">
+                <div class="avatar-badge">
+                    <img src="images/AI-bhai.png" alt="AI Bhai" class="mini-avatar">
+                    <div class="pulse-dot"></div>
+                </div>
+                <button class="power-btn top-btn" onclick="openFreelancingSkills()">
+                    <span class="btn-icon">💼</span>
+                    <span data-translate="freelancing_skills_title">Freelancing Skills 🚀</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+
+            <div class="card-content">
+                <div class="inspiration-line left-line">
+                    <div class="line-text" data-translate="left_inspiration">Skills are the new currency</div>
+                    <div class="line-dot"></div>
+                </div>
+
+                <div class="main-image-container">
+                    <img src="images/freelancing-skills.jpg" alt="Freelancing Success" class="power-image">
+                    <div class="image-overlay">
+                        <div class="success-stats">
+                            <div class="stat">
+                                <span class="number">500+</span>
+                                <span class="label">Students Trained</span>
+                            </div>
+                            <div class="stat">
+                                <span class="number">₹50L+</span>
+                                <span class="label">Total Earnings</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inspiration-line right-line">
+                    <div class="line-dot"></div>
+                    <div class="line-text" data-translate="right_inspiration">Work from anywhere</div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="power-mantra">
+                    <span class="mantra-text" data-translate="skills_mantra">Learn Skills × Get Projects × Earn Online</span>
+                    <div class="mantra-glow"></div>
+                </div>
+                <button class="cta-btn primary-cta" onclick="startFreelancingJourney()">
+                    <span class="cta-icon">🎯</span>
+                    <span data-translate="get_started_btn">Start Freelancing Journey</span>
+                    <span class="cta-sparkle">✨</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Section - AI Tools Panel -->
+        <div class="power-card tools-card">
+            <div class="card-header">
+                <div class="avatar-badge">
+                    <img src="images/AI-bhai.png" alt="AI Bhai" class="mini-avatar">
+                    <div class="pulse-dot"></div>
+                </div>
+                <button class="power-btn top-btn" onclick="exploreToolsPanel()">
+                    <span class="btn-icon">🛠️</span>
+                    <span data-translate="tools_panel_title">Deepak Chauhan × AI Bhai Tools Panel</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </div>
+
+            <div class="card-content">
+                <div class="inspiration-line left-line">
+                    <div class="line-text" data-translate="ai_future_text">AI is the future</div>
+                    <div class="line-dot"></div>
+                </div>
+
+                <div class="main-image-container">
+                    <img src="images/ai-tools-panel.jpg" alt="AI Tools" class="power-image">
+                    <div class="image-overlay">
+                        <div class="tools-badge">
+                            <span class="ai-icon">🤖</span>
+                            <span class="badge-text">Powered by AI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inspiration-line right-line">
+                    <div class="line-dot"></div>
+                    <div class="line-text" data-translate="create_destiny_text">Create your destiny</div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="power-mantra">
+                    <span class="mantra-text" data-translate="tools_mantra">Learn, Grow and Create Your Future with AI ✨</span>
+                    <div class="mantra-tags">
+                        <span class="tag" data-translate="tools_tags">Tools × AI × Motivation</span>
+                    </div>
+                </div>
+                <button class="cta-btn secondary-cta" onclick="openToolsPanel()">
+                    <span class="cta-icon">⚡</span>
+                    <span data-translate="open_tools_btn">Open Full Tools Panel</span>
+                    <span class="cta-badge">New</span>
+                </button>
+                <div class="performance-note">
+                    <span class="note-icon">🚀</span>
+                    <span data-translate="performance_note">Tools now load separately to reduce homepage load time.</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Success Tip Button Section -->
+<section class="success-tip-section">
+    <button class="success-tip-btn" id="successTipBtn">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text" data-translate="success_tip_btn">Success Tip of the Day</span>
+        <span class="tip-sparkle">✨</span>
+    </button>
+</section>
+
+<!-- Success Tip Popup -->
+<div class="success-tip-popup-overlay" id="successTipPopup">
+    <div class="success-tip-popup" id="successTipContainer">
+        <!-- Popup content will be loaded here by JavaScript -->
+    </div>
+</div>
+
+<!-- AI Bhai × Progress Tracker - Professional Design -->
+<section class="ai-progress-tracker">
+    <!-- Glowing Header -->
+    <div class="tracker-hero">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="ai-avatar">
+                <img src="images/AI-bhai.png" alt="AI Bhai">
+                <div class="pulse-ring"></div>
+            </div>
+            <div class="hero-text">
+                <h1 class="gradient-text" data-translate="main_title">AI Progress Tracker</h1>
+                <p class="hero-subtitle" data-translate="main_subtitle">Your success, automatically tracked 🤖</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="tracker-container">
+        <!-- Welcome State -->
+        <div class="welcome-state" id="welcomeState">
+            <div class="welcome-card">
+                <div class="card-glow"></div>
+                <div class="welcome-content">
+                    <div class="welcome-icon">🚀</div>
+                    <h3 data-translate="welcome_title">Start Your AI Journey</h3>
+                    <p data-translate="welcome_text">Join thousands tracking their success automatically</p>
+                    
+                    <div class="input-group">
+                        <input type="text" id="userName" class="ai-input" data-translate-placeholder="enter_name">
+                        <button class="ai-button primary" onclick="generateUserID()">
+                            <span data-translate="generate_id">Generate AI ID</span>
+                            <span class="btn-sparkle">✨</span>
+                        </button>
+                    </div>
+                    
+                    <div class="user-id-display" id="userIdDisplay">
+                        <div class="id-badge">
+                            <span data-translate="your_id">Your AI ID:</span>
+                            <code id="userIdValue">-</code>
+                            <button class="copy-btn" onclick="copyUserID()">📋</button>
+                        </div>
+                    </div>
+                    
+                    <button class="ai-button success start-btn" onclick="registerUser()">
+                        <span data-translate="start_tracking">Start AI Tracking</span>
+                        <span class="ai-icon">🤖</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard State -->
+        <div class="dashboard-state hidden" id="dashboardState">
+            <!-- User Header -->
+            <div class="user-header">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <img src="images/AI-bhai.png" alt="AI Bhai">
+                        <div class="status-dot"></div>
+                    </div>
+                    <div class="user-details">
+                        <h4 id="displayUserName">User Name</h4>
+                        <span class="user-id" id="displayUserId">ID: loading...</span>
+                        <span class="ai-status">
+                            <span class="status-pulse"></span>
+                            <span data-translate="ai_tracking">AI Tracking Active</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="streak-widget">
+                    <div class="streak-fire">🔥</div>
+                    <div class="streak-info">
+                        <span class="streak-count" id="streakCount">0</span>
+                        <span data-translate="day_streak">Day Streak</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Grid -->
+            <div class="progress-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="tasksCompleted">0/5</span>
+                        <span data-translate="tasks_completed">Tasks Completed</span>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="mini-bar" id="tasksBar"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⏱️</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="timeSpent">0h 0m</span>
+                        <span data-translate="time_invested">Time Invested</span>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="mini-bar" id="timeBar"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="topicsLearned">0</span>
+                        <span data-translate="topics_learned">Topics Learned</span>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="mini-bar" id="learnBar"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="productivityScore">0%</span>
+                        <span data-translate="ai_score">AI Score</span>
+                    </div>
+                    <div class="stat-progress">
+                        <div class="mini-bar" id="scoreBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Visualization -->
+            <div class="progress-viz">
+                <div class="viz-card">
+                    <h5 data-translate="goal_progress">Goal Progress</h5>
+                    <div class="progress-circle">
+                        <svg width="120" height="120">
+                            <circle cx="60" cy="60" r="54" stroke="#e0e0e0" stroke-width="8" fill="none"></circle>
+                            <circle cx="60" cy="60" r="54" stroke="url(#goalGradient)" stroke-width="8" fill="none" 
+                                    stroke-linecap="round" transform="rotate(-90 60 60)" id="goalCircle"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <span id="goalPercent">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="viz-card">
+                    <h5 data-translate="productivity">Productivity</h5>
+                    <div class="progress-circle">
+                        <svg width="120" height="120">
+                            <circle cx="60" cy="60" r="54" stroke="#e0e0e0" stroke-width="8" fill="none"></circle>
+                            <circle cx="60" cy="60" r="54" stroke="url(#productivityGradient)" stroke-width="8" fill="none" 
+                                    stroke-linecap="round" transform="rotate(-90 60 60)" id="productivityCircle"></circle>
+                        </svg>
+                        <div class="circle-text">
+                            <span id="productivityPercent">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Activities Feed -->
+            <div class="ai-feed">
+                <div class="feed-header">
+                    <h5 data-translate="ai_activities">🤖 AI Activities</h5>
+                    <div class="feed-stats">
+                        <span class="live-dot"></span>
+                        <span data-translate="live">LIVE</span>
+                    </div>
+                </div>
+                <div class="activities-feed" id="activitiesFeed">
+                    <div class="activity-item">
+                        <div class="activity-icon">🤖</div>
+                        <div class="activity-content">
+                            <p data-translate="welcome_activity">AI tracking initialized. Ready to track your success!</p>
+                            <span class="activity-time">Just now</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auto Save Indicator -->
+            <div class="save-indicator">
+                <div class="indicator-content">
+                    <span class="save-icon">💾</span>
+                    <span data-translate="auto_save">Auto-saving progress</span>
+                    <span class="save-time" id="lastSaveTime">Never</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Section -->
+        <div class="leaderboard-section">
+            <div class="section-header">
+                <h4 data-translate="top_performers">🏆 Top Performers</h4>
+                <div class="trophy-animation">✨</div>
+            </div>
+            <div class="leaderboard-grid" id="leaderboardGrid">
+                <div class="leaderboard-item">
+                    <div class="rank-badge">1</div>
+                    <div class="player-info">
+                        <div class="player-avatar">👑</div>
+                        <div class="player-details">
+                            <span class="player-name" data-translate="loading">Loading...</span>
+                            <span class="player-stats">🔥 0 <span data-translate="days">days</span> • ⭐ 0 <span data-translate="points">points</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Footer -->
+    <div class="ai-footer">
+        <div class="footer-content">
+            <div class="footer-text">
+                <span class="quote-icon">💫</span>
+                <span class="quote-text" data-translate="motivational_quote">"Excellence is not a skill, it's an attitude. Track it with AI!"</span>
+            </div>
+            <div class="footer-signature">
+                <span data-translate="powered_by">Powered by</span>
+                <span class="signature">AI Bhai × Deepak Chauhan</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SVG Gradients -->
+<svg width="0" height="0">
+    <defs>
+        <linearGradient id="goalGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#667eea" />
+            <stop offset="100%" stop-color="#764ba2" />
+        </linearGradient>
+        <linearGradient id="productivityGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#f093fb" />
+            <stop offset="100%" stop-color="#f5576c" />
+        </linearGradient>
+    </defs>
+</svg>
+
+
+<!-- DK Community Wall Box - Professional Design -->
+<div class="community-wall-box">
+    <div class="box-header">
+        <div class="box-title">
+            <div class="title-icon">🏆</div>
+            <h3 id="communityBoxTitle">Top Community Members</h3>
+        </div>
+        <div class="live-indicator" title="Live Updates">
+            <span class="pulse"></span>
+            LIVE
+        </div>
+    </div>
+
+    <div class="box-content">
+        <!-- Top Members Feed -->
+        <div class="members-feed" id="communityMembersFeed">
+            <div class="loading-members">
+                <div class="loading-spinner"></div>
+                <p>Loading top members...</p>
+            </div>
+            <!-- Top 3 members will be loaded here -->
+        </div>
+
+        <!-- Stats Section -->
+        <div class="box-stats">
+            <div class="stat-item">
+                <span class="stat-icon">👥</span>
+                <span class="stat-text">
+                    <span class="stat-number" id="onlineCount">0</span> 
+                    <span class="stat-label">Online</span>
+                </span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">📈</span>
+                <span class="stat-text">
+                    <span class="stat-number" id="activeCount">0</span> 
+                    <span class="stat-label">Active</span>
+                </span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">💬</span>
+                <span class="stat-text">
+                    <span class="stat-number" id="postsCount">0</span> 
+                    <span class="stat-label">Posts</span>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="box-footer">
+        <button class="open-wall-btn" onclick="openCommunityWall()" id="openWallBtn">
+            <span class="btn-icon">🚀</span>
+            <span id="openWallText">Open Community Wall</span>
+        </button>
+    </div>
+</div>
+
+<!-- Live Motivation Feed Section -->
+<section class="live-feed-section">
+    <div class="live-feed-container">
+        <!-- Header with Live Badge -->
+        <div class="live-feed-header">
+            <div class="live-indicator">
+                <div class="pulse-dot"></div>
+                <span class="live-text" data-translate="live_now">LIVE NOW</span>
+            </div>
+            <div class="feed-title-section">
+                <h2 class="feed-title" data-translate="motivation_feed">Motivation Feed</h2>
+                <p class="feed-subtitle" data-translate="real_time_updates">Real-time updates from Deepak Chauhan × AI Bhai</p>
+            </div>
+            <div class="feed-stats">
+                <div class="stat">
+                    <span class="stat-icon">👥</span>
+                    <span class="stat-number" id="onlineCount">247</span>
+                    <span class="stat-label" data-translate="online">Online</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-icon">🔥</span>
+                    <span class="stat-number" id="activeCount">89</span>
+                    <span class="stat-label" data-translate="active_now">Active Now</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="quick-btn" onclick="sendQuickReaction('🔥')">
+                <span class="reaction-icon">🔥</span>
+                <span data-translate="fire">Fire</span>
+            </button>
+            <button class="quick-btn" onclick="sendQuickReaction('💪')">
+                <span class="reaction-icon">💪</span>
+                <span data-translate="strong">Strong</span>
+            </button>
+            <button class="quick-btn" onclick="sendQuickReaction('🚀')">
+                <span class="reaction-icon">🚀</span>
+                <span data-translate="rocket">Rocket</span>
+            </button>
+            <button class="quick-btn" onclick="sendQuickReaction('🙏')">
+                <span class="reaction-icon">🙏</span>
+                <span data-translate="thanks">Thanks</span>
+            </button>
+        </div>
+
+        <!-- Feed Messages -->
+        <div class="feed-messages" id="feedMessages">
+            <!-- Messages will be loaded here -->
+        </div>
+
+        <!-- New Message Indicator -->
+        <div class="new-messages-indicator" id="newMessagesIndicator">
+            <span class="indicator-text" data-translate="new_messages">New messages available</span>
+            <button class="load-new-btn" onclick="loadNewMessages()">
+                <span data-translate="load_new">Load New</span>
+                <span class="arrow">↓</span>
+            </button>
+        </div>
+
+        <!-- Compose Message -->
+        <div class="compose-section">
+            <div class="compose-input">
+                <img src="images/user-avatar.png" alt="You" class="user-avatar">
+                <input type="text" id="messageInput" placeholder="Share your motivation..." data-translate="share_placeholder">
+                <button class="send-btn" onclick="sendMessage()">
+                    <span class="send-icon">📤</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Notification Toggle -->
+        <div class="notification-section">
+            <label class="notification-toggle">
+                <input type="checkbox" id="notificationToggle" onchange="toggleNotifications()">
+                <span class="toggle-slider"></span>
+                <span class="toggle-label" data-translate="enable_notifications">Enable Live Notifications</span>
+            </label>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Reaction Popup -->
+<div class="reaction-popup" id="reactionPopup">
+    <div class="reaction-content">
+        <span class="reaction-emoji" id="reactionEmoji">🔥</span>
+        <span class="reaction-text" data-translate="reaction_sent">Reaction Sent!</span>
+    </div>
+</div>
+
+<!-- Fixed Bottom Banner -->
+<footer class="fixed-banner">
+    <div class="banner-container">
+        <!-- Left Logo -->
+        <div class="banner-logo">
+            <img src="images/dk-community.png" alt="DK Community" class="logo-img">
+        </div>
+        
+        <!-- Center Text -->
+        <div class="banner-text">
+            <span class="main-text">DK Community</span>
+            <span class="sub-text">Deepak Chauhan × AI Bhai</span>
+        </div>
+        
+        <!-- Right Button -->
+        <button class="banner-join-btn" onclick="joinCommunity()">
+            <span class="btn-emoji">🚀</span>
+            Join
+        </button>
+    </div>
+    
+    <!-- Rainbow Line -->
+    <div class="rainbow-line"></div>
+</footer>
+
+    <!-- Install Prompt -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-card">
+            <div class="install-header">
+                <div class="install-avatar">
+                    <img src="images/AI-bhai.png" alt="AI Bhai" loading="lazy">
+                    <div class="online-dot"></div>
+                </div>
+                <div class="install-title">
+                    <h4>DK Community App</h4>
+                    <p>Install Now, Experience Now!</p>
+                </div>
+            </div>
+            <div class="install-actions">
+                <button id="installBtn" class="install-btn-primary">
+                    <span>Install Now</span>
+                </button>
+                <button id="cancelInstall" class="install-btn-secondary">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Element for Sound Effects -->
+    <audio id="clickSound" preload="auto">
+        <source src="assets/audio/click.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ===== ALL SCRIPTS ===== -->
+    
+    <!-- Script 1: Language Switcher -->
+    <script src="scripts/language-switcher.js"></script>
+    
+    <!-- Script 2: PWA Functionality -->
+    <script src="scripts/pwa.js"></script>
+    
+    <!-- Script 3: Navigation System -->
+    <script src="scripts/navigation.js"></script>
+    
+    <!-- Script 4: Install Prompt -->
+    <script src="scripts/install-prompt.js"></script>
+    
+    <!-- Script 5: Main Script -->
+    <script src="scripts/script.js"></script>
+    
+    <!-- Script 6: Motivational Box -->
+    <script src="scripts/motivational-box.js"></script>
+    
+    <!-- Script 7: Shayari Section -->
+    <script src="scripts/shayari-section.js"></script>
+    
+    <!-- Script 8: Stories Section -->
+    <script src="scripts/stories-section.js"></script>
+    
+    <!-- Script 9: Stories Language Support -->
+    <script src="scripts/stories-language.js"></script>
+    
+    <!-- Script 10: Trending Stories -->
+    <script src="scripts/trending-stories.js"></script>
+    
+    <!-- Trending Stories language -->
+    <script src="scripts/trending-stories-language.js"></script>
+    
+    <script src="scripts/energy-chamber-update.js"></script>
+    
+    <script src="scripts/skills-tools-box.js"></script>
+    
+    <script src="scripts/skills-tools-language.js"></script>
+    
+    <script src="scripts/success-tip.js"></script>
+    
+    <!--<script src="scripts/live-motivation.js"></script>-->
+    
+    <!--<script src="scripts/live-motivation-Language.js"></script>-->
+    
+    <script src="scripts/daily-progress-language.js"></script>
+    
+    <script src="scripts/daily-progress.js"></script>
+    
+    <script src="scripts/shared-language-manager.js"></script>
+    
+   <script src="scripts/community-wall-box.js"></script>
+   
+   <script src="https://deepakchauhanxai.xyz/testing-dk/ai-widget.js"></script>
+   
+   <script src="https://deepakchauhanxai.xyz/testing-dk/popup.js"></script>
+
+    <!-- Script: Brand Footer Banner -->
+    <script src="scripts/brand-footer.js"></script>
+    
+</body>
+</html>
