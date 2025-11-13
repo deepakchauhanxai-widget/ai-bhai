@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .story-card:hover::before {
+            left: 100%;
+        }
+
+        .story-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .story-card h3 {
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            padding-left: 10px;
+        }
+
+        .story-card p {
+            color: #666;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .story-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -40%);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .close-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: #ff3742;
+            transform: rotate(90deg);
+        }
+
+        .story-content {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .story-signature {
+            text-align: right;
+            color: #667eea;
+            font-style: italic;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .story-lesson {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .story-lesson h4 {
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .share-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 40px;
+        }
+
+        .loading::after {
+            content: '';
+            animation: loadingDots 1.5s infinite;
+        }
+
+        @keyframes loadingDots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .error-message {
+            text-align: center;
+            color: white;
+            background: rgba(255,71,87,0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Language indicator - HIDDEN FROM USER */
+        .language-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            display: none; /* HIDDEN */
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .share-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            z-index: 1001;
+            backdrop-filter: blur(10px);
+            animation: toastSlide 0.3s ease;
+        }
+
+        @keyframes toastSlide {
+            from { bottom: -50px; opacity: 0; }
+            to { bottom: 20px; opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .share-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .share-btn {
+                width: 200px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="pageTitle">📚 Story Library</h1>
+            <p id="pageSubtitle">Discover amazing stories from around the world</p>
+        </div>
+
+        <!-- Language indicator - HIDDEN FROM USER -->
+        <div class="language-status" id="languageStatus" style="display: none;">
+            <span>🌐</span>
+            <span id="currentLangDisplay">English</span>
+            <span class="ai-badge">AI Powered</span>
+        </div>
+
+        <div class="stories-grid" id="storiesContainer">
+            <div class="loading">Loading stories</div>
+        </div>
+    </div>
+
+    <div class="story-modal" id="storyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="story-content" id="modalContent"></div>
+            <div class="story-signature" id="modalSignature"></div>
+            <div class="story-lesson" id="modalLesson">
+                <h4>📖 सीख क्या मिला:</h4>
+                <p id="lessonText"></p>
+            </div>
+            <div class="share-section">
+                <button class="share-btn" onclick="shareStory()">
+                    <span>📤</span> Share Story
+                </button>
+                <button class="share-btn" onclick="copyStory()">
+                    <span>📋</span> Copy Text
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Story Library Class
+        class StoryLibrary {
+            constructor() {
+                this.currentLanguage = 'en';
+                this.storiesData = null;
+                this.baseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/stories/';
+                this.currentStory = null;
+                
+                this.initializeApp();
+            }
+
+            // Aapke existing language system ke saath sync
+            syncWithWebsiteLanguage() {
+                // Method 1: Aapke language switcher se current language lelo
+                if (typeof window.getCurrentLanguage === 'function') {
+                    return window.getCurrentLanguage();
+                }
+                
+                // Method 2: localStorage se
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (savedLang && ['en', 'hi', 'ur', 'mr'].includes(savedLang)) {
+                    return savedLang;
+                }
+                
+                // Method 3: HTML lang attribute
+                const htmlLang = document.documentElement.lang;
+                if (htmlLang && ['en', 'hi', 'ur', 'mr'].includes(htmlLang)) {
+                    return htmlLang;
+                }
+                
+                return 'en'; // Default
+            }
+
+            // Language change listener setup
+            setupLanguageListener() {
+                // Aapke existing language change event ko listen karo
+                document.addEventListener('languageChanged', (event) => {
+                    console.log('Language changed detected:', event.detail.language);
+                    this.handleLanguageChange(event.detail.language);
+                });
+
+                // Periodic check bhi karo (fallback)
+                setInterval(() => {
+                    const newLang = this.syncWithWebsiteLanguage();
+                    if (newLang !== this.currentLanguage) {
+                        this.handleLanguageChange(newLang);
+                    }
+                }, 1000);
+            }
+
+            // Handle language change
+            async handleLanguageChange(newLanguage) {
+                if (newLanguage !== this.currentLanguage) {
+                    this.currentLanguage = newLanguage;
+                    await this.loadStoriesForLanguage(newLanguage);
+                    this.updateLanguageDisplay(newLanguage);
+                }
+            }
+
+            // Get JSON URL
+            getJsonUrl(language) {
+                return `${this.baseURL}${language}.json`;
+            }
+
+            // Fetch stories data
+            async fetchStories(language) {
+                try {
+                    const response = await fetch(this.getJsonUrl(language));
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching stories:', error);
+                    throw error;
+                }
+            }
+
+            // Load stories for specific language
+            async loadStoriesForLanguage(language) {
+                try {
+                    const data = await this.fetchStories(language);
+                    this.storiesData = data;
+                    this.updatePageTitles(data);
+                    this.renderStories(data);
+                } catch (error) {
+                    this.showError('Failed to load stories for ' + language);
+                }
+            }
+
+            // Render stories grid
+            renderStories(data) {
+                const container = document.getElementById('storiesContainer');
+                
+                if (!data || !data.stories || data.stories.length === 0) {
+                    container.innerHTML = '<div class="error-message">No stories available in this language</div>';
+                    return;
+                }
+
+                container.innerHTML = data.stories.map(story => `
+                    <div class="story-card" onclick="storyLibrary.openStory(${story.id})">
+                        <h3>${story.title}</h3>
+                        <p>${story.summary}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Update page titles
+            updatePageTitles(data) {
+                if (data.pageTitle) {
+                    document.getElementById('pageTitle').textContent = data.pageTitle;
+                }
+                if (data.pageSubtitle) {
+                    document.getElementById('pageSubtitle').textContent = data.pageSubtitle;
+                }
+            }
+
+            // Update language display (HIDDEN FROM USER)
+            updateLanguageDisplay(language) {
+                const languageNames = {
+                    'en': 'English',
+                    'hi': 'Hindi', 
+                    'ur': 'Urdu',
+                    'mr': 'Marathi'
+                };
+                
+                const display = document.getElementById('currentLangDisplay');
+                if (display) {
+                    display.textContent = languageNames[language] || language;
+                }
+                
+                // Console mein log karo but user ko mat dikhao
+                console.log('Current language:', languageNames[language] || language);
+            }
+
+            // Open story modal
+            openStory(storyId) {
+                if (!this.storiesData || !this.storiesData.stories) return;
+
+                const story = this.storiesData.stories.find(s => s.id === storyId);
+                if (!story) return;
+
+                this.currentStory = story;
+
+                document.getElementById('modalTitle').textContent = story.title;
+                document.getElementById('modalContent').textContent = story.content;
+                
+                // Signature show karo agar available hai
+                const signatureElement = document.getElementById('modalSignature');
+                if (story.signature) {
+                    signatureElement.textContent = story.signature;
+                    signatureElement.style.display = 'block';
+                } else {
+                    signatureElement.style.display = 'none';
+                }
+                
+                // Lesson show karo agar available hai
+                const lessonElement = document.getElementById('modalLesson');
+                const lessonText = document.getElementById('lessonText');
+                if (story.lesson) {
+                    lessonText.textContent = story.lesson;
+                    lessonElement.style.display = 'block';
+                } else {
+                    lessonElement.style.display = 'none';
+                }
+                
+                const modal = document.getElementById('storyModal');
+                modal.style.display = 'block';
+                
+                // Add animation class
+                setTimeout(() => {
+                    modal.querySelector('.modal-content').style.animation = 'slideUp 0.4s ease';
+                }, 10);
+            }
+
+            // Close modal
+            closeModal() {
+                const modal = document.getElementById('storyModal');
+                modal.style.display = 'none';
+                this.currentStory = null;
+            }
+
+            // Show error message
+            showError(message) {
+                const container = document.getElementById('storiesContainer');
+                container.innerHTML = `<div class="error-message">${message}</div>`;
+            }
+
+            // Initialize application
+            async initializeApp() {
+                // Setup language listener first
+                this.setupLanguageListener();
+                
+                // Get current language from website
+                this.currentLanguage = this.syncWithWebsiteLanguage();
+                this.updateLanguageDisplay(this.currentLanguage);
+                
+                // Load stories for current language
+                await this.loadStoriesForLanguage(this.currentLanguage);
+
+                // Setup event listeners
+                this.setupEventListeners();
+                
+                console.log('Story Library initialized with language:', this.currentLanguage);
+            }
+
+            // Setup event listeners
+            setupEventListeners() {
+                // Close modal events
+                document.getElementById('closeModal').addEventListener('click', () => this.closeModal());
+                
+                document.getElementById('storyModal').addEventListener('click', (e) => {
+                    if (e.target === document.getElementById('storyModal')) {
+                        this.closeModal();
+                    }
+                });
+
+                // ESC key to close modal
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.closeModal();
+                    }
+                });
+            }
+        }
+
+        // Share functions
+        function shareStory() {
+            if (!storyLibrary.currentStory) return;
+            
+            const story = storyLibrary.currentStory;
+            const shareText = `${story.title}\n\n${story.content}\n\n${story.signature || ''}\n\n${story.lesson ? 'सीख: ' + story.lesson : ''}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: story.title,
+                    text: shareText,
+                    url: window.location.href
+                }).then(() => {
+                    showToast('Story shared successfully!');
+                }).catch(err => {
+                    console.log('Error sharing:', err);
+                    copyToClipboard(shareText);
+                });
+            } else {
+                copyToClipboard(shareText);
+            }
+        }
+
+        function copyStory() {
+            if (!storyLibrary.currentStory) return;
+            
+            const story = storyLibrary.currentStory;
+            const copyText = `${story.title}\n\n${story.content}\n\n${story.signature || ''}\n\n${story.lesson ? 'सीख: ' + story.lesson : ''}`;
+            
+            copyToClipboard(copyText);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Story copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showToast('Failed to copy story');
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'share-toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 3000);
+        }
+
+        // Initialize when page loads
+        let storyLibrary;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            storyLibrary = new StoryLibrary();
+        });
+
+        // Global function for story cards
+        window.openStory = (storyId) => {
+            if (storyLibrary) {
+                storyLibrary.openStory(storyId);
+            }
+        };
+
+        // Fallback: Agar aapka language system load nahi hua toh
+        setTimeout(() => {
+            if (!storyLibrary) {
+                storyLibrary = new StoryLibrary();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
