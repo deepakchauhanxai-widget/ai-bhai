@@ -1,0 +1,3811 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Wall - Social Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f1f5f9;
+            --accent: #10b981;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --background: #ffffff;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* RTL SUPPORT FIXES */
+        body[dir="rtl"] {
+            text-align: right;
+            direction: rtl;
+        }
+
+        /* RTL Layout Fixes */
+        body[dir="rtl"] .header,
+        body[dir="rtl"] .user-menu,
+        body[dir="rtl"] .post-header,
+        body[dir="rtl"] .comment-header,
+        body[dir="rtl"] .post-actions,
+        body[dir="rtl"] .action-buttons,
+        body[dir="rtl"] .leader-stats,
+        body[dir="rtl"] .comment-input-group,
+        body[dir="rtl"] .share-buttons,
+        body[dir="rtl"] .modal-header,
+        body[dir="rtl"] .user-info,
+        body[dir="rtl"] .logo,
+        body[dir="rtl"] .leader-card,
+        body[dir="rtl"] .comment-item,
+        body[dir="rtl"] .language-filter {
+            flex-direction: row-reverse;
+        }
+
+        body[dir="rtl"] .dropdown-content {
+            left: 0;
+            right: auto;
+            text-align: right;
+        }
+
+        body[dir="rtl"] .comment-content {
+            margin-left: 0;
+            margin-right: 12px;
+        }
+
+        body[dir="rtl"] .post-actions-row {
+            flex-direction: row-reverse;
+        }
+
+        /* Text alignment for RTL */
+        body[dir="rtl"] .post-content,
+        body[dir="rtl"] .comment-text,
+        body[dir="rtl"] .leader-name,
+        body[dir="rtl"] .topic-name,
+        body[dir="rtl"] .user-item span,
+        body[dir="rtl"] .post-username,
+        body[dir="rtl"] .post-time,
+        body[dir="rtl"] .modal-title,
+        body[dir="rtl"] .card-title,
+        body[dir="rtl"] .section-title,
+        body[dir="rtl"] .login-title,
+        body[dir="rtl"] .form-label {
+            text-align: right;
+        }
+
+        /* Input and textarea alignment */
+        body[dir="rtl"] .form-input,
+        body[dir="rtl"] .post-input,
+        body[dir="rtl"] .comment-input {
+            text-align: right;
+            direction: rtl;
+        }
+
+        /* Fix padding and margins for RTL */
+        body[dir="rtl"] .post-card,
+        body[dir="rtl"] .sidebar-card,
+        body[dir="rtl"] .create-post-card,
+        body[dir="rtl"] .leader-card,
+        body[dir="rtl"] .login-card {
+            text-align: right;
+        }
+
+        body[dir="rtl"] .modal-body {
+            text-align: right;
+        }
+
+        body[dir="rtl"] .form-group {
+            text-align: right;
+        }
+
+        /* Ensure text doesn't get cut off in RTL */
+        body[dir="rtl"] .post-content,
+        body[dir="rtl"] .comment-text,
+        body[dir="rtl"] .leader-name,
+        body[dir="rtl"] .topic-name,
+        body[dir="rtl"] .user-item span {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+
+        /* Fix dropdown menu position for RTL */
+        body[dir="rtl"] .menu-dropdown {
+            direction: ltr; /* Keep dropdown content LTR */
+        }
+
+        body[dir="rtl"] .dropdown-item {
+            direction: ltr; /* Keep dropdown items LTR */
+            text-align: left;
+        }
+
+        /* Fix form switch text alignment */
+        body[dir="rtl"] .form-switch {
+            text-align: center;
+        }
+
+        /* Language Filter Styles */
+        .language-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .language-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--secondary);
+            color: var(--text-light);
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        body[dir="rtl"] .language-badge {
+            margin-left: 0;
+            margin-right: 8px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            background: var(--secondary);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary);
+        }
+
+        .menu-dropdown {
+            position: relative;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--card);
+            min-width: 200px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        body[dir="rtl"] .dropdown-content {
+            left: 0;
+            right: auto;
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        /* Leaderboard Section */
+        .leaderboard-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #fbbf24;
+        }
+
+        .leaderboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .leader-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .leader-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 18px;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #92400e, #78350f);
+        }
+
+        .leader-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid;
+        }
+
+        .leader-1 {
+            border-color: #f59e0b;
+        }
+
+        .leader-2 {
+            border-color: #6b7280;
+        }
+
+        .leader-3 {
+            border-color: #92400e;
+        }
+
+        .leader-info {
+            flex: 1;
+        }
+
+        .leader-name {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .leader-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        /* Post Creation */
+        .create-post-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-input {
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .post-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+
+        .post-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .post-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Posts Feed */
+        .posts-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .post-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .post-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .post-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .post-username:hover {
+            text-decoration: underline;
+        }
+
+        .post-time {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .post-content {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .post-actions-row {
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .like-btn:hover {
+            color: #dc2626;
+        }
+
+        .comment-btn:hover {
+            color: var(--primary);
+        }
+
+        .share-btn:hover {
+            color: var(--accent);
+        }
+
+        /* Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .sidebar-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Trending Topics */
+        .topics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .topic-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+
+        .topic-item:hover {
+            color: var(--primary);
+        }
+
+        .topic-name {
+            font-weight: 500;
+        }
+
+        .topic-count {
+            background: var(--secondary);
+            color: var(--text-light);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* Online Users */
+        .online-users {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-item:hover {
+            background: var(--secondary);
+            border-radius: 8px;
+            padding: 12px;
+            margin: 0 -10px;
+        }
+
+        .user-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: var(--text);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 25px;
+        }
+
+        /* Profile Modal Styles */
+        .profile-avatar-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .avatar-upload-btn {
+            background: var(--secondary);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-upload-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Comments Section */
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .comment-content {
+            flex: 1;
+            background: var(--secondary);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .comment-user {
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .comment-user:hover {
+            text-decoration: underline;
+        }
+
+        .comment-time {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .comment-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+
+        .comment-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .comment-btn-small {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-btn-small:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .user-menu {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .leaderboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            body[dir="rtl"] .header,
+            body[dir="rtl"] .user-menu {
+                flex-direction: column;
+            }
+
+            .language-filter {
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            z-index: 3000;
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.5s ease;
+        }
+
+        .notification.success {
+            background: var(--accent);
+        }
+
+        .notification.error {
+            background: #dc2626;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        body[dir="rtl"] .form-group {
+            text-align: right;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .register-btn {
+            width: 100%;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Share Modal Styles */
+        .share-modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .share-modal-content h2 {
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .share-preview {
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        body[dir="rtl"] .share-preview {
+            text-align: right;
+        }
+
+        .share-preview p {
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .share-author {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .share-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .share-platform-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .share-platform-btn:hover {
+            transform: translateY(-2px);
+            background: var(--primary-dark);
+        }
+
+        .whatsapp-btn { background: #25D366; }
+        .facebook-btn { background: #1877F2; }
+        .twitter-btn { background: #1DA1F2; }
+        .copy-btn { background: var(--accent); }
+
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+        }
+
+        .cancel-btn {
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            background: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: var(--secondary);
+        }
+
+        /* Switch between login and register forms */
+        .form-switch {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-switch a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .form-switch a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Follow Button Styles */
+        .follow-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--primary);
+            background: white;
+            color: var(--primary);
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .follow-btn.following {
+            background: var(--primary);
+            color: white;
+        }
+
+        .follow-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        /* RTL support for follow button */
+        body[dir="rtl"] .follow-btn {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+
+        /* Online users follow button alignment */
+        .online-users .follow-btn {
+            margin-left: auto;
+            font-size: 10px;
+            padding: 3px 8px;
+        }
+
+        body[dir="rtl"] .online-users .follow-btn {
+            margin-left: 0;
+            margin-right: auto;
+        }
+
+        /* Profile Stats Styles */
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: var(--secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-item:hover .stat-number {
+            color: white;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .stat-item:hover .stat-label {
+            color: white;
+        }
+
+        /* User Profile Modal */
+        .user-profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .user-profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .user-stat {
+            text-align: center;
+            padding: 10px;
+            background: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .user-stat-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .user-stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* Followers/Following List */
+        .follow-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+
+        .follow-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .follow-item:last-child {
+            border-bottom: none;
+        }
+
+        .follow-item:hover {
+            background: var(--secondary);
+            border-radius: 8px;
+        }
+
+        .follow-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .follow-info {
+            flex: 1;
+        }
+
+        .follow-name {
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .follow-name:hover {
+            text-decoration: underline;
+        }
+
+        .follow-stats {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page (Initially Visible) -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card fade-in">
+            <div class="login-title" id="loginTitleText">
+                <i class="fas fa-users"></i> <span id="loginTitle">Community Wall</span>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" id="usernameLabel">Username</label>
+                    <input type="text" class="form-input" name="username" placeholder="Enter your username" required id="usernameInput">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="passwordLabel">Password</label>
+                    <input type="password" class="form-input" name="password" placeholder="Enter your password" required id="passwordInput">
+                </div>
+                <div id="error-message" class="message error-message"></div>
+                <div id="success-message" class="message success-message"></div>
+                <button type="submit" class="login-btn" id="loginButton">
+                    <i class="fas fa-sign-in-alt"></i> <span id="loginButtonText">Login to Community</span>
+                </button>
+                
+                <div class="form-switch">
+                    <p id="registerSwitchText">Don't have an account? <a onclick="showRegisterForm()" id="registerLinkText">Create one here</a></p>
+                </div>
+            </form>
+
+            <!-- Register Form (Initially Hidden) -->
+            <form id="registerForm" style="display: none;" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label" id="regUsernameLabel">Username</label>
+                    <input type="text" class="form-input" name="username" placeholder="Choose a username" required id="regUsernameInput">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="regEmailLabel">Email</label>
+                    <input type="email" class="form-input" name="email" placeholder="Enter your email" required id="regEmailInput">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="regPasswordLabel">Password</label>
+                    <input type="password" class="form-input" name="password" placeholder="Create password" required id="regPasswordInput">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="regConfirmPasswordLabel">Confirm Password</label>
+                    <input type="password" class="form-input" name="confirm_password" placeholder="Confirm password" required id="regConfirmPasswordInput">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" id="regProfilePicLabel">Profile Picture (Optional)</label>
+                    <input type="file" class="form-input" name="profile_pic" accept="image/*">
+                </div>
+                <div id="reg-error-message" class="message error-message"></div>
+                <div id="reg-success-message" class="message success-message"></div>
+                <button type="submit" class="register-btn" id="registerButton">
+                    <i class="fas fa-user-plus"></i> <span id="registerButtonText">Create Account</span>
+                </button>
+                
+                <div class="form-switch">
+                    <p id="loginSwitchText">Already have an account? <a onclick="showLoginForm()" id="loginLinkText">Login here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Wall Page (Initially Hidden) -->
+    <div id="wallPage" style="display: none;">
+        <div class="container">
+            <!-- Header -->
+            <header class="header fade-in">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="logo-text" id="wallLogoText">Community Wall</div>
+                </div>
+
+                <div class="user-menu">
+                    <div class="user-info" id="userInfo">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" alt="User" class="user-avatar" id="headerUserAvatar">
+                        <span id="welcome-user">Welcome, User!</span>
+                    </div>
+
+                    <div class="menu-dropdown">
+                        <button class="menu-btn" id="menuBtn">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="dropdown-content" id="dropdownContent">
+                            <!-- Language Options -->
+                            <div class="dropdown-item" onclick="setLanguage('hi')">
+                                <i class="fas fa-language"></i>
+                                <span>हिंदी (Hindi)</span>
+                            </div>
+                            <div class="dropdown-item" onclick="setLanguage('en')">
+                                <i class="fas fa-language"></i>
+                                <span>English</span>
+                            </div>
+                            <div class="dropdown-item" onclick="setLanguage('ur')">
+                                <i class="fas fa-language"></i>
+                                <span>اردو (Urdu)</span>
+                            </div>
+                            <div class="dropdown-item" onclick="setLanguage('mr')">
+                                <i class="fas fa-language"></i>
+                                <span>मराठी (Marathi)</span>
+                            </div>
+                            
+                            <!-- Other menu items -->
+                            <div class="dropdown-item" onclick="openProfileModal()">
+                                <i class="fas fa-user"></i>
+                                <span id="myProfileText">My Profile</span>
+                            </div>
+                            <div class="dropdown-item" onclick="openSettings()">
+                                <i class="fas fa-cog"></i>
+                                <span id="settingsText">Settings</span>
+                            </div>
+                            <div class="dropdown-item" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span id="logoutText">Logout</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Language Filter Section -->
+            <div class="language-filter fade-in" id="languageFilter">
+                <button class="filter-btn active" onclick="filterPosts('all')" id="filterAll">
+                    <i class="fas fa-globe"></i> All Languages
+                </button>
+                <button class="filter-btn" onclick="filterPosts('en')" id="filterEnglish">
+                    <i class="fas fa-language"></i> English
+                </button>
+                <button class="filter-btn" onclick="filterPosts('hi')" id="filterHindi">
+                    <i class="fas fa-language"></i> Hindi
+                </button>
+                <button class="filter-btn" onclick="filterPosts('ur')" id="filterUrdu">
+                    <i class="fas fa-language"></i> Urdu
+                </button>
+                <button class="filter-btn" onclick="filterPosts('mr')" id="filterMarathi">
+                    <i class="fas fa-language"></i> Marathi
+                </button>
+            </div>
+
+            <!-- Leaderboard Section -->
+            <section class="leaderboard-section fade-in">
+                <h2 class="section-title" id="topLeadersText">
+                    <i class="fas fa-trophy"></i> Top Community Leaders
+                </h2>
+                <div class="leaderboard-cards" id="leaderboardCards">
+                    <!-- Top users will be loaded here by JavaScript -->
+                </div>
+            </section>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Left Column - Posts -->
+                <div class="left-column">
+                    <!-- Create Post -->
+                    <div class="create-post-card fade-in">
+                        <textarea class="post-input" id="postContent" placeholder="Share your thoughts with the community..."></textarea>
+                        <div class="post-actions">
+                            <div class="action-buttons">
+                                <button class="icon-btn">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                                <button class="icon-btn">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                                <button class="icon-btn">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </button>
+                            </div>
+                            <button class="post-btn" onclick="createPost()">
+                                <i class="fas fa-paper-plane"></i> <span id="postButtonText">Post Message</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Posts Feed -->
+                    <div class="posts-feed" id="postsFeed">
+                        <!-- Posts will be loaded here by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="sidebar">
+                    <!-- Trending Topics -->
+                    <div class="sidebar-card fade-in">
+                        <h3 class="card-title" id="trendingTopicsText">
+                            <i class="fas fa-fire"></i> Trending Topics
+                        </h3>
+                        <div class="topics-list" id="topicsList">
+                            <!-- Topics will be loaded here by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Community Members -->
+                    <div class="sidebar-card fade-in">
+                        <h3 class="card-title">
+                            <i class="fas fa-users"></i> Community Members
+                        </h3>
+                        <div class="online-users" id="onlineUsers">
+                            <!-- All users will be loaded here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div id="commentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Comments</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="comments-list" id="commentsList">
+                    <!-- Comments will be loaded here -->
+                </div>
+                <div class="comment-input-group">
+                    <input type="text" class="comment-input" id="commentInput" placeholder="Write a comment...">
+                    <button class="comment-btn-small" onclick="addComment()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">My Profile</h3>
+                <span class="close" onclick="closeProfileModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="profile-avatar-container">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" 
+                         alt="Profile" class="profile-avatar" id="profileAvatar">
+                    <br>
+                    <button class="avatar-upload-btn" onclick="document.getElementById('profileAvatarInput').click()">
+                        <i class="fas fa-camera"></i> Change Photo
+                    </button>
+                    <input type="file" id="profileAvatarInput" style="display: none;" accept="image/*" onchange="handleAvatarUpload(this.files[0])">
+                </div>
+                
+                <!-- Profile Stats -->
+                <div class="profile-stats" id="profileStats">
+                    <!-- Stats will be loaded here by JavaScript -->
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" id="profileUsername" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="profileEmail" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" class="form-input" id="newPassword" placeholder="Leave blank to keep current">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-input" id="confirmNewPassword" placeholder="Confirm new password">
+                </div>
+                
+                <div id="profileMessage" class="message" style="display: none;"></div>
+                
+                <button class="login-btn" onclick="updateProfile()">
+                    <i class="fas fa-save"></i> Update Profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="userProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="userProfileTitle">User Profile</h3>
+                <span class="close" onclick="closeUserProfileModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="user-profile-header">
+                    <img src="" alt="User" class="user-profile-avatar" id="userProfileAvatar">
+                    <div class="user-profile-name" id="userProfileName"></div>
+                    <button class="follow-btn" id="userProfileFollowBtn" style="margin: 10px 0;">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>
+                </div>
+                
+                <div class="user-profile-stats">
+                    <div class="user-stat" onclick="showUserPosts()">
+                        <div class="user-stat-number" id="userPostsCount">0</div>
+                        <div class="user-stat-label">Posts</div>
+                    </div>
+                    <div class="user-stat" onclick="showUserFollowers()">
+                        <div class="user-stat-number" id="userFollowersCount">0</div>
+                        <div class="user-stat-label">Followers</div>
+                    </div>
+                    <div class="user-stat" onclick="showUserFollowing()">
+                        <div class="user-stat-number" id="userFollowingCount">0</div>
+                        <div class="user-stat-label">Following</div>
+                    </div>
+                </div>
+                
+                <div id="userProfileContent">
+                    <!-- User posts, followers, or following will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professional Share Modal (Will be created by JavaScript) -->
+    <div id="professionalShareModal"></div>
+
+    <script>
+        // ==================== COMPLETE WORKING JAVASCRIPT ====================
+        
+        let currentUser = null;
+        let currentPostId = null;
+        let currentPostData = null;
+        let currentLanguageFilter = 'all';
+        let currentViewingUserId = null;
+
+        // ==================== API BASE URL ====================
+        const API_BASE_URL = 'https://deepakchauhanxai.xyz/community-wall/api';
+
+        // ==================== MULTI-LANGUAGE SYSTEM ====================
+        const languageTexts = {
+            en: {
+                // Login Page
+                loginTitle: "Community Wall",
+                usernameLabel: "Username",
+                usernamePlaceholder: "Enter your username",
+                passwordLabel: "Password", 
+                passwordPlaceholder: "Enter your password",
+                loginButton: "Login to Community",
+                registerSwitch: "Don't have an account?",
+                registerLink: "Create one here",
+                
+                // Register Page
+                regUsernameLabel: "Username",
+                regUsernamePlaceholder: "Choose a username",
+                regEmailLabel: "Email",
+                regEmailPlaceholder: "Enter your email",
+                regPasswordLabel: "Password",
+                regPasswordPlaceholder: "Create password",
+                regConfirmPasswordLabel: "Confirm Password",
+                regConfirmPasswordPlaceholder: "Confirm password",
+                regProfilePicLabel: "Profile Picture (Optional)",
+                registerButton: "Create Account",
+                loginSwitch: "Already have an account?",
+                loginLink: "Login here",
+                
+                // Wall Page
+                wallLogo: "Community Wall",
+                welcome: "Welcome",
+                myProfile: "My Profile",
+                settings: "Settings",
+                logout: "Logout",
+                topLeaders: "Top Community Leaders",
+                shareThoughts: "Share your thoughts with the community...",
+                postButton: "Post Message",
+                likeButton: "Like",
+                commentButton: "Comment",
+                shareButton: "Share",
+                writeComment: "Write a comment...",
+                noComments: "No comments yet. Be the first to comment!",
+                trendingTopics: "Trending Topics",
+                onlineNow: "Online Now",
+                
+                // Filter Buttons
+                filterAll: "All Languages",
+                filterEnglish: "English",
+                filterHindi: "Hindi", 
+                filterUrdu: "Urdu",
+                filterMarathi: "Marathi",
+                
+                // Share Modal
+                sharePost: "Share Post",
+                cancel: "Cancel",
+                copyLink: "Copy Link",
+                
+                // Notifications
+                postSuccess: "Post created successfully!",
+                loginSuccess: "Login successful!",
+                registerSuccess: "Account created successfully!",
+                
+                // Follow System
+                follow: "Follow",
+                following: "Following",
+                unfollow: "Unfollow"
+            },
+            
+            hi: {
+                // Login Page
+                loginTitle: "कम्युनिटी वॉल",
+                usernameLabel: "यूज़रनेम",
+                usernamePlaceholder: "अपना यूज़रनेम डालें",
+                passwordLabel: "पासवर्ड",
+                passwordPlaceholder: "अपना पासवर्ड डालें", 
+                loginButton: "कम्युनिटी में लॉगिन करें",
+                registerSwitch: "खाता नहीं है?",
+                registerLink: "यहाँ बनाएं",
+                
+                // Register Page
+                regUsernameLabel: "यूज़रनेम",
+                regUsernamePlaceholder: "यूज़रनेम चुनें",
+                regEmailLabel: "ईमेल",
+                regEmailPlaceholder: "अपना ईमेल डालें",
+                regPasswordLabel: "पासवर्ड",
+                regPasswordPlaceholder: "पासवर्ड बनाएं",
+                regConfirmPasswordLabel: "पासवर्ड पुष्टि करें",
+                regConfirmPasswordPlaceholder: "पासवर्ड पुष्टि करें",
+                regProfilePicLabel: "प्रोफाइल तस्वीर (वैकल्पिक)",
+                registerButton: "खाता बनाएं",
+                loginSwitch: "पहले से खाता है?",
+                loginLink: "यहाँ लॉगिन करें",
+                
+                // Wall Page
+                wallLogo: "कम्युनिटी वॉल",
+                welcome: "स्वागत है",
+                myProfile: "मेरी प्रोफाइल",
+                settings: "सेटिंग्स",
+                logout: "लॉगआउट",
+                topLeaders: "शीर्ष समुदाय नेता",
+                shareThoughts: "समुदाय के साथ अपने विचार साझा करें...",
+                postButton: "पोस्ट भेजें",
+                likeButton: "पसंद",
+                commentButton: "टिप्पणी",
+                shareButton: "शेयर करें",
+                writeComment: "टिप्पणी लिखें...",
+                noComments: "अभी तक कोई टिप्पणी नहीं। पहली टिप्पणी करें!",
+                trendingTopics: "ट्रेंडिंग विषय",
+                onlineNow: "ऑनलाइन उपयोगकर्ता",
+                
+                // Filter Buttons
+                filterAll: "सभी भाषाएं",
+                filterEnglish: "अंग्रेजी",
+                filterHindi: "हिंदी",
+                filterUrdu: "उर्दू",
+                filterMarathi: "मराठी",
+                
+                // Share Modal
+                sharePost: "पोस्ट शेयर करें",
+                cancel: "रद्द करें",
+                copyLink: "लिंक कॉपी करें",
+                
+                // Notifications
+                postSuccess: "पोस्ट सफलतापूर्वक बनाई गई!",
+                loginSuccess: "लॉगिन सफल!",
+                registerSuccess: "खाता सफलतापूर्वक बन गया!",
+                
+                // Follow System
+                follow: "फॉलो करें",
+                following: "फॉलो कर रहे हैं",
+                unfollow: "अनफॉलो करें"
+            },
+            
+            ur: {
+                // Login Page
+                loginTitle: "کمیونٹی وال",
+                usernameLabel: "صارف نام",
+                usernamePlaceholder: "اپنا صارف نام درج کریں",
+                passwordLabel: "پاس ورڈ",
+                passwordPlaceholder: "اپنا پاس ورڈ درج کریں",
+                loginButton: "کمیونٹی میں لاگ ان کریں",
+                registerSwitch: "اکاؤنٹ نہیں ہے؟",
+                registerLink: "یہاں بنائیں",
+                
+                // Register Page
+                regUsernameLabel: "صارف نام",
+                regUsernamePlaceholder: "صارف نام منتخب کریں",
+                regEmailLabel: "ای میل",
+                regEmailPlaceholder: "اپنا ای میل درج کریں",
+                regPasswordLabel: "پاس ورڈ",
+                regPasswordPlaceholder: "پاس ورڈ بنائیں",
+                regConfirmPasswordLabel: "پاس ورڈ کی تصدیق کریں",
+                regConfirmPasswordPlaceholder: "پاس ورڈ کی تصدیق کریں",
+                regProfilePicLabel: "پروفائل تصویر (اختیاری)",
+                registerButton: "اکاؤنٹ بنائیں",
+                loginSwitch: "پہلے سے اکاؤنٹ ہے؟",
+                loginLink: "یہاں لاگ ان کریں",
+                
+                // Wall Page
+                wallLogo: "کمیونٹی وال",
+                welcome: "خوش آمدید",
+                myProfile: "میری پروفائل",
+                settings: "ترتیبات",
+                logout: "لاگ آؤٹ",
+                topLeaders: "ٹاپ کمیونٹی لیڈرز",
+                shareThoughts: "کمیونٹی کے ساتھ اپنے خیالات شیئر کریں...",
+                postButton: "پوسٹ بھیجیں",
+                likeButton: "پسند",
+                commentButton: "تبصرہ",
+                shareButton: "شیئر کریں",
+                writeComment: "تبصرہ لکھیں...",
+                noComments: "ابھی تک کوئی تبصرہ نہیں۔ پہلا تبصرہ کریں!",
+                trendingTopics: "ٹرینڈنگ موضوعات",
+                onlineNow: "آن لائن صارفین",
+                
+                // Filter Buttons
+                filterAll: "تمام زبانیں",
+                filterEnglish: "انگریزی",
+                filterHindi: "ہندی",
+                filterUrdu: "اردو",
+                filterMarathi: "مراٹھی",
+                
+                // Share Modal
+                sharePost: "پوسٹ شیئر کریں",
+                cancel: "منسوخ کریں",
+                copyLink: "لنک کاپی کریں",
+                
+                // Notifications
+                postSuccess: "پوسٹ کامیابی سے بن گئی!",
+                loginSuccess: "لاگ ان کامیاب!",
+                registerSuccess: "اکاؤنٹ کامیابی سے بن گیا!",
+                
+                // Follow System
+                follow: "فالو کریں",
+                following: "فالو کر رہے ہیں",
+                unfollow: "انفالو کریں"
+            },
+            
+            mr: {
+                // Login Page
+                loginTitle: "कम्युनिटी वॉल",
+                usernameLabel: "युजरनेम",
+                usernamePlaceholder: "तुमचे युजरनेम टाका",
+                passwordLabel: "पासवर्ड",
+                passwordPlaceholder: "तुमचा पासवर्ड टाका",
+                loginButton: "कम्युनिटीमध्ये लॉगिन करा",
+                registerSwitch: "खाते नाही?",
+                registerLink: "येथे तयार करा",
+                
+                // Register Page
+                regUsernameLabel: "युजरनेम",
+                regUsernamePlaceholder: "युजरनेम निवडा",
+                regEmailLabel: "ईमेल",
+                regEmailPlaceholder: "तुमचा ईमेल टाका",
+                regPasswordLabel: "पासवर्ड",
+                regPasswordPlaceholder: "पासवर्ड तयार करा",
+                regConfirmPasswordLabel: "पासवर्डची पुष्टी करा",
+                regConfirmPasswordPlaceholder: "पासवर्डची पुष्टी करा",
+                regProfilePicLabel: "प्रोफाइल फोटो (ऐच्छिक)",
+                registerButton: "खाते तयार करा",
+                loginSwitch: "आधीपासून खाते आहे?",
+                loginLink: "येथे लॉगिन करा",
+                
+                // Wall Page
+                wallLogo: "कम्युनिटी वॉल",
+                welcome: "स्वागत आहे",
+                myProfile: "माझे प्रोफाइल",
+                settings: "सेटिंग्ज",
+                logout: "लॉगआउट",
+                topLeaders: "अग्रणी समुदाय नेते",
+                shareThoughts: "समुदायासोबत तुमचे विचार शेअर करा...",
+                postButton: "पोस्ट पाठवा",
+                likeButton: "लाइक",
+                commentButton: "कमेंट",
+                shareButton: "शेअर करा",
+                writeComment: "कमेंट लिहा...",
+                noComments: "अजून कमेंट नाहीत. पहिले कमेंट करा!",
+                trendingTopics: "ट्रेंडिंग विषय",
+                onlineNow: "ऑनलाइन सदस्य",
+                
+                // Filter Buttons
+                filterAll: "सर्व भाषा",
+                filterEnglish: "इंग्रजी",
+                filterHindi: "हिंदी",
+                filterUrdu: "उर्दू",
+                filterMarathi: "मराठी",
+                
+                // Share Modal
+                sharePost: "पोस्ट शेअर करा",
+                cancel: "रद्द करा",
+                copyLink: "लिंक कॉपी करा",
+                
+                // Notifications
+                postSuccess: "पोस्ट यशस्वीरित्या तयार झाली!",
+                loginSuccess: "लॉगिन यशस्वी!",
+                registerSuccess: "खाते यशस्वीरित्या तयार झाले!",
+                
+                // Follow System
+                follow: "फॉलो करा",
+                following: "फॉलो करत आहे",
+                unfollow: "अनफॉलो करा"
+            }
+        };
+
+        // ==================== FOLLOW SYSTEM ====================
+
+        // Follow/Unfollow user
+        function toggleFollow(userId) {
+            if (!currentUser) {
+                showNotification('Please login to follow users', 'error');
+                return;
+            }
+
+            if (userId === currentUser.id) {
+                showNotification('You cannot follow yourself', 'error');
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/toggle_follow.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    following_id: userId 
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Update UI based on follow status
+                    updateFollowButton(userId, result.is_following);
+                    showNotification(result.message, 'success');
+                    
+                    // Reload leaderboard and users to update counts
+                    loadLeaderboard();
+                    loadAllUsers();
+                    
+                    // If viewing user profile, reload their stats
+                    if (currentViewingUserId === userId) {
+                        loadUserProfileStats(userId);
+                    }
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error following user', 'error');
+            });
+        }
+
+        // Update follow button UI
+        function updateFollowButton(userId, isFollowing) {
+            const followBtns = document.querySelectorAll(`.follow-btn[data-user-id="${userId}"]`);
+            const texts = languageTexts[localStorage.getItem('community_language') || 'en'];
+            
+            followBtns.forEach(followBtn => {
+                if (isFollowing) {
+                    followBtn.classList.add('following');
+                    followBtn.innerHTML = `<i class="fas fa-user-check"></i> ${texts.following}`;
+                } else {
+                    followBtn.classList.remove('following');
+                    followBtn.innerHTML = `<i class="fas fa-user-plus"></i> ${texts.follow}`;
+                }
+            });
+        }
+
+        // Check follow status for multiple users
+        function checkFollowStatus(userIds) {
+            if (!currentUser || !userIds.length) return;
+
+            fetch(`${API_BASE_URL}/check_follow_status.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    user_ids: userIds 
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Update all follow buttons
+                    result.follow_status.forEach(status => {
+                        updateFollowButton(status.user_id, status.is_following);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error checking follow status:', error);
+            });
+        }
+
+        // ==================== USER PROFILE SYSTEM ====================
+
+        // Open user profile modal
+        function openUserProfile(userId) {
+            currentViewingUserId = userId;
+            loadUserProfile(userId);
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+
+        // Close user profile modal
+        function closeUserProfileModal() {
+            document.getElementById('userProfileModal').style.display = 'none';
+            currentViewingUserId = null;
+        }
+
+        // Load user profile data
+        function loadUserProfile(userId) {
+            // Load user basic info
+            fetch(`${API_BASE_URL}/get_user_profile.php?user_id=${userId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserProfile(result.user);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user profile:', error);
+                });
+
+            // Load user stats
+            loadUserProfileStats(userId);
+            
+            // Load user posts by default
+            showUserPosts();
+        }
+
+        // Display user profile
+        function displayUserProfile(user) {
+            document.getElementById('userProfileTitle').textContent = `${user.username}'s Profile`;
+            document.getElementById('userProfileName').textContent = user.username;
+            
+            // Set avatar - FIXED: Proper avatar URL
+            const avatar = document.getElementById('userProfileAvatar');
+            if (user.profile_pic && user.profile_pic !== 'default.png') {
+                avatar.src = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+            } else {
+                avatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+            }
+            
+            // Set follow button
+            const followBtn = document.getElementById('userProfileFollowBtn');
+            followBtn.setAttribute('data-user-id', user.id);
+            followBtn.onclick = () => toggleFollow(user.id);
+            
+            // Check follow status for this user
+            if (user.id !== currentUser?.id) {
+                checkFollowStatus([user.id]);
+            } else {
+                followBtn.style.display = 'none';
+            }
+        }
+
+        // Load user profile stats
+        function loadUserProfileStats(userId) {
+            fetch(`${API_BASE_URL}/get_user_profile_stats.php?user_id=${userId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        document.getElementById('userPostsCount').textContent = result.stats.post_count || 0;
+                        document.getElementById('userFollowersCount').textContent = result.stats.followers_count || 0;
+                        document.getElementById('userFollowingCount').textContent = result.stats.following_count || 0;
+                    } else {
+                        console.error('Error loading user profile stats:', result.message);
+                        // Set fallback values
+                        document.getElementById('userPostsCount').textContent = 0;
+                        document.getElementById('userFollowersCount').textContent = 0;
+                        document.getElementById('userFollowingCount').textContent = 0;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user profile stats:', error);
+                    // Set fallback values
+                    document.getElementById('userPostsCount').textContent = 0;
+                    document.getElementById('userFollowersCount').textContent = 0;
+                    document.getElementById('userFollowingCount').textContent = 0;
+                });
+        }
+
+        // Show user posts
+        function showUserPosts() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_posts.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(posts => {
+                    displayUserPosts(posts);
+                })
+                .catch(error => {
+                    console.error('Error loading user posts:', error);
+                });
+        }
+
+        // Display user posts
+        function displayUserPosts(posts) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!posts || posts.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>No posts yet</h4>
+                        <p>This user hasn't posted anything yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Posts (${posts.length})</h4>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    ${posts.map(post => `
+                        <div style="padding: 15px; border-bottom: 1px solid var(--border);">
+                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
+                                ${formatTime(post.created_at)}
+                            </div>
+                            <div>${post.content}</div>
+                            <div style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
+                                <i class="fas fa-heart"></i> ${post.like_count || 0} likes • 
+                                <i class="fas fa-comment"></i> ${post.comment_count || 0} comments
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Show user followers
+        function showUserFollowers() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_followers.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserFollowers(result.followers);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user followers:', error);
+                });
+        }
+
+        // Display user followers
+        function displayUserFollowers(followers) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!followers || followers.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>No followers yet</h4>
+                        <p>This user doesn't have any followers yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Followers (${followers.length})</h4>
+                <div class="follow-list">
+                    ${followers.map(follower => `
+                        <div class="follow-item">
+                            <img src="${follower.profile_pic && follower.profile_pic !== 'default.png' ? 
+                                `${API_BASE_URL}/../assets/avatars/${follower.profile_pic}` : 
+                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
+                                alt="${follower.username}" class="follow-avatar"
+                                onclick="openUserProfile(${follower.id})">
+                            <div class="follow-info">
+                                <div class="follow-name" onclick="openUserProfile(${follower.id})">${follower.username}</div>
+                                <div class="follow-stats">${follower.follower_count || 0} followers</div>
+                            </div>
+                            ${follower.id !== currentUser?.id ? `
+                                <button class="follow-btn" data-user-id="${follower.id}" onclick="toggleFollow(${follower.id})">
+                                    <i class="fas fa-user-plus"></i> Follow
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Check follow status for followers
+            const userIds = followers.filter(f => f.id !== currentUser?.id).map(f => f.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        // Show user following
+        function showUserFollowing() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_following.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserFollowing(result.following);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user following:', error);
+                });
+        }
+
+        // Display user following
+        function displayUserFollowing(following) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!following || following.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>Not following anyone</h4>
+                        <p>This user isn't following anyone yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Following (${following.length})</h4>
+                <div class="follow-list">
+                    ${following.map(user => `
+                        <div class="follow-item">
+                            <img src="${user.profile_pic && user.profile_pic !== 'default.png' ? 
+                                `${API_BASE_URL}/../assets/avatars/${user.profile_pic}` : 
+                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
+                                alt="${user.username}" class="follow-avatar"
+                                onclick="openUserProfile(${user.id})">
+                            <div class="follow-info">
+                                <div class="follow-name" onclick="openUserProfile(${user.id})">${user.username}</div>
+                                <div class="follow-stats">${user.follower_count || 0} followers</div>
+                            </div>
+                            ${user.id !== currentUser?.id ? `
+                                <button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
+                                    <i class="fas fa-user-plus"></i> Follow
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Check follow status for following users
+            const userIds = following.filter(f => f.id !== currentUser?.id).map(f => f.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        // ==================== ALL USERS DISPLAY ====================
+
+        function loadAllUsers() {
+            fetch(`${API_BASE_URL}/get_all_users.php`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayAllUsers(result.users);
+                    } else {
+                        console.error('Error loading users:', result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading users:', error);
+                });
+        }
+
+        function displayAllUsers(users) {
+            const onlineUsersContainer = document.getElementById('onlineUsers');
+            if (!onlineUsersContainer) return;
+
+            // Filter out current user
+            const otherUsers = users.filter(user => user.id !== currentUser?.id);
+            
+            if (otherUsers.length === 0) {
+                onlineUsersContainer.innerHTML = '<div class="no-users" style="text-align: center; padding: 20px; color: var(--text-light);">No other users found</div>';
+                return;
+            }
+
+            const usersHTML = otherUsers.map(user => {
+                const followButton = user.id !== currentUser?.id ? 
+                    `<button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>` : '';
+                
+                // FIXED: Proper avatar URL
+                let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                if (user.profile_pic && user.profile_pic !== 'default.png') {
+                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+                }
+                
+                return `
+                <div class="user-item">
+                    <img src="${avatarSrc}" 
+                         alt="${user.username}" 
+                         class="user-avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"
+                         onclick="openUserProfile(${user.id})"
+                         onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
+                    <div style="flex: 1; min-width: 0;" onclick="openUserProfile(${user.id})">
+                        <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.username}</div>
+                        <div style="font-size: 12px; color: var(--text-light);">
+                            ${user.follower_count || 0} followers • ${user.post_count || 0} posts
+                        </div>
+                    </div>
+                    ${followButton}
+                </div>
+                `;
+            }).join('');
+
+            onlineUsersContainer.innerHTML = usersHTML;
+            
+            // Check follow status for all users
+            const userIds = otherUsers.map(user => user.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        // ==================== PROFILE STATS ====================
+
+        function loadUserProfileStats() {
+            if (!currentUser) return;
+            
+            fetch(`${API_BASE_URL}/get_user_profile_stats.php?user_id=${currentUser.id}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayProfileStats(result.stats);
+                    } else {
+                        console.error('Error loading profile stats:', result.message);
+                        // Fallback stats
+                        displayProfileStats({
+                            post_count: 0,
+                            followers_count: 0,
+                            following_count: 0
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading profile stats:', error);
+                    // Fallback stats
+                    displayProfileStats({
+                        post_count: 0,
+                        followers_count: 0,
+                        following_count: 0
+                    });
+                });
+        }
+
+        function displayProfileStats(stats) {
+            const statsHTML = `
+                <div class="stat-item" onclick="showMyFollowers()">
+                    <div class="stat-number">${stats.post_count || 0}</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat-item" onclick="showMyFollowers()">
+                    <div class="stat-number">${stats.followers_count || 0}</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-item" onclick="showMyFollowing()">
+                    <div class="stat-number">${stats.following_count || 0}</div>
+                    <div class="stat-label">Following</div>
+                </div>
+            `;
+            
+            const statsContainer = document.getElementById('profileStats');
+            if (statsContainer) {
+                statsContainer.innerHTML = statsHTML;
+            }
+        }
+
+        // Show my followers
+        function showMyFollowers() {
+            currentViewingUserId = currentUser.id;
+            showUserFollowers();
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+
+        // Show my following
+        function showMyFollowing() {
+            currentViewingUserId = currentUser.id;
+            showUserFollowing();
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+
+        // Set language function
+        function setLanguage(lang) {
+            if (languageTexts[lang]) {
+                localStorage.setItem('community_language', lang);
+                applyLanguage(lang);
+                
+                // Set RTL for Urdu
+                if (lang === 'ur') {
+                    document.body.setAttribute('dir', 'rtl');
+                    document.body.style.direction = 'rtl';
+                    document.body.style.textAlign = 'right';
+                } else {
+                    document.body.setAttribute('dir', 'ltr');
+                    document.body.style.direction = 'ltr';
+                    document.body.style.textAlign = 'left';
+                }
+                
+                showLanguageNotification(lang);
+                
+                // Reload posts with current filter
+                loadPosts();
+            }
+        }
+
+        // Apply language
+        function applyLanguage(lang) {
+            const texts = languageTexts[lang];
+            if (!texts) return;
+            
+            // Login Page
+            if (document.getElementById('loginTitle')) {
+                document.getElementById('loginTitle').textContent = texts.loginTitle;
+            }
+            if (document.getElementById('usernameLabel')) {
+                document.getElementById('usernameLabel').textContent = texts.usernameLabel;
+            }
+            if (document.getElementById('usernameInput')) {
+                document.getElementById('usernameInput').placeholder = texts.usernamePlaceholder;
+            }
+            if (document.getElementById('passwordLabel')) {
+                document.getElementById('passwordLabel').textContent = texts.passwordLabel;
+            }
+            if (document.getElementById('passwordInput')) {
+                document.getElementById('passwordInput').placeholder = texts.passwordPlaceholder;
+            }
+            if (document.getElementById('loginButtonText')) {
+                document.getElementById('loginButtonText').textContent = texts.loginButton;
+            }
+            if (document.getElementById('registerSwitchText')) {
+                document.getElementById('registerSwitchText').innerHTML = `${texts.registerSwitch} <a onclick="showRegisterForm()">${texts.registerLink}</a>`;
+            }
+            
+            // Register Page
+            if (document.getElementById('regUsernameLabel')) {
+                document.getElementById('regUsernameLabel').textContent = texts.regUsernameLabel;
+            }
+            if (document.getElementById('regUsernameInput')) {
+                document.getElementById('regUsernameInput').placeholder = texts.regUsernamePlaceholder;
+            }
+            if (document.getElementById('regEmailLabel')) {
+                document.getElementById('regEmailLabel').textContent = texts.regEmailLabel;
+            }
+            if (document.getElementById('regEmailInput')) {
+                document.getElementById('regEmailInput').placeholder = texts.regEmailPlaceholder;
+            }
+            if (document.getElementById('regPasswordLabel')) {
+                document.getElementById('regPasswordLabel').textContent = texts.regPasswordLabel;
+            }
+            if (document.getElementById('regPasswordInput')) {
+                document.getElementById('regPasswordInput').placeholder = texts.regPasswordPlaceholder;
+            }
+            if (document.getElementById('regConfirmPasswordLabel')) {
+                document.getElementById('regConfirmPasswordLabel').textContent = texts.regConfirmPasswordLabel;
+            }
+            if (document.getElementById('regConfirmPasswordInput')) {
+                document.getElementById('regConfirmPasswordInput').placeholder = texts.regConfirmPasswordPlaceholder;
+            }
+            if (document.getElementById('regProfilePicLabel')) {
+                document.getElementById('regProfilePicLabel').textContent = texts.regProfilePicLabel;
+            }
+            if (document.getElementById('registerButtonText')) {
+                document.getElementById('registerButtonText').textContent = texts.registerButton;
+            }
+            if (document.getElementById('loginSwitchText')) {
+                document.getElementById('loginSwitchText').innerHTML = `${texts.loginSwitch} <a onclick="showLoginForm()">${texts.loginLink}</a>`;
+            }
+            
+            // Wall Page
+            if (document.getElementById('wallLogoText')) {
+                document.getElementById('wallLogoText').textContent = texts.wallLogo;
+            }
+            if (document.getElementById('welcome-user') && currentUser) {
+                document.getElementById('welcome-user').textContent = `${texts.welcome}, ${currentUser.username}!`;
+            }
+            if (document.getElementById('myProfileText')) {
+                document.getElementById('myProfileText').textContent = texts.myProfile;
+            }
+            if (document.getElementById('settingsText')) {
+                document.getElementById('settingsText').textContent = texts.settings;
+            }
+            if (document.getElementById('logoutText')) {
+                document.getElementById('logoutText').textContent = texts.logout;
+            }
+            if (document.getElementById('topLeadersText')) {
+                document.getElementById('topLeadersText').textContent = texts.topLeaders;
+            }
+            if (document.getElementById('postContent')) {
+                document.getElementById('postContent').placeholder = texts.shareThoughts;
+            }
+            if (document.getElementById('postButtonText')) {
+                document.getElementById('postButtonText').textContent = texts.postButton;
+            }
+            if (document.getElementById('trendingTopicsText')) {
+                document.getElementById('trendingTopicsText').textContent = texts.trendingTopics;
+            }
+            if (document.getElementById('onlineNowText')) {
+                document.getElementById('onlineNowText').textContent = texts.onlineNow;
+            }
+            
+            // Filter Buttons
+            if (document.getElementById('filterAll')) {
+                document.getElementById('filterAll').innerHTML = `<i class="fas fa-globe"></i> ${texts.filterAll}`;
+            }
+            if (document.getElementById('filterEnglish')) {
+                document.getElementById('filterEnglish').innerHTML = `<i class="fas fa-language"></i> ${texts.filterEnglish}`;
+            }
+            if (document.getElementById('filterHindi')) {
+                document.getElementById('filterHindi').innerHTML = `<i class="fas fa-language"></i> ${texts.filterHindi}`;
+            }
+            if (document.getElementById('filterUrdu')) {
+                document.getElementById('filterUrdu').innerHTML = `<i class="fas fa-language"></i> ${texts.filterUrdu}`;
+            }
+            if (document.getElementById('filterMarathi')) {
+                document.getElementById('filterMarathi').innerHTML = `<i class="fas fa-language"></i> ${texts.filterMarathi}`;
+            }
+            
+            // Update follow buttons text
+            updateAllFollowButtons();
+            
+            // Update input directions for RTL
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                if (lang === 'ur') {
+                    input.style.direction = 'rtl';
+                    input.style.textAlign = 'right';
+                } else {
+                    input.style.direction = 'ltr';
+                    input.style.textAlign = 'left';
+                }
+            });
+        }
+
+        // Update all follow buttons text
+        function updateAllFollowButtons() {
+            const followBtns = document.querySelectorAll('.follow-btn');
+            const texts = languageTexts[localStorage.getItem('community_language') || 'en'];
+            
+            followBtns.forEach(btn => {
+                if (btn.classList.contains('following')) {
+                    btn.innerHTML = `<i class="fas fa-user-check"></i> ${texts.following}`;
+                } else {
+                    btn.innerHTML = `<i class="fas fa-user-plus"></i> ${texts.follow}`;
+                }
+            });
+        }
+
+        // Show notification
+        function showLanguageNotification(lang) {
+            const langNames = {
+                'en': 'English',
+                'hi': 'Hindi',
+                'ur': 'Urdu',
+                'mr': 'Marathi'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification success';
+            notification.textContent = `Language changed to ${langNames[lang]}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 12px;
+                background: #10b981;
+                color: white;
+                z-index: 3000;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // Language Filtering System
+        function filterPosts(language) {
+            currentLanguageFilter = language;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load posts with filter
+            loadPosts();
+        }
+
+        // ==================== AUTHENTICATION SYSTEM ====================
+        function checkExistingAuth() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                currentUser = JSON.parse(user);
+                showWallPage();
+            }
+        }
+
+        function setupEventListeners() {
+            // Login form
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const data = {
+                        username: formData.get('username'),
+                        password: formData.get('password')
+                    };
+                    loginUser(data);
+                });
+            }
+
+            // Register form
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    registerUser();
+                });
+            }
+
+            // Three dots menu
+            const menuBtn = document.getElementById('menuBtn');
+            const dropdownContent = document.getElementById('dropdownContent');
+            if (menuBtn && dropdownContent) {
+                menuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdownContent.classList.toggle('show');
+                });
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                if (dropdownContent) {
+                    dropdownContent.classList.remove('show');
+                }
+            });
+
+            // Comment modal close
+            const commentModal = document.getElementById('commentModal');
+            const closeBtn = document.querySelector('.close');
+            if (closeBtn && commentModal) {
+                closeBtn.onclick = function() {
+                    commentModal.style.display = 'none';
+                }
+                window.onclick = function(event) {
+                    if (event.target == commentModal) {
+                        commentModal.style.display = 'none';
+                    }
+                }
+            }
+
+            // User profile modal close
+            const userProfileModal = document.getElementById('userProfileModal');
+            const userProfileClose = userProfileModal.querySelector('.close');
+            if (userProfileClose) {
+                userProfileClose.onclick = function() {
+                    closeUserProfileModal();
+                }
+                window.onclick = function(event) {
+                    if (event.target == userProfileModal) {
+                        closeUserProfileModal();
+                    }
+                }
+            }
+        }
+
+        function showWallPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('wallPage').style.display = 'block';
+            
+            // Apply language to welcome message
+            const savedLanguage = localStorage.getItem('community_language') || 'en';
+            const texts = languageTexts[savedLanguage];
+            if (texts && currentUser) {
+                document.getElementById('welcome-user').textContent = `${texts.welcome}, ${currentUser.username}!`;
+            }
+            
+            // Header avatar update - FIXED: Proper avatar URL
+            const headerAvatar = document.getElementById('headerUserAvatar');
+            if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
+                headerAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
+            } else {
+                headerAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+            }
+            
+            // Load all wall data
+            loadPosts();
+            loadLeaderboard();
+            loadSidebarData();
+            loadAllUsers();
+            
+            // Load current user's profile stats
+            loadUserProfileStats();
+        }
+
+        function loginUser(data) {
+            showLoading(true, 'login');
+            
+            fetch(`${API_BASE_URL}/login.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                showLoading(false, 'login');
+                
+                if (result.success) {
+                    showMessage('success', 'Login successful!');
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    currentUser = result.user;
+                    setTimeout(() => {
+                        showWallPage();
+                    }, 1000);
+                } else {
+                    showMessage('error', result.message);
+                }
+            })
+            .catch(error => {
+                showLoading(false, 'login');
+                showMessage('error', 'Network error. Please try again.');
+                console.error('Error:', error);
+            });
+        }
+
+        function showMessage(type, message) {
+            const errorDiv = document.getElementById('error-message');
+            const successDiv = document.getElementById('success-message');
+            
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            } else {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        function showRegMessage(type, message) {
+            const errorDiv = document.getElementById('reg-error-message');
+            const successDiv = document.getElementById('reg-success-message');
+            
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            } else {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            }
+        }
+
+        function showLoading(show, formType = 'login') {
+            let submitBtn, loadingText, originalText;
+            
+            if (formType === 'login') {
+                submitBtn = document.querySelector('#loginForm button[type="submit"]');
+                loadingText = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+                originalText = '<i class="fas fa-sign-in-alt"></i> Login to Community';
+            } else {
+                submitBtn = document.querySelector('#registerForm button[type="submit"]');
+                loadingText = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+                originalText = '<i class="fas fa-user-plus"></i> Create Account';
+            }
+            
+            if (submitBtn) {
+                if (show) {
+                    submitBtn.innerHTML = loadingText;
+                    submitBtn.disabled = true;
+                } else {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }
+        }
+
+        // ==================== REGISTRATION SYSTEM ====================
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            
+            // Clear messages
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('reg-error-message').style.display = 'none';
+            document.getElementById('reg-success-message').style.display = 'none';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            
+            // Clear messages
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('reg-error-message').style.display = 'none';
+            document.getElementById('reg-success-message').style.display = 'none';
+        }
+
+        function registerUser() {
+            const form = document.getElementById('registerForm');
+            const formData = new FormData(form);
+            
+            const username = formData.get('username').trim();
+            const email = formData.get('email').trim();
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirm_password');
+            const profilePic = formData.get('profile_pic');
+
+            // Validation
+            if (!username || !email || !password || !confirmPassword) {
+                showRegMessage('error', 'Please fill all required fields!');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showRegMessage('error', 'Passwords do not match!');
+                return;
+            }
+
+            if (password.length < 6) {
+                showRegMessage('error', 'Password must be at least 6 characters!');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showRegMessage('error', 'Please enter a valid email address!');
+                return;
+            }
+
+            showLoading(true, 'register');
+
+            // Send registration request with FormData (for file upload)
+            fetch(`${API_BASE_URL}/register.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                showLoading(false, 'register');
+
+                if (result.success) {
+                    showRegMessage('success', 'Account created successfully! Redirecting to login...');
+                    
+                    // Clear form
+                    form.reset();
+                    
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        showLoginForm();
+                        showMessage('success', 'Account created! Please login.');
+                    }, 2000);
+                } else {
+                    showRegMessage('error', result.message || 'Registration failed!');
+                }
+            })
+            .catch(error => {
+                showLoading(false, 'register');
+                showRegMessage('error', 'Network error. Please try again.');
+                console.error('Registration error:', error);
+            });
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // ==================== POSTS MANAGEMENT ====================
+        function createPost() {
+            const content = document.getElementById('postContent').value.trim();
+            
+            if (!content) {
+                alert('Please write something to post!');
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/post_message.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ content: content })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    document.getElementById('postContent').value = '';
+                    loadPosts();
+                    showNotification('Post created successfully!', 'success');
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error creating post', 'error');
+            });
+        }
+
+        // Load posts with language filter
+        function loadPosts() {
+            let url = `${API_BASE_URL}/get_posts.php`;
+            if (currentLanguageFilter !== 'all') {
+                url += `?language=${currentLanguageFilter}`;
+            }
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(posts => {
+                    displayPosts(posts);
+                })
+                .catch(error => {
+                    console.error('Error loading posts:', error);
+                    document.getElementById('postsFeed').innerHTML = '<div class="error-message">Error loading posts</div>';
+                });
+        }
+
+        // Display posts with follow buttons
+        function displayPosts(posts) {
+            const postsFeed = document.getElementById('postsFeed');
+            
+            if (!posts || posts.length === 0) {
+                postsFeed.innerHTML = `
+                    <div class="no-posts" style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h3>No posts yet</h3>
+                        <p>Be the first to share something with the community!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            postsFeed.innerHTML = posts.map(post => {
+                const languageBadge = post.post_language ? 
+                    `<span class="language-badge">${post.post_language.toUpperCase()}</span>` : '';
+                
+                // Follow button - only show if not current user's post
+                const followButton = post.user_id !== currentUser?.id ? 
+                    `<button class="follow-btn" data-user-id="${post.user_id}" onclick="toggleFollow(${post.user_id})">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>` : '';
+                
+                // FIXED: Proper avatar URL
+                let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                
+                if (post.profile_pic && post.profile_pic !== 'default.png') {
+                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${post.profile_pic}`;
+                }
+                
+                return `
+                <div class="post-card" id="post-${post.id}">
+                    <div class="post-header">
+                        <img src="${avatarSrc}" 
+                             alt="${post.username}" 
+                             class="user-avatar post-avatar"
+                             onclick="openUserProfile(${post.user_id})"
+                             onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
+                        <div class="post-user-info">
+                            <div class="post-username" onclick="openUserProfile(${post.user_id})">
+                                ${post.username} ${languageBadge} ${followButton}
+                            </div>
+                            <span class="post-time">${formatTime(post.created_at)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="post-content">
+                        <p>${post.content}</p>
+                    </div>
+                    
+                    <div class="post-stats">
+                        <span><i class="fas fa-heart"></i> ${post.like_count || 0} likes</span>
+                        <span><i class="fas fa-comment"></i> ${post.comment_count || 0} comments</span>
+                        <span><i class="fas fa-share"></i> ${post.share_count || 0} shares</span>
+                    </div>
+                    
+                    <div class="post-actions-row">
+                        <button class="action-btn like-btn ${post.user_liked ? 'liked' : ''}" 
+                                onclick="likePost(${post.id})">
+                            <i class="fas fa-heart"></i> Like
+                        </button>
+                        
+                        <button class="action-btn comment-btn" onclick="openComments(${post.id})">
+                            <i class="fas fa-comment"></i> Comment
+                        </button>
+                        
+                        <button class="action-btn share-btn" onclick="sharePost(${post.id})">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            
+            // Check follow status for all post authors
+            const userIds = posts.filter(post => post.user_id !== currentUser?.id).map(post => post.user_id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        function likePost(postId) {
+            fetch(`${API_BASE_URL}/like_post.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ post_id: postId })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    loadPosts();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 5px;
+                color: white;
+                z-index: 1001;
+                background: ${type === 'success' ? '#28a745' : '#dc3545'};
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // ==================== COMMENTS SYSTEM ====================
+        function openComments(postId) {
+            currentPostId = postId;
+            const modal = document.getElementById('commentModal');
+            modal.style.display = 'block';
+            loadComments(postId);
+        }
+
+        function loadComments(postId) {
+            fetch(`${API_BASE_URL}/get_comments.php?post_id=${postId}`)
+                .then(response => response.json())
+                .then(comments => {
+                    displayComments(comments);
+                })
+                .catch(error => {
+                    console.error('Error loading comments:', error);
+                    document.getElementById('commentsList').innerHTML = '<div class="error-message">Error loading comments</div>';
+                });
+        }
+
+        function displayComments(comments) {
+            const commentsList = document.getElementById('commentsList');
+            
+            if (!comments || comments.length === 0) {
+                commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                return;
+            }
+
+            commentsList.innerHTML = comments.map(comment => {
+                // FIXED: Proper avatar URL for comments
+                let commentAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                
+                if (comment.profile_pic && comment.profile_pic !== 'default.png') {
+                    commentAvatar = `${API_BASE_URL}/../assets/avatars/${comment.profile_pic}`;
+                }
+                
+                return `
+                    <div class="comment-item">
+                        <img src="${commentAvatar}" 
+                             alt="${comment.username}" 
+                             class="comment-avatar"
+                             onclick="openUserProfile(${comment.user_id})"
+                             onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
+                        <div class="comment-content">
+                            <div class="comment-header">
+                                <span class="comment-user" onclick="openUserProfile(${comment.user_id})">${comment.username}</span>
+                                <span class="comment-time">${formatTime(comment.created_at)}</span>
+                            </div>
+                            <div class="comment-text">${comment.content}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addComment() {
+            const content = document.getElementById('commentInput').value.trim();
+            
+            if (!content) {
+                alert('Please write a comment!');
+                return;
+            }
+
+            if (!currentPostId) {
+                alert('No post selected!');
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/comment.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    post_id: currentPostId, 
+                    content: content 
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    document.getElementById('commentInput').value = '';
+                    loadComments(currentPostId);
+                    loadPosts();
+                } else {
+                    alert(result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding comment');
+            });
+        }
+
+        // ==================== PROFILE SYSTEM ====================
+        function openProfileModal() {
+            // Load current user data into profile modal
+            document.getElementById('profileUsername').value = currentUser.username;
+            document.getElementById('profileEmail').value = currentUser.email || 'Not set';
+            
+            // Load user stats - FIXED: This was missing
+            loadUserProfileStats();
+            
+            // Set profile avatar - FIXED: Proper avatar URL
+            const profileAvatar = document.getElementById('profileAvatar');
+            if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
+                profileAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
+            } else {
+                profileAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+            }
+            
+            // Clear password fields
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmNewPassword').value = '';
+            document.getElementById('profileMessage').style.display = 'none';
+            
+            document.getElementById('profileModal').style.display = 'block';
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function handleAvatarUpload(file) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileAvatar').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateProfile() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmNewPassword').value;
+            const avatarFile = document.getElementById('profileAvatarInput').files[0];
+
+            if (newPassword && newPassword !== confirmPassword) {
+                showProfileMessage('Passwords do not match!', 'error');
+                return;
+            }
+
+            if (newPassword && newPassword.length < 6) {
+                showProfileMessage('Password must be at least 6 characters!', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            if (avatarFile) {
+                formData.append('avatar', avatarFile);
+            }
+            if (newPassword) {
+                formData.append('new_password', newPassword);
+            }
+
+            fetch(`${API_BASE_URL}/update_profile.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showProfileMessage('Profile updated successfully!', 'success');
+                    
+                    // Update local user data if avatar was changed
+                    if (result.new_avatar) {
+                        currentUser.profile_pic = result.new_avatar;
+                        localStorage.setItem('user', JSON.stringify(currentUser));
+                        
+                        // Update header avatar
+                        const headerAvatar = document.getElementById('headerUserAvatar');
+                        headerAvatar.src = `${API_BASE_URL}/../assets/avatars/${result.new_avatar}`;
+                        
+                        // Update profile modal avatar
+                        document.getElementById('profileAvatar').src = `${API_BASE_URL}/../assets/avatars/${result.new_avatar}`;
+                    }
+                    
+                    // Clear password fields
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmNewPassword').value = '';
+                    document.getElementById('profileAvatarInput').value = '';
+                    
+                } else {
+                    showProfileMessage(result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showProfileMessage('Error updating profile', 'error');
+            });
+        }
+
+        function showProfileMessage(message, type) {
+            const messageDiv = document.getElementById('profileMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // ==================== SHARE SYSTEM ====================
+        function sharePost(postId) {
+            console.log('🔄 Share function called for post:', postId);
+            
+            try {
+                const postElement = document.getElementById(`post-${postId}`);
+                if (!postElement) {
+                    console.error('❌ Post element not found');
+                    return;
+                }
+                
+                const postContent = postElement.querySelector('.post-content p').textContent;
+                const postAuthor = postElement.querySelector('.post-username').textContent;
+                const postTime = postElement.querySelector('.post-time').textContent;
+                
+                currentPostData = {
+                    id: postId,
+                    content: postContent,
+                    author: postAuthor,
+                    time: postTime,
+                    link: generatePostLink(postId)
+                };
+                
+                showShareModal();
+                
+            } catch (error) {
+                console.error('❌ Share error:', error);
+                showTempMessage('Error sharing post', 'error');
+            }
+        }
+
+        function generatePostLink(postId) {
+            return `${window.location.origin}${window.location.pathname}?post=${postId}`;
+        }
+
+        function showShareModal() {
+            const existingModal = document.getElementById('professionalShareModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            const modal = document.createElement('div');
+            modal.id = 'professionalShareModal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(10px);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div class="share-modal-content">
+                    <h2>${getEmoji('1F4E2')} Share Post</h2>
+                    
+                    <div class="share-preview">
+                        <p>"${truncateText(currentPostData.content, 120)}"</p>
+                        <p class="share-author">- ${currentPostData.author}</p>
+                    </div>
+                    
+                    <div class="share-buttons">
+                        <button onclick="shareOnWhatsApp()" class="share-platform-btn whatsapp-btn">
+                            ${getEmoji('1F4AC')} WhatsApp
+                        </button>
+                        
+                        <button onclick="shareOnFacebook()" class="share-platform-btn facebook-btn">
+                            ${getEmoji('1F4FA')} Facebook
+                        </button>
+                        
+                        <button onclick="shareOnTwitter()" class="share-platform-btn twitter-btn">
+                            ${getEmoji('1F426')} Twitter
+                        </button>
+                        
+                        <button onclick="copyProfessionalLink()" class="share-platform-btn copy-btn">
+                            ${getEmoji('1F517')} Copy Link
+                        </button>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button onclick="closeShareModal()" class="cancel-btn">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeShareModal();
+                }
+            });
+        }
+
+        function closeShareModal() {
+            const modal = document.getElementById('professionalShareModal');
+            if (modal) {
+                modal.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    modal.remove();
+                }, 300);
+            }
+            currentPostData = null;
+        }
+
+        function getEmoji(code) {
+            return String.fromCodePoint(parseInt(code, 16));
+        }
+
+        function shareOnWhatsApp() {
+            if (!currentPostData) return;
+            
+            const star = getEmoji('1F31C');
+            const person = getEmoji('1F464');
+            const speech = getEmoji('1F4AC');
+            const link = getEmoji('1F517');
+            
+            const shareText = `${star} Community Wall Post ${star}
+
+        ${person} By: ${currentPostData.author}
+        ${speech} "${truncateText(currentPostData.content, 100)}"
+
+        ${link} View Full Post: ${currentPostData.link}
+
+        Join the conversation on Community Wall!`;
+
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+            window.open(whatsappUrl, '_blank');
+            closeShareModal();
+            showTempMessage(`${getEmoji('1F4F1')} Opening WhatsApp...`, 'success');
+        }
+
+        function shareOnFacebook() {
+            if (!currentPostData) return;
+            
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentPostData.link)}&quote=${encodeURIComponent(`"${truncateText(currentPostData.content, 100)}" - ${currentPostData.author}`)}`;
+            window.open(facebookUrl, '_blank', 'width=600,height=400');
+            closeShareModal();
+            showTempMessage(`${getEmoji('1F4FA')} Sharing on Facebook...`, 'success');
+        }
+
+        function shareOnTwitter() {
+            if (!currentPostData) return;
+            
+            const shareText = `"${truncateText(currentPostData.content, 100)}" - ${currentPostData.author}`;
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(currentPostData.link)}`;
+            window.open(twitterUrl, '_blank', 'width=600,height=400');
+            closeShareModal();
+            showTempMessage(`${getEmoji('1F426')} Sharing on Twitter...`, 'success');
+        }
+
+        function copyProfessionalLink() {
+            if (!currentPostData) return;
+            
+            const star = getEmoji('1F31C');
+            const person = getEmoji('1F464');
+            const speech = getEmoji('1F4AC');
+            const link = getEmoji('1F517');
+            
+            const shareText = `${star} Community Wall Post ${star}
+
+        ${person} By: ${currentPostData.author}
+        ${speech} "${truncateText(currentPostData.content, 100)}"
+
+        ${link} View Full Post: ${currentPostData.link}
+
+        Join Community Wall to share your thoughts!`;
+
+            copyToClipboard(shareText);
+            closeShareModal();
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showTempMessage(`${getEmoji('1F4CB')} Post copied professionally!`, 'success');
+                }).catch(err => {
+                    fallbackCopyToClipboard(text);
+                });
+            } else {
+                fallbackCopyToClipboard(text);
+            }
+        }
+
+        function fallbackCopyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                if (successful) {
+                    showTempMessage(`${getEmoji('1F4CB')} Post copied professionally!`, 'success');
+                }
+            } catch (err) {
+                showTempMessage(`${getEmoji('274C')} Failed to copy`, 'error');
+            }
+        }
+
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+
+        function showTempMessage(message, type) {
+            const existingMessages = document.querySelectorAll('.temp-message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `temp-message ${type}`;
+            messageDiv.textContent = message;
+            messageDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+                color: white;
+                border-radius: 8px;
+                z-index: 10001;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => {
+                        if (messageDiv.parentNode) {
+                            messageDiv.remove();
+                        }
+                    }, 300);
+                }
+            }, 3000);
+        }
+
+        // ==================== REAL LEADERBOARD SYSTEM ====================
+        async function loadLeaderboard() {
+            console.log('🔄 Loading leaderboard...');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/get_top_members.php`);
+                const data = await response.json();
+                
+                console.log('📊 API Response:', data);
+                
+                if (data.success && data.top_members) {
+                    displayLeaderboard(data.top_members);
+                } else {
+                    console.error('❌ API Error:', data.message);
+                    loadFallbackLeaderboard();
+                }
+            } catch (error) {
+                console.error('❌ Failed to load leaderboard:', error);
+                loadFallbackLeaderboard();
+            }
+        }
+
+        // Fallback function if API fails
+        function loadFallbackLeaderboard() {
+            console.log('🔄 Loading fallback demo leaderboard...');
+            
+            const fallbackUsers = [
+                { 
+                    id: 1, 
+                    username: "TechGuru", 
+                    profile_pic: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+                    total_likes: 245,
+                    total_comments: 89,
+                    total_posts: 12,
+                    followers_count: 156
+                },
+                { 
+                    id: 2, 
+                    username: "CodeMaster", 
+                    profile_pic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face",
+                    total_likes: 189,
+                    total_comments: 67,
+                    total_posts: 8,
+                    followers_count: 98
+                },
+                { 
+                    id: 3, 
+                    username: "DesignPro", 
+                    profile_pic: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+                    total_likes: 156,
+                    total_comments: 45,
+                    total_posts: 6,
+                    followers_count: 76
+                }
+            ];
+            
+            displayLeaderboard(fallbackUsers);
+        }
+
+        function displayLeaderboard(users) {
+            const leaderboardContainer = document.getElementById('leaderboardCards');
+            if (!leaderboardContainer) {
+                console.error('❌ Leaderboard container not found');
+                return;
+            }
+            
+            console.log('🎯 Displaying leaderboard with users:', users);
+            
+            const leaderboardHTML = users.map((user, index) => {
+                const followButton = user.id !== currentUser?.id ? 
+                    `<button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>` : '';
+                
+                // FIXED: Proper avatar URL for leaderboard
+                let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                if (user.profile_pic && user.profile_pic !== 'default.png') {
+                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+                }
+                
+                return `
+                <div class="leader-card">
+                    <div class="rank-badge rank-${index + 1}">${index + 1}</div>
+                    <img src="${avatarSrc}" 
+                         alt="${user.username}" class="leader-avatar leader-${index + 1}"
+                         onclick="openUserProfile(${user.id})"
+                         onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
+                    <div class="leader-info">
+                        <div class="leader-name">
+                            <span onclick="openUserProfile(${user.id})" style="cursor: pointer;">${user.username}</span>
+                            ${followButton}
+                        </div>
+                        <div class="leader-stats">
+                            <div class="stat"><i class="fas fa-heart"></i> ${user.total_likes || 0}</div>
+                            <div class="stat"><i class="fas fa-comment"></i> ${user.total_comments || 0}</div>
+                            <div class="stat"><i class="fas fa-user-friends"></i> ${user.followers_count || 0}</div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            
+            leaderboardContainer.innerHTML = leaderboardHTML;
+            
+            // Check follow status for all users
+            const userIds = users.filter(user => user.id !== currentUser?.id).map(user => user.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+            
+            console.log('✅ Leaderboard displayed successfully');
+        }
+
+        // Load trending topics from API (if available)
+        async function loadTrendingTopics() {
+            try {
+                // For now, using static data
+                const topics = [
+                    { name: "Web Development", count: 45 },
+                    { name: "AI & Machine Learning", count: 38 },
+                    { name: "Mobile Apps", count: 32 },
+                    { name: "UI/UX Design", count: 28 },
+                    { name: "Cloud Computing", count: 25 }
+                ];
+                
+                const topicsContainer = document.getElementById('topicsList');
+                if (!topicsContainer) return;
+                
+                const topicsHTML = topics.map(topic => `
+                    <div class="topic-item">
+                        <span class="topic-name">${topic.name}</span>
+                        <span class="topic-count">${topic.count}</span>
+                    </div>
+                `).join('');
+                
+                topicsContainer.innerHTML = topicsHTML;
+            } catch (error) {
+                console.error('Error loading trending topics:', error);
+            }
+        }
+
+        function loadSidebarData() {
+            loadTrendingTopics();
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        function logout() {
+            localStorage.removeItem('user');
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('wallPage').style.display = 'none';
+        }
+
+        function openSettings() {
+            alert('Settings panel will open here!');
+        }
+
+        // Add CSS animations for share modal
+        if (!document.querySelector('#emoji-fixed-animations')) {
+            const style = document.createElement('style');
+            style.id = 'emoji-fixed-animations';
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Load saved language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLanguage = localStorage.getItem('community_language') || 'en';
+            
+            // Set initial direction
+            if (savedLanguage === 'ur') {
+                document.body.setAttribute('dir', 'rtl');
+                document.body.style.direction = 'rtl';
+                document.body.style.textAlign = 'right';
+            } else {
+                document.body.setAttribute('dir', 'ltr');
+                document.body.style.direction = 'ltr';
+                document.body.style.textAlign = 'left';
+            }
+            
+            applyLanguage(savedLanguage);
+            checkExistingAuth();
+            setupEventListeners();
+        });
+
+        console.log('🚀 Community Wall System Loaded!');
+        console.log('🌐 API Base URL:', API_BASE_URL);
+        console.log('🔤 Language Filtering: ACTIVE');
+        console.log('👥 Follow System: ACTIVE');
+        console.log('👤 User Profile System: ACTIVE');
+    </script>
+</body>
+</html>
