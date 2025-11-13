@@ -3,7 +3,7 @@
 const pageConfig = {
     'motivational': {
         title: 'Motivational Content - DK Community',
-        html: 'pages/motivational.html',
+        html: 'ai-bhai/pages/motivational.html',
         icon: '💪',
         type: 'external'
     },
