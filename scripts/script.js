@@ -1,4 +1,4 @@
-// scripts/script.js - UPDATED (Coming Soon Message Removed)
+// scripts/script.js
 
 // ===== LOADING SCREEN MANAGEMENT =====
 document.addEventListener('DOMContentLoaded', function() {
@@ -18,14 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     });
 
-    // Brand Footer Banner Initialization
-    function initBrandFooter() {
-        // This will be handled by brand-footer.js
-        console.log('Brand Footer Banner Ready!');
-    }
+// Brand Footer Banner Initialization
+function initBrandFooter() {
+    // This will be handled by brand-footer.js
+    console.log('Brand Footer Banner Ready!');
+}
 
-    // Call this in your main init function
-    initBrandFooter();
+// Call this in your main init function
+initBrandFooter();
 
     // Fallback: if still loading after 3 seconds, force hide
     setTimeout(() => {
@@ -72,14 +72,10 @@ function handleNavigation(page) {
             window.open('pages/motivational.html', '_blank');
         }, 1000);
     } else {
-        // REMOVED: Coming Soon Alert - Now directly open pages or show proper navigation
+        // For other pages, show coming soon message
         setTimeout(() => {
             hideLoadingScreen();
-            // Silent navigation - no alert message
-            console.log(`Navigating to ${page} page`);
-            
-            // You can add actual page navigation here later
-            // For now, just log the navigation attempt
+            alert(`🚀 **${page.toUpperCase()} Feature**\n\nBro, this feature is launching soon!\n\n✅ Interactive Content\n✅ Amazing Features\n✅ Surprises!\n\n📅 Coming Soon...`);
         }, 1500);
     }
 }
@@ -109,11 +105,10 @@ function initializeInstallPrompt() {
     const installBtn = document.getElementById('installBtn');
     const cancelBtn = document.getElementById('cancelInstall');
     
-    // REMOVED: Coming Soon alert from install button
     if (installBtn) {
         installBtn.addEventListener('click', function() {
-            // Install functionality will be handled by install-prompt.js
-            console.log('Install button clicked - handled by install-prompt.js');
+            alert('📱 App Install ready!');
+            hideInstallPrompt();
         });
     }
     
