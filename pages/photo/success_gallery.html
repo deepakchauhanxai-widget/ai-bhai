@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> success Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #0ff;
+            font-family: 'Segoe UI', system-ui;
+            min-height: 100vh;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            border: 2px solid #0ff;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+        }
+
+        .card-img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 2rem;
+            overflow: auto;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            margin: 2rem auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-img {
+            max-height: 80vh;
+            width: auto;
+            max-width: 100%;
+            border: 2px solid #0ff;
+            border-radius: 8px;
+        }
+
+        .modal-caption {
+            margin: 1.5rem 0;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #0ff;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2.5rem;
+            color: #0ff;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .modal-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #0ff;
+            border-radius: 5px;
+            background: rgba(0, 255, 255, 0.1);
+            color: #0ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .gallery {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: center; margin: 20px;">
+  <input 
+    type="text" 
+    id="searchInput" 
+    placeholder="Search by Serial Number or URL..." 
+    style="padding: 10px; width: 80%; max-width: 500px; font-size: 16px; border: 2px solid #ff4444; border-radius: 6px;"
+  >
+    </div>
+    <div class="gallery" id="gallery"></div>
+
+    <div class="modal" id="modal">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-content">
+            <img class="modal-img" id="modalImage" loading="eager">
+            <div class="modal-caption" id="modalCaption"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn" id="downloadBtn">Download</button>
+                <button class="modal-btn" id="shareBtn">Share</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbw1S9YauQ5XOgoz2UPGMWd54fIKEXlpKus58SN9IqLqYEmVy98BQezVKpv4rWpm9mFR/exec?type=success';
+        const gallery = document.getElementById('gallery');
+        let currentData = [];
+
+        async function fetchImages() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                currentData = data.sort(() => Math.random() - 0.5);
+                renderGallery();
+            } catch (error) {
+                console.error('Error fetching images:', error);
+            }
+        }
+
+        function renderGallery() {
+            gallery.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+            
+            currentData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img 
+                        class="card-img" 
+                        src="${item.image}" 
+                        loading="lazy"
+                        data-caption="${item.caption}"
+                    >
+                `;
+                card.addEventListener('click', () => openModal(item));
+                fragment.appendChild(card);
+            });
+
+            gallery.appendChild(fragment);
+        }
+
+        function openModal(item) {
+            const modal = document.getElementById('modal');
+            const modalImg = document.getElementById('modalImage');
+            const caption = document.getElementById('modalCaption');
+            
+            modalImg.src = item.image;
+            caption.textContent = item.caption;
+            
+            document.getElementById('downloadBtn').onclick = () => {
+                window.open(item.image, '_blank');
+            };
+
+            document.getElementById('shareBtn').onclick = () => {
+                navigator.share ? 
+                    navigator.share({ url: item.image }) :
+                    navigator.clipboard.writeText(item.image).then(() => {
+                        alert('Link copied to clipboard!');
+                    });
+            };
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            currentData = currentData.sort(() => Math.random() - 0.5);
+            renderGallery();
+        }
+
+        window.onclick = (event) => {
+            if (event.target === document.getElementById('modal')) {
+                closeModal();
+            }
+        };
+
+        window.onload = fetchImages;
+window.onbeforeunload = () => {
+    window.scrollTo(0, 0);
+};
+
+// Auto-refresh gallery every 15 seconds
+setInterval(() => {
+    currentData = currentData.sort(() => Math.random() - 0.5);
+    renderGallery();
+}, 90000);
+</script>
+</body>
+</html>
