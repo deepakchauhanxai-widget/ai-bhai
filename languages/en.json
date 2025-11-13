@@ -1,0 +1,23 @@
+{
+    "header": {
+        "tagline": "Here you'll get meaning, not work!",
+        "main_title": "Deepak Chauhan × AI Bhai"
+    },
+    "navigation": {
+        "motivational": "Motivational",
+        "photos": "Photos", 
+        "stories": "Your Stories",
+        "memories": "Old Memories",
+        "unlock": "UNLOCK",
+        "about": "About",
+        "team": "Our Team",
+        "privacy": "Privacy Policy",
+        "training": "AI Training",
+        "digital": "Digital Jodi"
+    },
+    "footer": {
+        "community": "DK Community",
+        "join": "Join"
+    },
+    "loading": "Loading..."
+}

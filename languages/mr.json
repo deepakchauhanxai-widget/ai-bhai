@@ -1,0 +1,23 @@
+{
+    "header": {
+        "tagline": "इथे तुम्हाला काम नाही, अर्थ मिळेल!",
+        "main_title": "दीपक चौहान × AI भाऊ"
+    },
+    "navigation": {
+        "motivational": "प्रेरणादायी",
+        "photos": "फोटो",
+        "stories": "तुमच्या कथा",
+        "memories": "जुन्या आठवणी",
+        "unlock": "अनलॉक",
+        "about": "आमच्याबद्दल",
+        "team": "आमची टीम",
+        "privacy": "गोपनीयता धोरण",
+        "training": "AI ट्रेनिंग",
+        "digital": "डिजिटल जोडी"
+    },
+    "footer": {
+        "community": "DK कम्युनिटी",
+        "join": "सामील व्हा"
+    },
+    "loading": "लोड होत आहे..."
+}
