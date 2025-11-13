@@ -1,64 +1,26 @@
-// scripts/install-prompt.js - FINAL FIXED VERSION
+// scripts/install-prompt.js - UPDATED
 
 let deferredPrompt;
 const installPrompt = document.getElementById('installPrompt');
 const installBtn = document.getElementById('installBtn');
 const cancelBtn = document.getElementById('cancelInstall');
 
-// Check if app is already installed
-function isAppInstalled() {
-    return window.matchMedia('(display-mode: standalone)').matches || 
-           window.navigator.standalone === true ||
-           document.referrer.includes('android-app://');
-}
-
-// Check localStorage for user preference
-function getUserPreference() {
-    return localStorage.getItem('pwaInstallPrompt');
-}
-
-// Save user preference
-function setUserPreference(action) {
-    localStorage.setItem('pwaInstallPrompt', action);
-}
-
 // PWA Install Event
 window.addEventListener('beforeinstallprompt', (e) => {
     console.log('PWA Install triggered');
-    
-    // Check if app is already installed
-    if (isAppInstalled()) {
-        console.log('App already installed, hiding prompt');
-        hideInstallPrompt();
-        return;
-    }
-    
-    // Check user preference
-    const userPref = getUserPreference();
-    if (userPref === 'dismissed' || userPref === 'installed') {
-        console.log('User has dismissed or installed already');
-        return;
-    }
-    
     e.preventDefault();
     deferredPrompt = e;
     
-    // Show install prompt after 8 seconds only if not installed
-    if (!isAppInstalled()) {
-        setTimeout(showInstallPrompt, 8000);
-    }
+    // Show install prompt after 5 seconds
+    setTimeout(showInstallPrompt, 5000);
 });
 
 function showInstallPrompt() {
-    // Double check if not installed
-    if (isAppInstalled()) {
-        hideInstallPrompt();
-        return;
-    }
-    
     if (deferredPrompt && installPrompt) {
         console.log('Showing install prompt');
         installPrompt.classList.remove('hidden');
+        
+        // Add animation
         installPrompt.style.animation = 'slideInUp 0.5s ease-out';
     }
 }
@@ -69,7 +31,7 @@ function hideInstallPrompt() {
     }
 }
 
-// Install Button Click
+// Install Button Click - WORKING VERSION
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
         console.log('Install button clicked');
@@ -87,23 +49,20 @@ if (installBtn) {
             
             if (outcome === 'accepted') {
                 console.log('PWA installed successfully');
-                setUserPreference('installed');
+                // Show success message
                 showInstallSuccess();
-                hideInstallPrompt();
             } else {
                 console.log('User cancelled PWA installation');
-                setUserPreference('dismissed');
-                hideInstallPrompt();
-                
-                // Show again after 24 hours if user cancels
-                setTimeout(() => {
-                    localStorage.removeItem('pwaInstallPrompt');
-                }, 24 * 60 * 60 * 1000); // 24 hours
             }
             
+            // Clear the deferredPrompt variable
             deferredPrompt = null;
+            
+            // Hide our custom prompt
+            hideInstallPrompt();
         } else {
             console.log('No deferred prompt available');
+            // Fallback: redirect to manual install instructions
             showManualInstallGuide();
         }
     });
@@ -113,13 +72,10 @@ if (installBtn) {
 if (cancelBtn) {
     cancelBtn.addEventListener('click', () => {
         console.log('Install cancelled by user');
-        setUserPreference('dismissed');
         hideInstallPrompt();
         
-        // Remove preference after 24 hours
-        setTimeout(() => {
-            localStorage.removeItem('pwaInstallPrompt');
-        }, 24 * 60 * 60 * 1000);
+        // Show again after 1 hour
+        setTimeout(showInstallPrompt, 3600000);
     });
 }
 
@@ -128,7 +84,7 @@ function showInstallSuccess() {
     const successMsg = document.createElement('div');
     successMsg.innerHTML = `
         <div style="position: fixed; top: 20px; right: 20px; background: #10B981; color: white; padding: 15px; border-radius: 10px; z-index: 10000; animation: slideInRight 0.5s ease-out;">
-            <strong>✅ Success!</strong> DK Community app installed!
+            <strong>✅ Success!</strong> DK Community app installed successfully!
         </div>
     `;
     document.body.appendChild(successMsg);
@@ -154,19 +110,11 @@ function showManualInstallGuide() {
     document.body.appendChild(guide);
 }
 
-// Detect when app is successfully installed
+// Check if app is already installed
 window.addEventListener('appinstalled', (evt) => {
     console.log('DK Community PWA was successfully installed');
-    setUserPreference('installed');
     hideInstallPrompt();
 });
 
-// Check on page load if app is already installed
-window.addEventListener('load', () => {
-    if (isAppInstalled()) {
-        console.log('App is already installed, hiding prompt');
-        hideInstallPrompt();
-    }
-});
-
+// Remove pwa.js file completely - don't need duplicate code
 console.log('Install Prompt JS loaded successfully');
