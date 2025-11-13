@@ -1,27 +1,42 @@
-// scripts/install-prompt.js - UPDATED
+// scripts/install-prompt.js - COMPLETELY FIXED
 
 let deferredPrompt;
 const installPrompt = document.getElementById('installPrompt');
 const installBtn = document.getElementById('installBtn');
 const cancelBtn = document.getElementById('cancelInstall');
 
+// Check if app is already installed
+function isAppInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           window.navigator.standalone === true;
+}
+
 // PWA Install Event
 window.addEventListener('beforeinstallprompt', (e) => {
-    console.log('PWA Install triggered');
+    console.log('🔵 PWA Install triggered');
+    
+    // Check if app is already installed
+    if (isAppInstalled()) {
+        console.log('✅ App already installed, hiding prompt');
+        hideInstallPrompt();
+        return;
+    }
+    
     e.preventDefault();
     deferredPrompt = e;
     
     // Show install prompt after 5 seconds
-    setTimeout(showInstallPrompt, 5000);
+    setTimeout(() => {
+        if (!isAppInstalled() && deferredPrompt) {
+            showInstallPrompt();
+        }
+    }, 5000);
 });
 
 function showInstallPrompt() {
     if (deferredPrompt && installPrompt) {
-        console.log('Showing install prompt');
+        console.log('🟡 Showing install prompt');
         installPrompt.classList.remove('hidden');
-        
-        // Add animation
-        installPrompt.style.animation = 'slideInUp 0.5s ease-out';
     }
 }
 
@@ -34,35 +49,40 @@ function hideInstallPrompt() {
 // Install Button Click - WORKING VERSION
 if (installBtn) {
     installBtn.addEventListener('click', async () => {
-        console.log('Install button clicked');
+        console.log('🟢 Install button clicked');
         
         if (deferredPrompt) {
-            console.log('Prompting user to install');
+            console.log('🟡 Prompting user to install');
             
-            // Show the install prompt
+            // Hide our custom prompt first
+            hideInstallPrompt();
+            
+            // Show browser's native install prompt
             deferredPrompt.prompt();
             
-            // Wait for the user to respond to the prompt
+            // Wait for user response
             const { outcome } = await deferredPrompt.userChoice;
             
-            console.log(`User response: ${outcome}`);
+            console.log(`🟢 User response: ${outcome}`);
             
             if (outcome === 'accepted') {
-                console.log('PWA installed successfully');
-                // Show success message
-                showInstallSuccess();
+                console.log('✅ PWA installed successfully');
+                // Success - don't show again
+                deferredPrompt = null;
             } else {
-                console.log('User cancelled PWA installation');
+                console.log('❌ User cancelled installation');
+                // Show again after 1 hour if cancelled
+                setTimeout(() => {
+                    if (!isAppInstalled()) {
+                        showInstallPrompt();
+                    }
+                }, 3600000); // 1 hour
             }
             
-            // Clear the deferredPrompt variable
             deferredPrompt = null;
-            
-            // Hide our custom prompt
-            hideInstallPrompt();
         } else {
-            console.log('No deferred prompt available');
-            // Fallback: redirect to manual install instructions
+            console.log('❌ No install prompt available');
+            // Fallback for browsers that don't support PWA install
             showManualInstallGuide();
         }
     });
@@ -71,50 +91,58 @@ if (installBtn) {
 // Cancel Button
 if (cancelBtn) {
     cancelBtn.addEventListener('click', () => {
-        console.log('Install cancelled by user');
+        console.log('⏸️ Install cancelled by user');
         hideInstallPrompt();
         
-        // Show again after 1 hour
-        setTimeout(showInstallPrompt, 3600000);
+        // Show again after 2 hours
+        setTimeout(() => {
+            if (!isAppInstalled() && deferredPrompt) {
+                showInstallPrompt();
+            }
+        }, 7200000); // 2 hours
     });
 }
 
-// Success Message
-function showInstallSuccess() {
-    const successMsg = document.createElement('div');
-    successMsg.innerHTML = `
-        <div style="position: fixed; top: 20px; right: 20px; background: #10B981; color: white; padding: 15px; border-radius: 10px; z-index: 10000; animation: slideInRight 0.5s ease-out;">
-            <strong>✅ Success!</strong> DK Community app installed successfully!
-        </div>
-    `;
-    document.body.appendChild(successMsg);
-    
-    setTimeout(() => {
-        successMsg.remove();
-    }, 3000);
-}
-
-// Manual Install Guide
+// Manual Install Guide (Fallback)
 function showManualInstallGuide() {
     const guide = document.createElement('div');
     guide.innerHTML = `
-        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center;">
-            <div style="background: white; padding: 20px; border-radius: 15px; max-width: 400px; text-align: center;">
-                <h3>📱 Install DK Community App</h3>
-                <p><strong>For Android:</strong> Tap Chrome menu (⋮) → "Add to Home screen"</p>
-                <p><strong>For iOS:</strong> Tap Share button (⎙) → "Add to Home Screen"</p>
-                <button onclick="this.parentElement.parentElement.remove()" style="background: #ff0080; color: white; border: none; padding: 10px 20px; border-radius: 5px; margin-top: 15px;">Close</button>
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; font-family: Arial, sans-serif;">
+            <div style="background: white; padding: 30px; border-radius: 20px; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                <h3 style="color: #333; margin-bottom: 20px;">📱 Install DK Community App</h3>
+                
+                <div style="text-align: left; margin-bottom: 25px;">
+                    <p style="margin: 10px 0;"><strong>For Android (Chrome):</strong></p>
+                    <p style="margin: 5px 0; color: #666;">1. Tap Chrome menu (⋮)</p>
+                    <p style="margin: 5px 0; color: #666;">2. Tap "Add to Home screen"</p>
+                    
+                    <p style="margin: 10px 0;"><strong>For iOS (Safari):</strong></p>
+                    <p style="margin: 5px 0; color: #666;">1. Tap Share button (⎙)</p>
+                    <p style="margin: 5px 0; color: #666;">2. Tap "Add to Home Screen"</p>
+                </div>
+                
+                <button onclick="this.parentElement.parentElement.remove()" style="background: #ff0080; color: white; border: none; padding: 12px 30px; border-radius: 10px; font-size: 16px; cursor: pointer;">
+                    Got It!
+                </button>
             </div>
         </div>
     `;
     document.body.appendChild(guide);
 }
 
-// Check if app is already installed
+// Detect when app is successfully installed
 window.addEventListener('appinstalled', (evt) => {
-    console.log('DK Community PWA was successfully installed');
+    console.log('🎉 DK Community PWA installed successfully!');
+    deferredPrompt = null;
     hideInstallPrompt();
 });
 
-// Remove pwa.js file completely - don't need duplicate code
-console.log('Install Prompt JS loaded successfully');
+// Check on page load if app is already installed
+window.addEventListener('load', () => {
+    if (isAppInstalled()) {
+        console.log('✅ App already installed on load');
+        hideInstallPrompt();
+    }
+});
+
+console.log('✅ Install Prompt JS loaded successfully');
