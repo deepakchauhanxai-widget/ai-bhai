@@ -646,3 +646,111 @@ body {
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.2);
 }
+
+/* Install Prompt Styles */
+.install-prompt {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 10000;
+    max-width: 300px;
+    animation: slideInUp 0.5s ease-out;
+}
+
+.install-prompt.hidden {
+    display: none;
+}
+
+.install-card {
+    text-align: center;
+}
+
+.install-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.install-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.online-dot {
+    width: 10px;
+    height: 10px;
+    background: #10B981;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    border: 2px solid #667eea;
+}
+
+.install-title h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.install-title p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.install-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.install-btn-primary {
+    background: #FFD700;
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    flex: 1;
+}
+
+.install-btn-secondary {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 1;
+}
+
+@keyframes slideInUp {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
