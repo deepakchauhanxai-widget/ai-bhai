@@ -107,7 +107,7 @@ function initializeInstallPrompt() {
     
     if (installBtn) {
         installBtn.addEventListener('click', function() {
-            alert('📱 App Install ready!');
+            alert('📱 App Install feature coming soon!');
             hideInstallPrompt();
         });
     }
