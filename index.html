@@ -159,14 +159,7 @@
             </div>
         </div>
     </section>
-<!-- Add this after your main navigation section -->
-<section class="universal-install-section">
-    <button class="universal-install-btn" onclick="showUniversalInstallGuide()">
-        <span class="install-icon">📱</span>
-        <span class="install-text">Install DK Community App</span>
-        <span class="install-badge">FREE</span>
-    </button>
-</section>
+
     <!-- Motivational Box Section -->
     <section class="motivational-box-section">
         <div class="motivational-box">
@@ -878,7 +871,27 @@
     <!-- Rainbow Line -->
     <div class="rainbow-line"></div>
 </footer>
-
+    <!-- Install Prompt -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-card">
+            <div class="install-header">
+                <div class="install-avatar">
+                    <img src="images/AI-bhai.png" alt="AI Bhai" loading="lazy">
+                    <div class="online-dot"></div>
+                </div>
+                <div class="install-title">
+                    <h4>DK Community App</h4>
+                    <p>Install Now, Experience Now!</p>
+                </div>
+            </div>
+            <div class="install-actions">
+                <button id="installBtn" class="install-btn-primary">
+                    <span>Install Now</span>
+                </button>
+                <button id="cancelInstall" class="install-btn-secondary">Later</button>
+            </div>
+        </div>
+    </div>
     <!-- Audio Element for Sound Effects -->
     <audio id="clickSound" preload="auto">
         <source src="assets/audio/click.mp3" type="audio/mpeg">
