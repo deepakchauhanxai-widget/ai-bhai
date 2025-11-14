@@ -1403,7 +1403,7 @@
             </form>
 
             <!-- Register Form (Initially Hidden) -->
-            <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+            <form id="registerForm" style="display: none;" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="form-label" id="regUsernameLabel">Username</label>
                     <input type="text" class="form-input" name="username" placeholder="Choose a username" required id="regUsernameInput">
@@ -1704,302 +1704,9 @@
         let currentPostData = null;
         let currentLanguageFilter = 'all';
         let currentViewingUserId = null;
-        let pendingRegistration = null;
 
         // ==================== API BASE URL ====================
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/community-wall/api';
-
-        // ==================== REGISTER FORM HANDLER ====================
-        function handleRegister(event) {
-            event.preventDefault(); // Form submit rokne ke liye
-            
-            console.log('🔄 Register button clicked!');
-            
-            const form = document.getElementById('registerForm');
-            const formData = new FormData(form);
-            
-            // Password confirmation check
-            const password = formData.get('password');
-            const confirmPassword = formData.get('confirm_password');
-            
-            if (password !== confirmPassword) {
-                showRegMessage('error', 'Passwords do not match!');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showRegMessage('error', 'Password must be at least 6 characters long!');
-                return;
-            }
-            
-            // Show loading state
-            const registerBtn = document.getElementById('registerButton');
-            registerBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
-            registerBtn.disabled = true;
-            
-            console.log('📤 Sending registration data...');
-            
-            // Register API call
-            fetch(`${API_BASE_URL}/register.php`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log('✅ Register API Response:', result);
-                
-                if (result.success) {
-                    if (result.requires_otp) {
-                        // OTP system ke liye
-                        showOTPModal(result.email);
-                    } else {
-                        showRegMessage('success', 'Registration successful! Redirecting to login...');
-                        setTimeout(() => {
-                            showLoginForm();
-                            showMessage('success', 'Account created! Please login.');
-                        }, 2000);
-                    }
-                } else {
-                    showRegMessage('error', result.message || 'Registration failed!');
-                }
-            })
-            .catch(error => {
-                console.error('❌ Register Error:', error);
-                showRegMessage('error', 'Network error. Please try again.');
-            })
-            .finally(() => {
-                // Reset button
-                registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
-                registerBtn.disabled = false;
-            });
-        }
-
-        // ==================== OTP SYSTEM ====================
-        function showOTPModal(email) {
-            // Pehle existing modal remove karo
-            const existingModal = document.getElementById('otpModal');
-            if (existingModal) existingModal.remove();
-
-            const modalHTML = `
-                <div class="modal" id="otpModal" style="display: flex; background: rgba(0,0,0,0.8);">
-                    <div class="modal-content" style="max-width: 400px;">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Verify Your Email</h3>
-                            <span class="close" onclick="closeOTPModal()">&times;</span>
-                        </div>
-                        <div class="modal-body">
-                            <p style="margin-bottom: 20px; text-align: center;">We sent a 6-digit OTP to:</p>
-                            <p style="text-align: center; font-weight: bold; color: var(--primary); margin-bottom: 25px;">${email}</p>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Enter 6-digit OTP</label>
-                                <input type="text" class="form-input" id="otpInput" maxlength="6" placeholder="000000" style="text-align: center; letter-spacing: 10px; font-size: 18px; font-weight: bold;">
-                            </div>
-                            
-                            <button class="login-btn" id="verifyOtpBtn" style="margin-bottom: 10px;">
-                                <i class="fas fa-check-circle"></i> Verify OTP
-                            </button>
-                            <button class="register-btn" id="resendOtpBtn">
-                                <i class="fas fa-redo"></i> Resend OTP
-                            </button>
-                            
-                            <div id="otpMessage" class="message" style="display: none; margin-top: 15px;"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            
-            // Event listeners add karo after modal create ho jaye
-            setTimeout(() => {
-                const verifyBtn = document.getElementById('verifyOtpBtn');
-                const resendBtn = document.getElementById('resendOtpBtn');
-                const otpInput = document.getElementById('otpInput');
-                
-                if (verifyBtn) {
-                    verifyBtn.addEventListener('click', verifyOTP);
-                }
-                
-                if (resendBtn) {
-                    resendBtn.addEventListener('click', resendOTP);
-                }
-                
-                if (otpInput) {
-                    otpInput.addEventListener('keypress', function(e) {
-                        if (e.key === 'Enter') {
-                            verifyOTP();
-                        }
-                    });
-                    
-                    // Auto-focus on OTP input
-                    otpInput.focus();
-                }
-            }, 100);
-        }
-
-        // Temporary testing function - Hardcoded OTP check
-function verifyOTP() {
-    console.log('🔄 OTP Verification called (Testing Mode)');
-    
-    const otpInput = document.getElementById('otpInput');
-    const otp = otpInput.value.trim();
-    
-    console.log('📧 OTP entered:', otp);
-    
-    if (otp.length !== 6) {
-        showOTPMessage('Please enter 6-digit OTP', 'error');
-        return;
-    }
-
-    const verifyBtn = document.getElementById('verifyOtpBtn');
-    if (verifyBtn) {
-        verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-        verifyBtn.disabled = true;
-    }
-
-    // ✅ TEMPORARY: Hardcoded OTP check for testing
-    setTimeout(() => {
-        // Aapka actual OTP jo database mein hai (175225)
-        if (otp === "175225") {
-            console.log('✅ OTP verified successfully (Testing)');
-            showOTPMessage('Registration successful! Redirecting to login...', 'success');
-            
-            setTimeout(() => {
-                closeOTPModal();
-                showLoginForm();
-                showMessage('success', 'Account created! Please login.');
-            }, 2000);
-        } else {
-            console.log('❌ OTP verification failed (Testing)');
-            showOTPMessage('Invalid OTP! Please try again.', 'error');
-        }
-        
-        if (verifyBtn) {
-            verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
-            verifyBtn.disabled = false;
-        }
-    }, 1500);
-}
-            // Show loading
-            const verifyBtn = document.getElementById('verifyOtpBtn');
-            if (verifyBtn) {
-                verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-                verifyBtn.disabled = true;
-            }
-
-            console.log('📤 Sending OTP verification request...', pendingRegistration);
-            
-            fetch(`${API_BASE_URL}/verify_otp.php`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    username: pendingRegistration.username,
-                    email: pendingRegistration.email,
-                    password: pendingRegistration.password,
-                    otp: otp
-                })
-            })
-            .then(response => {
-                console.log('📥 OTP Response received');
-                return response.json();
-            })
-            .then(result => {
-                console.log('✅ OTP API Result:', result);
-                
-                if (result.success) {
-                    showOTPMessage('Registration successful! Redirecting to login...', 'success');
-                    setTimeout(() => {
-                        closeOTPModal();
-                        showLoginForm();
-                        showMessage('success', 'Account created! Please login.');
-                    }, 2000);
-                } else {
-                    showOTPMessage(result.message, 'error');
-                    if (verifyBtn) {
-                        verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
-                        verifyBtn.disabled = false;
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('❌ OTP Error:', error);
-                showOTPMessage('Network error. Please try again.', 'error');
-                if (verifyBtn) {
-                    verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
-                    verifyBtn.disabled = false;
-                }
-            });
-        }
-
-        function resendOTP() {
-            console.log('🔄 Resend OTP called');
-            
-            const resendBtn = document.getElementById('resendOtpBtn');
-            if (resendBtn) {
-                resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-                resendBtn.disabled = true;
-            }
-
-            console.log('📧 Resending OTP for:', pendingRegistration);
-            
-            // Call register API again to resend OTP
-            const formData = new FormData();
-            formData.append('username', pendingRegistration.username);
-            formData.append('email', pendingRegistration.email);
-            formData.append('password', pendingRegistration.password);
-            formData.append('confirm_password', pendingRegistration.password);
-
-            fetch(`${API_BASE_URL}/register.php`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log('📧 Resend OTP Result:', result);
-                
-                if (result.success && result.requires_otp) {
-                    showOTPMessage('New OTP sent to your email!', 'success');
-                } else {
-                    showOTPMessage(result.message, 'error');
-                }
-                
-                if (resendBtn) {
-                    resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
-                    resendBtn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('❌ Resend OTP Error:', error);
-                showOTPMessage('Network error. Please try again.', 'error');
-                if (resendBtn) {
-                    resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
-                    resendBtn.disabled = false;
-                }
-            });
-        }
-
-        function showOTPMessage(message, type) {
-            const messageDiv = document.getElementById('otpMessage');
-            if (messageDiv) {
-                messageDiv.textContent = message;
-                messageDiv.className = `message ${type === 'success' ? 'success-message' : 'error-message'}`;
-                messageDiv.style.display = 'block';
-                
-                // Auto-hide success messages
-                if (type === 'success') {
-                    setTimeout(() => {
-                        messageDiv.style.display = 'none';
-                    }, 3000);
-                }
-            }
-        }
-
-        function closeOTPModal() {
-            const modal = document.getElementById('otpModal');
-            if (modal) modal.remove();
-            pendingRegistration = null;
-        }
 
         // ==================== MULTI-LANGUAGE SYSTEM ====================
         const languageTexts = {
@@ -2131,8 +1838,833 @@ function verifyOTP() {
                 follow: "फॉलो करें",
                 following: "फॉलो कर रहे हैं",
                 unfollow: "अनफॉलो करें"
+            },
+            
+            ur: {
+                // Login Page
+                loginTitle: "کمیونٹی وال",
+                usernameLabel: "صارف نام",
+                usernamePlaceholder: "اپنا صارف نام درج کریں",
+                passwordLabel: "پاس ورڈ",
+                passwordPlaceholder: "اپنا پاس ورڈ درج کریں",
+                loginButton: "کمیونٹی میں لاگ ان کریں",
+                registerSwitch: "اکاؤنٹ نہیں ہے؟",
+                registerLink: "یہاں بنائیں",
+                
+                // Register Page
+                regUsernameLabel: "صارف نام",
+                regUsernamePlaceholder: "صارف نام منتخب کریں",
+                regEmailLabel: "ای میل",
+                regEmailPlaceholder: "اپنا ای میل درج کریں",
+                regPasswordLabel: "پاس ورڈ",
+                regPasswordPlaceholder: "پاس ورڈ بنائیں",
+                regConfirmPasswordLabel: "پاس ورڈ کی تصدیق کریں",
+                regConfirmPasswordPlaceholder: "پاس ورڈ کی تصدیق کریں",
+                regProfilePicLabel: "پروفائل تصویر (اختیاری)",
+                registerButton: "اکاؤنٹ بنائیں",
+                loginSwitch: "پہلے سے اکاؤنٹ ہے؟",
+                loginLink: "یہاں لاگ ان کریں",
+                
+                // Wall Page
+                wallLogo: "کمیونٹی وال",
+                welcome: "خوش آمدید",
+                myProfile: "میری پروفائل",
+                settings: "ترتیبات",
+                logout: "لاگ آؤٹ",
+                topLeaders: "ٹاپ کمیونٹی لیڈرز",
+                shareThoughts: "کمیونٹی کے ساتھ اپنے خیالات شیئر کریں...",
+                postButton: "پوسٹ بھیجیں",
+                likeButton: "پسند",
+                commentButton: "تبصرہ",
+                shareButton: "شیئر کریں",
+                writeComment: "تبصرہ لکھیں...",
+                noComments: "ابھی تک کوئی تبصرہ نہیں۔ پہلا تبصرہ کریں!",
+                trendingTopics: "ٹرینڈنگ موضوعات",
+                onlineNow: "آن لائن صارفین",
+                
+                // Filter Buttons
+                filterAll: "تمام زبانیں",
+                filterEnglish: "انگریزی",
+                filterHindi: "ہندی",
+                filterUrdu: "اردو",
+                filterMarathi: "مراٹھی",
+                
+                // Share Modal
+                sharePost: "پوسٹ شیئر کریں",
+                cancel: "منسوخ کریں",
+                copyLink: "لنک کاپی کریں",
+                
+                // Notifications
+                postSuccess: "پوسٹ کامیابی سے بن گئی!",
+                loginSuccess: "لاگ ان کامیاب!",
+                registerSuccess: "اکاؤنٹ کامیابی سے بن گیا!",
+                
+                // Follow System
+                follow: "فالو کریں",
+                following: "فالو کر رہے ہیں",
+                unfollow: "انفالو کریں"
+            },
+            
+            mr: {
+                // Login Page
+                loginTitle: "कम्युनिटी वॉल",
+                usernameLabel: "युजरनेम",
+                usernamePlaceholder: "तुमचे युजरनेम टाका",
+                passwordLabel: "पासवर्ड",
+                passwordPlaceholder: "तुमचा पासवर्ड टाका",
+                loginButton: "कम्युनिटीमध्ये लॉगिन करा",
+                registerSwitch: "खाते नाही?",
+                registerLink: "येथे तयार करा",
+                
+                // Register Page
+                regUsernameLabel: "युजरनेम",
+                regUsernamePlaceholder: "युजरनेम निवडा",
+                regEmailLabel: "ईमेल",
+                regEmailPlaceholder: "तुमचा ईमेल टाका",
+                regPasswordLabel: "पासवर्ड",
+                regPasswordPlaceholder: "पासवर्ड तयार करा",
+                regConfirmPasswordLabel: "पासवर्डची पुष्टी करा",
+                regConfirmPasswordPlaceholder: "पासवर्डची पुष्टी करा",
+                regProfilePicLabel: "प्रोफाइल फोटो (ऐच्छिक)",
+                registerButton: "खाते तयार करा",
+                loginSwitch: "आधीपासून खाते आहे?",
+                loginLink: "येथे लॉगिन करा",
+                
+                // Wall Page
+                wallLogo: "कम्युनिटी वॉल",
+                welcome: "स्वागत आहे",
+                myProfile: "माझे प्रोफाइल",
+                settings: "सेटिंग्ज",
+                logout: "लॉगआउट",
+                topLeaders: "अग्रणी समुदाय नेते",
+                shareThoughts: "समुदायासोबत तुमचे विचार शेअर करा...",
+                postButton: "पोस्ट पाठवा",
+                likeButton: "लाइक",
+                commentButton: "कमेंट",
+                shareButton: "शेअर करा",
+                writeComment: "कमेंट लिहा...",
+                noComments: "अजून कमेंट नाहीत. पहिले कमेंट करा!",
+                trendingTopics: "ट्रेंडिंग विषय",
+                onlineNow: "ऑनलाइन सदस्य",
+                
+                // Filter Buttons
+                filterAll: "सर्व भाषा",
+                filterEnglish: "इंग्रजी",
+                filterHindi: "हिंदी",
+                filterUrdu: "उर्दू",
+                filterMarathi: "मराठी",
+                
+                // Share Modal
+                sharePost: "पोस्ट शेअर करा",
+                cancel: "रद्द करा",
+                copyLink: "लिंक कॉपी करा",
+                
+                // Notifications
+                postSuccess: "पोस्ट यशस्वीरित्या तयार झाली!",
+                loginSuccess: "लॉगिन यशस्वी!",
+                registerSuccess: "खाते यशस्वीरित्या तयार झाले!",
+                
+                // Follow System
+                follow: "फॉलो करा",
+                following: "फॉलो करत आहे",
+                unfollow: "अनफॉलो करा"
             }
         };
+
+        // ==================== FOLLOW SYSTEM ====================
+
+        // Follow/Unfollow user
+        function toggleFollow(userId) {
+            if (!currentUser) {
+                showNotification('Please login to follow users', 'error');
+                return;
+            }
+
+            if (userId === currentUser.id) {
+                showNotification('You cannot follow yourself', 'error');
+                return;
+            }
+
+            fetch(`${API_BASE_URL}/toggle_follow.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    following_id: userId 
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Update UI based on follow status
+                    updateFollowButton(userId, result.is_following);
+                    showNotification(result.message, 'success');
+                    
+                    // Reload leaderboard and users to update counts
+                    loadLeaderboard();
+                    loadAllUsers();
+                    
+                    // If viewing user profile, reload their stats
+                    if (currentViewingUserId === userId) {
+                        loadUserProfileStats(userId);
+                    }
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error following user', 'error');
+            });
+        }
+
+        // Update follow button UI
+        function updateFollowButton(userId, isFollowing) {
+            const followBtns = document.querySelectorAll(`.follow-btn[data-user-id="${userId}"]`);
+            const texts = languageTexts[localStorage.getItem('community_language') || 'en'];
+            
+            followBtns.forEach(followBtn => {
+                if (isFollowing) {
+                    followBtn.classList.add('following');
+                    followBtn.innerHTML = `<i class="fas fa-user-check"></i> ${texts.following}`;
+                } else {
+                    followBtn.classList.remove('following');
+                    followBtn.innerHTML = `<i class="fas fa-user-plus"></i> ${texts.follow}`;
+                }
+            });
+        }
+
+        // Check follow status for multiple users
+        function checkFollowStatus(userIds) {
+            if (!currentUser || !userIds.length) return;
+
+            fetch(`${API_BASE_URL}/check_follow_status.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    user_ids: userIds 
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Update all follow buttons
+                    result.follow_status.forEach(status => {
+                        updateFollowButton(status.user_id, status.is_following);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error checking follow status:', error);
+            });
+        }
+
+        // ==================== USER PROFILE SYSTEM ====================
+
+        // Open user profile modal
+        function openUserProfile(userId) {
+            currentViewingUserId = userId;
+            loadUserProfile(userId);
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+
+        // Close user profile modal
+        function closeUserProfileModal() {
+            document.getElementById('userProfileModal').style.display = 'none';
+            currentViewingUserId = null;
+        }
+
+        // Load user profile data
+        function loadUserProfile(userId) {
+            // Load user basic info
+            fetch(`${API_BASE_URL}/get_user_profile.php?user_id=${userId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserProfile(result.user);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user profile:', error);
+                });
+
+            // Load user stats
+            loadUserProfileStats(userId);
+            
+            // Load user posts by default
+            showUserPosts();
+        }
+
+        // Display user profile
+        function displayUserProfile(user) {
+            document.getElementById('userProfileTitle').textContent = `${user.username}'s Profile`;
+            document.getElementById('userProfileName').textContent = user.username;
+            
+            // Set avatar - FIXED: Proper avatar URL
+            const avatar = document.getElementById('userProfileAvatar');
+            if (user.profile_pic && user.profile_pic !== 'default.png') {
+                avatar.src = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+            } else {
+                avatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+            }
+            
+            // Set follow button
+            const followBtn = document.getElementById('userProfileFollowBtn');
+            followBtn.setAttribute('data-user-id', user.id);
+            followBtn.onclick = () => toggleFollow(user.id);
+            
+            // Check follow status for this user
+            if (user.id !== currentUser?.id) {
+                checkFollowStatus([user.id]);
+            } else {
+                followBtn.style.display = 'none';
+            }
+        }
+
+        // Load user profile stats
+        function loadUserProfileStats(userId) {
+            fetch(`${API_BASE_URL}/get_user_profile_stats.php?user_id=${userId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        document.getElementById('userPostsCount').textContent = result.stats.post_count || 0;
+                        document.getElementById('userFollowersCount').textContent = result.stats.followers_count || 0;
+                        document.getElementById('userFollowingCount').textContent = result.stats.following_count || 0;
+                    } else {
+                        console.error('Error loading user profile stats:', result.message);
+                        // Set fallback values
+                        document.getElementById('userPostsCount').textContent = 0;
+                        document.getElementById('userFollowersCount').textContent = 0;
+                        document.getElementById('userFollowingCount').textContent = 0;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user profile stats:', error);
+                    // Set fallback values
+                    document.getElementById('userPostsCount').textContent = 0;
+                    document.getElementById('userFollowersCount').textContent = 0;
+                    document.getElementById('userFollowingCount').textContent = 0;
+                });
+        }
+
+        // Show user posts
+        function showUserPosts() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_posts.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(posts => {
+                    displayUserPosts(posts);
+                })
+                .catch(error => {
+                    console.error('Error loading user posts:', error);
+                });
+        }
+
+        // Display user posts
+        function displayUserPosts(posts) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!posts || posts.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>No posts yet</h4>
+                        <p>This user hasn't posted anything yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Posts (${posts.length})</h4>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    ${posts.map(post => `
+                        <div style="padding: 15px; border-bottom: 1px solid var(--border);">
+                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
+                                ${formatTime(post.created_at)}
+                            </div>
+                            <div>${post.content}</div>
+                            <div style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
+                                <i class="fas fa-heart"></i> ${post.like_count || 0} likes • 
+                                <i class="fas fa-comment"></i> ${post.comment_count || 0} comments
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // Show user followers
+        function showUserFollowers() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_followers.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserFollowers(result.followers);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user followers:', error);
+                });
+        }
+
+        // Display user followers
+        function displayUserFollowers(followers) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!followers || followers.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>No followers yet</h4>
+                        <p>This user doesn't have any followers yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Followers (${followers.length})</h4>
+                <div class="follow-list">
+                    ${followers.map(follower => `
+                        <div class="follow-item">
+                            <img src="${follower.profile_pic && follower.profile_pic !== 'default.png' ? 
+                                `${API_BASE_URL}/../assets/avatars/${follower.profile_pic}` : 
+                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
+                                alt="${follower.username}" class="follow-avatar"
+                                onclick="openUserProfile(${follower.id})">
+                            <div class="follow-info">
+                                <div class="follow-name" onclick="openUserProfile(${follower.id})">${follower.username}</div>
+                                <div class="follow-stats">${follower.follower_count || 0} followers</div>
+                            </div>
+                            ${follower.id !== currentUser?.id ? `
+                                <button class="follow-btn" data-user-id="${follower.id}" onclick="toggleFollow(${follower.id})">
+                                    <i class="fas fa-user-plus"></i> Follow
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Check follow status for followers
+            const userIds = followers.filter(f => f.id !== currentUser?.id).map(f => f.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        // Show user following
+        function showUserFollowing() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_following.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserFollowing(result.following);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading user following:', error);
+                });
+        }
+
+        // Display user following
+        function displayUserFollowing(following) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!following || following.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>Not following anyone</h4>
+                        <p>This user isn't following anyone yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px;">Following (${following.length})</h4>
+                <div class="follow-list">
+                    ${following.map(user => `
+                        <div class="follow-item">
+                            <img src="${user.profile_pic && user.profile_pic !== 'default.png' ? 
+                                `${API_BASE_URL}/../assets/avatars/${user.profile_pic}` : 
+                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
+                                alt="${user.username}" class="follow-avatar"
+                                onclick="openUserProfile(${user.id})">
+                            <div class="follow-info">
+                                <div class="follow-name" onclick="openUserProfile(${user.id})">${user.username}</div>
+                                <div class="follow-stats">${user.follower_count || 0} followers</div>
+                            </div>
+                            ${user.id !== currentUser?.id ? `
+                                <button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
+                                    <i class="fas fa-user-plus"></i> Follow
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Check follow status for following users
+            const userIds = following.filter(f => f.id !== currentUser?.id).map(f => f.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        // ==================== ALL USERS DISPLAY ====================
+
+        function loadAllUsers() {
+            fetch(`${API_BASE_URL}/get_all_users.php`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayAllUsers(result.users);
+                    } else {
+                        console.error('Error loading users:', result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading users:', error);
+                });
+        }
+
+        function displayAllUsers(users) {
+            const onlineUsersContainer = document.getElementById('onlineUsers');
+            if (!onlineUsersContainer) return;
+
+            // Filter out current user
+            const otherUsers = users.filter(user => user.id !== currentUser?.id);
+            
+            if (otherUsers.length === 0) {
+                onlineUsersContainer.innerHTML = '<div class="no-users" style="text-align: center; padding: 20px; color: var(--text-light);">No other users found</div>';
+                return;
+            }
+
+            const usersHTML = otherUsers.map(user => {
+                const followButton = user.id !== currentUser?.id ? 
+                    `<button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>` : '';
+                
+                // FIXED: Proper avatar URL
+                let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                if (user.profile_pic && user.profile_pic !== 'default.png') {
+                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+                }
+                
+                return `
+                <div class="user-item">
+                    <img src="${avatarSrc}" 
+                         alt="${user.username}" 
+                         class="user-avatar"
+                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"
+                         onclick="openUserProfile(${user.id})"
+                         onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
+                    <div style="flex: 1; min-width: 0;" onclick="openUserProfile(${user.id})">
+                        <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.username}</div>
+                        <div style="font-size: 12px; color: var(--text-light);">
+                            ${user.follower_count || 0} followers • ${user.post_count || 0} posts
+                        </div>
+                    </div>
+                    ${followButton}
+                </div>
+                `;
+            }).join('');
+
+            onlineUsersContainer.innerHTML = usersHTML;
+            
+            // Check follow status for all users
+            const userIds = otherUsers.map(user => user.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        // ==================== PROFILE STATS ====================
+
+        function loadUserProfileStats() {
+            if (!currentUser) return;
+            
+            fetch(`${API_BASE_URL}/get_user_profile_stats.php?user_id=${currentUser.id}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayProfileStats(result.stats);
+                    } else {
+                        console.error('Error loading profile stats:', result.message);
+                        // Fallback stats
+                        displayProfileStats({
+                            post_count: 0,
+                            followers_count: 0,
+                            following_count: 0
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading profile stats:', error);
+                    // Fallback stats
+                    displayProfileStats({
+                        post_count: 0,
+                        followers_count: 0,
+                        following_count: 0
+                    });
+                });
+        }
+
+        function displayProfileStats(stats) {
+            const statsHTML = `
+                <div class="stat-item" onclick="showMyFollowers()">
+                    <div class="stat-number">${stats.post_count || 0}</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat-item" onclick="showMyFollowers()">
+                    <div class="stat-number">${stats.followers_count || 0}</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-item" onclick="showMyFollowing()">
+                    <div class="stat-number">${stats.following_count || 0}</div>
+                    <div class="stat-label">Following</div>
+                </div>
+            `;
+            
+            const statsContainer = document.getElementById('profileStats');
+            if (statsContainer) {
+                statsContainer.innerHTML = statsHTML;
+            }
+        }
+
+        // Show my followers
+        function showMyFollowers() {
+            currentViewingUserId = currentUser.id;
+            showUserFollowers();
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+
+        // Show my following
+        function showMyFollowing() {
+            currentViewingUserId = currentUser.id;
+            showUserFollowing();
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+
+        // Set language function
+        function setLanguage(lang) {
+            if (languageTexts[lang]) {
+                localStorage.setItem('community_language', lang);
+                applyLanguage(lang);
+                
+                // Set RTL for Urdu
+                if (lang === 'ur') {
+                    document.body.setAttribute('dir', 'rtl');
+                    document.body.style.direction = 'rtl';
+                    document.body.style.textAlign = 'right';
+                } else {
+                    document.body.setAttribute('dir', 'ltr');
+                    document.body.style.direction = 'ltr';
+                    document.body.style.textAlign = 'left';
+                }
+                
+                showLanguageNotification(lang);
+                
+                // Reload posts with current filter
+                loadPosts();
+            }
+        }
+
+        // Apply language
+        function applyLanguage(lang) {
+            const texts = languageTexts[lang];
+            if (!texts) return;
+            
+            // Login Page
+            if (document.getElementById('loginTitle')) {
+                document.getElementById('loginTitle').textContent = texts.loginTitle;
+            }
+            if (document.getElementById('usernameLabel')) {
+                document.getElementById('usernameLabel').textContent = texts.usernameLabel;
+            }
+            if (document.getElementById('usernameInput')) {
+                document.getElementById('usernameInput').placeholder = texts.usernamePlaceholder;
+            }
+            if (document.getElementById('passwordLabel')) {
+                document.getElementById('passwordLabel').textContent = texts.passwordLabel;
+            }
+            if (document.getElementById('passwordInput')) {
+                document.getElementById('passwordInput').placeholder = texts.passwordPlaceholder;
+            }
+            if (document.getElementById('loginButtonText')) {
+                document.getElementById('loginButtonText').textContent = texts.loginButton;
+            }
+            if (document.getElementById('registerSwitchText')) {
+                document.getElementById('registerSwitchText').innerHTML = `${texts.registerSwitch} <a onclick="showRegisterForm()">${texts.registerLink}</a>`;
+            }
+            
+            // Register Page
+            if (document.getElementById('regUsernameLabel')) {
+                document.getElementById('regUsernameLabel').textContent = texts.regUsernameLabel;
+            }
+            if (document.getElementById('regUsernameInput')) {
+                document.getElementById('regUsernameInput').placeholder = texts.regUsernamePlaceholder;
+            }
+            if (document.getElementById('regEmailLabel')) {
+                document.getElementById('regEmailLabel').textContent = texts.regEmailLabel;
+            }
+            if (document.getElementById('regEmailInput')) {
+                document.getElementById('regEmailInput').placeholder = texts.regEmailPlaceholder;
+            }
+            if (document.getElementById('regPasswordLabel')) {
+                document.getElementById('regPasswordLabel').textContent = texts.regPasswordLabel;
+            }
+            if (document.getElementById('regPasswordInput')) {
+                document.getElementById('regPasswordInput').placeholder = texts.regPasswordPlaceholder;
+            }
+            if (document.getElementById('regConfirmPasswordLabel')) {
+                document.getElementById('regConfirmPasswordLabel').textContent = texts.regConfirmPasswordLabel;
+            }
+            if (document.getElementById('regConfirmPasswordInput')) {
+                document.getElementById('regConfirmPasswordInput').placeholder = texts.regConfirmPasswordPlaceholder;
+            }
+            if (document.getElementById('regProfilePicLabel')) {
+                document.getElementById('regProfilePicLabel').textContent = texts.regProfilePicLabel;
+            }
+            if (document.getElementById('registerButtonText')) {
+                document.getElementById('registerButtonText').textContent = texts.registerButton;
+            }
+            if (document.getElementById('loginSwitchText')) {
+                document.getElementById('loginSwitchText').innerHTML = `${texts.loginSwitch} <a onclick="showLoginForm()">${texts.loginLink}</a>`;
+            }
+            
+            // Wall Page
+            if (document.getElementById('wallLogoText')) {
+                document.getElementById('wallLogoText').textContent = texts.wallLogo;
+            }
+            if (document.getElementById('welcome-user') && currentUser) {
+                document.getElementById('welcome-user').textContent = `${texts.welcome}, ${currentUser.username}!`;
+            }
+            if (document.getElementById('myProfileText')) {
+                document.getElementById('myProfileText').textContent = texts.myProfile;
+            }
+            if (document.getElementById('settingsText')) {
+                document.getElementById('settingsText').textContent = texts.settings;
+            }
+            if (document.getElementById('logoutText')) {
+                document.getElementById('logoutText').textContent = texts.logout;
+            }
+            if (document.getElementById('topLeadersText')) {
+                document.getElementById('topLeadersText').textContent = texts.topLeaders;
+            }
+            if (document.getElementById('postContent')) {
+                document.getElementById('postContent').placeholder = texts.shareThoughts;
+            }
+            if (document.getElementById('postButtonText')) {
+                document.getElementById('postButtonText').textContent = texts.postButton;
+            }
+            if (document.getElementById('trendingTopicsText')) {
+                document.getElementById('trendingTopicsText').textContent = texts.trendingTopics;
+            }
+            if (document.getElementById('onlineNowText')) {
+                document.getElementById('onlineNowText').textContent = texts.onlineNow;
+            }
+            
+            // Filter Buttons
+            if (document.getElementById('filterAll')) {
+                document.getElementById('filterAll').innerHTML = `<i class="fas fa-globe"></i> ${texts.filterAll}`;
+            }
+            if (document.getElementById('filterEnglish')) {
+                document.getElementById('filterEnglish').innerHTML = `<i class="fas fa-language"></i> ${texts.filterEnglish}`;
+            }
+            if (document.getElementById('filterHindi')) {
+                document.getElementById('filterHindi').innerHTML = `<i class="fas fa-language"></i> ${texts.filterHindi}`;
+            }
+            if (document.getElementById('filterUrdu')) {
+                document.getElementById('filterUrdu').innerHTML = `<i class="fas fa-language"></i> ${texts.filterUrdu}`;
+            }
+            if (document.getElementById('filterMarathi')) {
+                document.getElementById('filterMarathi').innerHTML = `<i class="fas fa-language"></i> ${texts.filterMarathi}`;
+            }
+            
+            // Update follow buttons text
+            updateAllFollowButtons();
+            
+            // Update input directions for RTL
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                if (lang === 'ur') {
+                    input.style.direction = 'rtl';
+                    input.style.textAlign = 'right';
+                } else {
+                    input.style.direction = 'ltr';
+                    input.style.textAlign = 'left';
+                }
+            });
+        }
+
+        // Update all follow buttons text
+        function updateAllFollowButtons() {
+            const followBtns = document.querySelectorAll('.follow-btn');
+            const texts = languageTexts[localStorage.getItem('community_language') || 'en'];
+            
+            followBtns.forEach(btn => {
+                if (btn.classList.contains('following')) {
+                    btn.innerHTML = `<i class="fas fa-user-check"></i> ${texts.following}`;
+                } else {
+                    btn.innerHTML = `<i class="fas fa-user-plus"></i> ${texts.follow}`;
+                }
+            });
+        }
+
+        // Show notification
+        function showLanguageNotification(lang) {
+            const langNames = {
+                'en': 'English',
+                'hi': 'Hindi',
+                'ur': 'Urdu',
+                'mr': 'Marathi'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification success';
+            notification.textContent = `Language changed to ${langNames[lang]}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 12px;
+                background: #10b981;
+                color: white;
+                z-index: 3000;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 2000);
+        }
+
+        // Language Filtering System
+        function filterPosts(language) {
+            currentLanguageFilter = language;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Load posts with filter
+            loadPosts();
+        }
 
         // ==================== AUTHENTICATION SYSTEM ====================
         function checkExistingAuth() {
@@ -2155,6 +2687,15 @@ function verifyOTP() {
                         password: formData.get('password')
                     };
                     loginUser(data);
+                });
+            }
+
+            // Register form
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    registerUser();
                 });
             }
 
@@ -2191,12 +2732,10 @@ function verifyOTP() {
 
             // User profile modal close
             const userProfileModal = document.getElementById('userProfileModal');
-            if (userProfileModal) {
-                const userProfileClose = userProfileModal.querySelector('.close');
-                if (userProfileClose) {
-                    userProfileClose.onclick = function() {
-                        closeUserProfileModal();
-                    }
+            const userProfileClose = userProfileModal.querySelector('.close');
+            if (userProfileClose) {
+                userProfileClose.onclick = function() {
+                    closeUserProfileModal();
                 }
                 window.onclick = function(event) {
                     if (event.target == userProfileModal) {
@@ -2217,7 +2756,7 @@ function verifyOTP() {
                 document.getElementById('welcome-user').textContent = `${texts.welcome}, ${currentUser.username}!`;
             }
             
-            // Header avatar update
+            // Header avatar update - FIXED: Proper avatar URL
             const headerAvatar = document.getElementById('headerUserAvatar');
             if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
                 headerAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
@@ -2344,183 +2883,73 @@ function verifyOTP() {
             document.getElementById('reg-success-message').style.display = 'none';
         }
 
-        // Set language function
-        function setLanguage(lang) {
-            if (languageTexts[lang]) {
-                localStorage.setItem('community_language', lang);
-                applyLanguage(lang);
-                
-                // Set RTL for Urdu
-                if (lang === 'ur') {
-                    document.body.setAttribute('dir', 'rtl');
-                    document.body.style.direction = 'rtl';
-                    document.body.style.textAlign = 'right';
+        function registerUser() {
+            const form = document.getElementById('registerForm');
+            const formData = new FormData(form);
+            
+            const username = formData.get('username').trim();
+            const email = formData.get('email').trim();
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirm_password');
+            const profilePic = formData.get('profile_pic');
+
+            // Validation
+            if (!username || !email || !password || !confirmPassword) {
+                showRegMessage('error', 'Please fill all required fields!');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showRegMessage('error', 'Passwords do not match!');
+                return;
+            }
+
+            if (password.length < 6) {
+                showRegMessage('error', 'Password must be at least 6 characters!');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showRegMessage('error', 'Please enter a valid email address!');
+                return;
+            }
+
+            showLoading(true, 'register');
+
+            // Send registration request with FormData (for file upload)
+            fetch(`${API_BASE_URL}/register.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                showLoading(false, 'register');
+
+                if (result.success) {
+                    showRegMessage('success', 'Account created successfully! Redirecting to login...');
+                    
+                    // Clear form
+                    form.reset();
+                    
+                    // Redirect to login after 2 seconds
+                    setTimeout(() => {
+                        showLoginForm();
+                        showMessage('success', 'Account created! Please login.');
+                    }, 2000);
                 } else {
-                    document.body.setAttribute('dir', 'ltr');
-                    document.body.style.direction = 'ltr';
-                    document.body.style.textAlign = 'left';
+                    showRegMessage('error', result.message || 'Registration failed!');
                 }
-                
-                showLanguageNotification(lang);
-                
-                // Reload posts with current filter
-                loadPosts();
-            }
-        }
-
-        // Apply language
-        function applyLanguage(lang) {
-            const texts = languageTexts[lang];
-            if (!texts) return;
-            
-            // Login Page
-            if (document.getElementById('loginTitle')) {
-                document.getElementById('loginTitle').textContent = texts.loginTitle;
-            }
-            if (document.getElementById('usernameLabel')) {
-                document.getElementById('usernameLabel').textContent = texts.usernameLabel;
-            }
-            if (document.getElementById('usernameInput')) {
-                document.getElementById('usernameInput').placeholder = texts.usernamePlaceholder;
-            }
-            if (document.getElementById('passwordLabel')) {
-                document.getElementById('passwordLabel').textContent = texts.passwordLabel;
-            }
-            if (document.getElementById('passwordInput')) {
-                document.getElementById('passwordInput').placeholder = texts.passwordPlaceholder;
-            }
-            if (document.getElementById('loginButtonText')) {
-                document.getElementById('loginButtonText').textContent = texts.loginButton;
-            }
-            if (document.getElementById('registerSwitchText')) {
-                document.getElementById('registerSwitchText').innerHTML = `${texts.registerSwitch} <a onclick="showRegisterForm()">${texts.registerLink}</a>`;
-            }
-            
-            // Register Page
-            if (document.getElementById('regUsernameLabel')) {
-                document.getElementById('regUsernameLabel').textContent = texts.regUsernameLabel;
-            }
-            if (document.getElementById('regUsernameInput')) {
-                document.getElementById('regUsernameInput').placeholder = texts.regUsernamePlaceholder;
-            }
-            if (document.getElementById('regEmailLabel')) {
-                document.getElementById('regEmailLabel').textContent = texts.regEmailLabel;
-            }
-            if (document.getElementById('regEmailInput')) {
-                document.getElementById('regEmailInput').placeholder = texts.regEmailPlaceholder;
-            }
-            if (document.getElementById('regPasswordLabel')) {
-                document.getElementById('regPasswordLabel').textContent = texts.regPasswordLabel;
-            }
-            if (document.getElementById('regPasswordInput')) {
-                document.getElementById('regPasswordInput').placeholder = texts.regPasswordPlaceholder;
-            }
-            if (document.getElementById('regConfirmPasswordLabel')) {
-                document.getElementById('regConfirmPasswordLabel').textContent = texts.regConfirmPasswordLabel;
-            }
-            if (document.getElementById('regConfirmPasswordInput')) {
-                document.getElementById('regConfirmPasswordInput').placeholder = texts.regConfirmPasswordPlaceholder;
-            }
-            if (document.getElementById('regProfilePicLabel')) {
-                document.getElementById('regProfilePicLabel').textContent = texts.regProfilePicLabel;
-            }
-            if (document.getElementById('registerButtonText')) {
-                document.getElementById('registerButtonText').textContent = texts.registerButton;
-            }
-            if (document.getElementById('loginSwitchText')) {
-                document.getElementById('loginSwitchText').innerHTML = `${texts.loginSwitch} <a onclick="showLoginForm()">${texts.loginLink}</a>`;
-            }
-            
-            // Wall Page
-            if (document.getElementById('wallLogoText')) {
-                document.getElementById('wallLogoText').textContent = texts.wallLogo;
-            }
-            if (document.getElementById('welcome-user') && currentUser) {
-                document.getElementById('welcome-user').textContent = `${texts.welcome}, ${currentUser.username}!`;
-            }
-            if (document.getElementById('myProfileText')) {
-                document.getElementById('myProfileText').textContent = texts.myProfile;
-            }
-            if (document.getElementById('settingsText')) {
-                document.getElementById('settingsText').textContent = texts.settings;
-            }
-            if (document.getElementById('logoutText')) {
-                document.getElementById('logoutText').textContent = texts.logout;
-            }
-            if (document.getElementById('topLeadersText')) {
-                document.getElementById('topLeadersText').textContent = texts.topLeaders;
-            }
-            if (document.getElementById('postContent')) {
-                document.getElementById('postContent').placeholder = texts.shareThoughts;
-            }
-            if (document.getElementById('postButtonText')) {
-                document.getElementById('postButtonText').textContent = texts.postButton;
-            }
-            if (document.getElementById('trendingTopicsText')) {
-                document.getElementById('trendingTopicsText').textContent = texts.trendingTopics;
-            }
-            
-            // Filter Buttons
-            if (document.getElementById('filterAll')) {
-                document.getElementById('filterAll').innerHTML = `<i class="fas fa-globe"></i> ${texts.filterAll}`;
-            }
-            if (document.getElementById('filterEnglish')) {
-                document.getElementById('filterEnglish').innerHTML = `<i class="fas fa-language"></i> ${texts.filterEnglish}`;
-            }
-            if (document.getElementById('filterHindi')) {
-                document.getElementById('filterHindi').innerHTML = `<i class="fas fa-language"></i> ${texts.filterHindi}`;
-            }
-            if (document.getElementById('filterUrdu')) {
-                document.getElementById('filterUrdu').innerHTML = `<i class="fas fa-language"></i> ${texts.filterUrdu}`;
-            }
-            if (document.getElementById('filterMarathi')) {
-                document.getElementById('filterMarathi').innerHTML = `<i class="fas fa-language"></i> ${texts.filterMarathi}`;
-            }
-        }
-
-        // Show notification
-        function showLanguageNotification(lang) {
-            const langNames = {
-                'en': 'English',
-                'hi': 'Hindi',
-                'ur': 'Urdu',
-                'mr': 'Marathi'
-            };
-            
-            const notification = document.createElement('div');
-            notification.className = 'notification success';
-            notification.textContent = `Language changed to ${langNames[lang]}`;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 15px 25px;
-                border-radius: 12px;
-                background: #10b981;
-                color: white;
-                z-index: 3000;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 2000);
-        }
-
-        // Language Filtering System
-        function filterPosts(language) {
-            currentLanguageFilter = language;
-            
-            // Update active button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
+            })
+            .catch(error => {
+                showLoading(false, 'register');
+                showRegMessage('error', 'Network error. Please try again.');
+                console.error('Registration error:', error);
             });
-            event.target.classList.add('active');
-            
-            // Load posts with filter
-            loadPosts();
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
         }
 
         // ==================== POSTS MANAGEMENT ====================
@@ -2591,16 +3020,30 @@ function verifyOTP() {
                 const languageBadge = post.post_language ? 
                     `<span class="language-badge">${post.post_language.toUpperCase()}</span>` : '';
                 
+                // Follow button - only show if not current user's post
+                const followButton = post.user_id !== currentUser?.id ? 
+                    `<button class="follow-btn" data-user-id="${post.user_id}" onclick="toggleFollow(${post.user_id})">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>` : '';
+                
+                // FIXED: Proper avatar URL
+                let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                
+                if (post.profile_pic && post.profile_pic !== 'default.png') {
+                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${post.profile_pic}`;
+                }
+                
                 return `
                 <div class="post-card" id="post-${post.id}">
                     <div class="post-header">
-                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" 
+                        <img src="${avatarSrc}" 
                              alt="${post.username}" 
                              class="user-avatar post-avatar"
-                             onclick="openUserProfile(${post.user_id})">
+                             onclick="openUserProfile(${post.user_id})"
+                             onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
                         <div class="post-user-info">
                             <div class="post-username" onclick="openUserProfile(${post.user_id})">
-                                ${post.username} ${languageBadge}
+                                ${post.username} ${languageBadge} ${followButton}
                             </div>
                             <span class="post-time">${formatTime(post.created_at)}</span>
                         </div>
@@ -2633,6 +3076,12 @@ function verifyOTP() {
                 </div>
                 `;
             }).join('');
+            
+            // Check follow status for all post authors
+            const userIds = posts.filter(post => post.user_id !== currentUser?.id).map(post => post.user_id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
         }
 
         function likePost(postId) {
@@ -2722,12 +3171,20 @@ function verifyOTP() {
             }
 
             commentsList.innerHTML = comments.map(comment => {
+                // FIXED: Proper avatar URL for comments
+                let commentAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                
+                if (comment.profile_pic && comment.profile_pic !== 'default.png') {
+                    commentAvatar = `${API_BASE_URL}/../assets/avatars/${comment.profile_pic}`;
+                }
+                
                 return `
                     <div class="comment-item">
-                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" 
+                        <img src="${commentAvatar}" 
                              alt="${comment.username}" 
                              class="comment-avatar"
-                             onclick="openUserProfile(${comment.user_id})">
+                             onclick="openUserProfile(${comment.user_id})"
+                             onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
                         <div class="comment-content">
                             <div class="comment-header">
                                 <span class="comment-user" onclick="openUserProfile(${comment.user_id})">${comment.username}</span>
@@ -2785,10 +3242,10 @@ function verifyOTP() {
             document.getElementById('profileUsername').value = currentUser.username;
             document.getElementById('profileEmail').value = currentUser.email || 'Not set';
             
-            // Load user stats
+            // Load user stats - FIXED: This was missing
             loadUserProfileStats();
             
-            // Set profile avatar
+            // Set profile avatar - FIXED: Proper avatar URL
             const profileAvatar = document.getElementById('profileAvatar');
             if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
                 profileAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
@@ -2949,7 +3406,7 @@ function verifyOTP() {
             
             modal.innerHTML = `
                 <div class="share-modal-content">
-                    <h2>Share Post</h2>
+                    <h2>${getEmoji('1F4E2')} Share Post</h2>
                     
                     <div class="share-preview">
                         <p>"${truncateText(currentPostData.content, 120)}"</p>
@@ -2958,19 +3415,19 @@ function verifyOTP() {
                     
                     <div class="share-buttons">
                         <button onclick="shareOnWhatsApp()" class="share-platform-btn whatsapp-btn">
-                            WhatsApp
+                            ${getEmoji('1F4AC')} WhatsApp
                         </button>
                         
                         <button onclick="shareOnFacebook()" class="share-platform-btn facebook-btn">
-                            Facebook
+                            ${getEmoji('1F4FA')} Facebook
                         </button>
                         
                         <button onclick="shareOnTwitter()" class="share-platform-btn twitter-btn">
-                            Twitter
+                            ${getEmoji('1F426')} Twitter
                         </button>
                         
                         <button onclick="copyProfessionalLink()" class="share-platform-btn copy-btn">
-                            Copy Link
+                            ${getEmoji('1F517')} Copy Link
                         </button>
                     </div>
                     
@@ -3002,22 +3459,31 @@ function verifyOTP() {
             currentPostData = null;
         }
 
+        function getEmoji(code) {
+            return String.fromCodePoint(parseInt(code, 16));
+        }
+
         function shareOnWhatsApp() {
             if (!currentPostData) return;
             
-            const shareText = `Community Wall Post
+            const star = getEmoji('1F31C');
+            const person = getEmoji('1F464');
+            const speech = getEmoji('1F4AC');
+            const link = getEmoji('1F517');
+            
+            const shareText = `${star} Community Wall Post ${star}
 
-By: ${currentPostData.author}
-"${truncateText(currentPostData.content, 100)}"
+        ${person} By: ${currentPostData.author}
+        ${speech} "${truncateText(currentPostData.content, 100)}"
 
-View Full Post: ${currentPostData.link}
+        ${link} View Full Post: ${currentPostData.link}
 
-Join the conversation on Community Wall!`;
+        Join the conversation on Community Wall!`;
 
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
             window.open(whatsappUrl, '_blank');
             closeShareModal();
-            showTempMessage('Opening WhatsApp...', 'success');
+            showTempMessage(`${getEmoji('1F4F1')} Opening WhatsApp...`, 'success');
         }
 
         function shareOnFacebook() {
@@ -3026,7 +3492,7 @@ Join the conversation on Community Wall!`;
             const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentPostData.link)}&quote=${encodeURIComponent(`"${truncateText(currentPostData.content, 100)}" - ${currentPostData.author}`)}`;
             window.open(facebookUrl, '_blank', 'width=600,height=400');
             closeShareModal();
-            showTempMessage('Sharing on Facebook...', 'success');
+            showTempMessage(`${getEmoji('1F4FA')} Sharing on Facebook...`, 'success');
         }
 
         function shareOnTwitter() {
@@ -3036,20 +3502,25 @@ Join the conversation on Community Wall!`;
             const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(currentPostData.link)}`;
             window.open(twitterUrl, '_blank', 'width=600,height=400');
             closeShareModal();
-            showTempMessage('Sharing on Twitter...', 'success');
+            showTempMessage(`${getEmoji('1F426')} Sharing on Twitter...`, 'success');
         }
 
         function copyProfessionalLink() {
             if (!currentPostData) return;
             
-            const shareText = `Community Wall Post
+            const star = getEmoji('1F31C');
+            const person = getEmoji('1F464');
+            const speech = getEmoji('1F4AC');
+            const link = getEmoji('1F517');
+            
+            const shareText = `${star} Community Wall Post ${star}
 
-By: ${currentPostData.author}
-"${truncateText(currentPostData.content, 100)}"
+        ${person} By: ${currentPostData.author}
+        ${speech} "${truncateText(currentPostData.content, 100)}"
 
-View Full Post: ${currentPostData.link}
+        ${link} View Full Post: ${currentPostData.link}
 
-Join Community Wall to share your thoughts!`;
+        Join Community Wall to share your thoughts!`;
 
             copyToClipboard(shareText);
             closeShareModal();
@@ -3058,7 +3529,7 @@ Join Community Wall to share your thoughts!`;
         function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
                 navigator.clipboard.writeText(text).then(() => {
-                    showTempMessage('Post copied professionally!', 'success');
+                    showTempMessage(`${getEmoji('1F4CB')} Post copied professionally!`, 'success');
                 }).catch(err => {
                     fallbackCopyToClipboard(text);
                 });
@@ -3081,10 +3552,10 @@ Join Community Wall to share your thoughts!`;
                 const successful = document.execCommand('copy');
                 document.body.removeChild(textArea);
                 if (successful) {
-                    showTempMessage('Post copied professionally!', 'success');
+                    showTempMessage(`${getEmoji('1F4CB')} Post copied professionally!`, 'success');
                 }
             } catch (err) {
-                showTempMessage('Failed to copy', 'error');
+                showTempMessage(`${getEmoji('274C')} Failed to copy`, 'error');
             }
         }
 
@@ -3197,15 +3668,28 @@ Join Community Wall to share your thoughts!`;
             console.log('🎯 Displaying leaderboard with users:', users);
             
             const leaderboardHTML = users.map((user, index) => {
+                const followButton = user.id !== currentUser?.id ? 
+                    `<button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
+                        <i class="fas fa-user-plus"></i> Follow
+                    </button>` : '';
+                
+                // FIXED: Proper avatar URL for leaderboard
+                let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+                if (user.profile_pic && user.profile_pic !== 'default.png') {
+                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+                }
+                
                 return `
                 <div class="leader-card">
                     <div class="rank-badge rank-${index + 1}">${index + 1}</div>
-                    <img src="${user.profile_pic}" 
+                    <img src="${avatarSrc}" 
                          alt="${user.username}" class="leader-avatar leader-${index + 1}"
-                         onclick="openUserProfile(${user.id})">
+                         onclick="openUserProfile(${user.id})"
+                         onerror="this.src='https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'">
                     <div class="leader-info">
                         <div class="leader-name">
                             <span onclick="openUserProfile(${user.id})" style="cursor: pointer;">${user.username}</span>
+                            ${followButton}
                         </div>
                         <div class="leader-stats">
                             <div class="stat"><i class="fas fa-heart"></i> ${user.total_likes || 0}</div>
@@ -3218,6 +3702,12 @@ Join Community Wall to share your thoughts!`;
             }).join('');
             
             leaderboardContainer.innerHTML = leaderboardHTML;
+            
+            // Check follow status for all users
+            const userIds = users.filter(user => user.id !== currentUser?.id).map(user => user.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
             
             console.log('✅ Leaderboard displayed successfully');
         }
@@ -3252,282 +3742,6 @@ Join Community Wall to share your thoughts!`;
 
         function loadSidebarData() {
             loadTrendingTopics();
-        }
-
-        // ==================== ALL USERS DISPLAY ====================
-        function loadAllUsers() {
-            // For demo, using static data
-            const demoUsers = [
-                { id: 1, username: "TechGuru", profile_pic: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face", follower_count: 156, post_count: 12 },
-                { id: 2, username: "CodeMaster", profile_pic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face", follower_count: 98, post_count: 8 },
-                { id: 3, username: "DesignPro", profile_pic: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face", follower_count: 76, post_count: 6 },
-                { id: 4, username: "WebWizard", profile_pic: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face", follower_count: 54, post_count: 4 }
-            ];
-            
-            displayAllUsers(demoUsers);
-        }
-
-        function displayAllUsers(users) {
-            const onlineUsersContainer = document.getElementById('onlineUsers');
-            if (!onlineUsersContainer) return;
-
-            // Filter out current user
-            const otherUsers = users.filter(user => user.id !== currentUser?.id);
-            
-            if (otherUsers.length === 0) {
-                onlineUsersContainer.innerHTML = '<div class="no-users" style="text-align: center; padding: 20px; color: var(--text-light);">No other users found</div>';
-                return;
-            }
-
-            const usersHTML = otherUsers.map(user => {
-                return `
-                <div class="user-item">
-                    <img src="${user.profile_pic}" 
-                         alt="${user.username}" 
-                         class="user-avatar"
-                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"
-                         onclick="openUserProfile(${user.id})">
-                    <div style="flex: 1; min-width: 0;" onclick="openUserProfile(${user.id})">
-                        <div style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.username}</div>
-                        <div style="font-size: 12px; color: var(--text-light);">
-                            ${user.follower_count || 0} followers • ${user.post_count || 0} posts
-                        </div>
-                    </div>
-                </div>
-                `;
-            }).join('');
-
-            onlineUsersContainer.innerHTML = usersHTML;
-        }
-
-        // ==================== PROFILE STATS ====================
-        function loadUserProfileStats() {
-            if (!currentUser) return;
-            
-            // For demo, using static data
-            const demoStats = {
-                post_count: 15,
-                followers_count: 42,
-                following_count: 28
-            };
-            
-            displayProfileStats(demoStats);
-        }
-
-        function displayProfileStats(stats) {
-            const statsHTML = `
-                <div class="stat-item" onclick="showMyFollowers()">
-                    <div class="stat-number">${stats.post_count || 0}</div>
-                    <div class="stat-label">Posts</div>
-                </div>
-                <div class="stat-item" onclick="showMyFollowers()">
-                    <div class="stat-number">${stats.followers_count || 0}</div>
-                    <div class="stat-label">Followers</div>
-                </div>
-                <div class="stat-item" onclick="showMyFollowing()">
-                    <div class="stat-number">${stats.following_count || 0}</div>
-                    <div class="stat-label">Following</div>
-                </div>
-            `;
-            
-            const statsContainer = document.getElementById('profileStats');
-            if (statsContainer) {
-                statsContainer.innerHTML = statsHTML;
-            }
-        }
-
-        // ==================== USER PROFILE SYSTEM ====================
-        function openUserProfile(userId) {
-            currentViewingUserId = userId;
-            loadUserProfile(userId);
-            document.getElementById('userProfileModal').style.display = 'block';
-        }
-
-        function closeUserProfileModal() {
-            document.getElementById('userProfileModal').style.display = 'none';
-            currentViewingUserId = null;
-        }
-
-        function loadUserProfile(userId) {
-            // For demo, using static data
-            const demoUser = {
-                id: userId,
-                username: "DemoUser",
-                profile_pic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face"
-            };
-            
-            displayUserProfile(demoUser);
-            loadUserProfileStats(userId);
-            showUserPosts();
-        }
-
-        function displayUserProfile(user) {
-            document.getElementById('userProfileTitle').textContent = `${user.username}'s Profile`;
-            document.getElementById('userProfileName').textContent = user.username;
-            
-            // Set avatar
-            const avatar = document.getElementById('userProfileAvatar');
-            avatar.src = user.profile_pic;
-            
-            // Hide follow button for own profile
-            const followBtn = document.getElementById('userProfileFollowBtn');
-            if (user.id === currentUser?.id) {
-                followBtn.style.display = 'none';
-            } else {
-                followBtn.style.display = 'block';
-                followBtn.setAttribute('data-user-id', user.id);
-            }
-        }
-
-        function loadUserProfileStats(userId) {
-            // For demo, using static data
-            const demoStats = {
-                post_count: 15,
-                followers_count: 42,
-                following_count: 28
-            };
-            
-            document.getElementById('userPostsCount').textContent = demoStats.post_count;
-            document.getElementById('userFollowersCount').textContent = demoStats.followers_count;
-            document.getElementById('userFollowingCount').textContent = demoStats.following_count;
-        }
-
-        function showUserPosts() {
-            if (!currentViewingUserId) return;
-            
-            // For demo, using static posts
-            const demoPosts = [
-                { id: 1, content: "This is a sample post from the user.", created_at: new Date().toISOString(), like_count: 5, comment_count: 2 },
-                { id: 2, content: "Another interesting post about community features.", created_at: new Date(Date.now() - 86400000).toISOString(), like_count: 3, comment_count: 1 }
-            ];
-            
-            displayUserPosts(demoPosts);
-        }
-
-        function displayUserPosts(posts) {
-            const contentDiv = document.getElementById('userProfileContent');
-            
-            if (!posts || posts.length === 0) {
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                        <h4>No posts yet</h4>
-                        <p>This user hasn't posted anything yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            contentDiv.innerHTML = `
-                <h4 style="margin-bottom: 15px;">Posts (${posts.length})</h4>
-                <div style="max-height: 300px; overflow-y: auto;">
-                    ${posts.map(post => `
-                        <div style="padding: 15px; border-bottom: 1px solid var(--border);">
-                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
-                                ${formatTime(post.created_at)}
-                            </div>
-                            <div>${post.content}</div>
-                            <div style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
-                                <i class="fas fa-heart"></i> ${post.like_count || 0} likes • 
-                                <i class="fas fa-comment"></i> ${post.comment_count || 0} comments
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function showMyFollowers() {
-            currentViewingUserId = currentUser.id;
-            showUserFollowers();
-            document.getElementById('userProfileModal').style.display = 'block';
-        }
-
-        function showMyFollowing() {
-            currentViewingUserId = currentUser.id;
-            showUserFollowing();
-            document.getElementById('userProfileModal').style.display = 'block';
-        }
-
-        function showUserFollowers() {
-            // For demo, using static data
-            const demoFollowers = [
-                { id: 2, username: "CodeMaster", profile_pic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face", follower_count: 98 },
-                { id: 3, username: "DesignPro", profile_pic: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face", follower_count: 76 }
-            ];
-            
-            displayUserFollowers(demoFollowers);
-        }
-
-        function displayUserFollowers(followers) {
-            const contentDiv = document.getElementById('userProfileContent');
-            
-            if (!followers || followers.length === 0) {
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                        <h4>No followers yet</h4>
-                        <p>This user doesn't have any followers yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            contentDiv.innerHTML = `
-                <h4 style="margin-bottom: 15px;">Followers (${followers.length})</h4>
-                <div class="follow-list">
-                    ${followers.map(follower => `
-                        <div class="follow-item">
-                            <img src="${follower.profile_pic}" 
-                                alt="${follower.username}" class="follow-avatar"
-                                onclick="openUserProfile(${follower.id})">
-                            <div class="follow-info">
-                                <div class="follow-name" onclick="openUserProfile(${follower.id})">${follower.username}</div>
-                                <div class="follow-stats">${follower.follower_count || 0} followers</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function showUserFollowing() {
-            // For demo, using static data
-            const demoFollowing = [
-                { id: 4, username: "WebWizard", profile_pic: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face", follower_count: 54 },
-                { id: 5, username: "DataScientist", profile_pic: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&crop=face", follower_count: 67 }
-            ];
-            
-            displayUserFollowing(demoFollowing);
-        }
-
-        function displayUserFollowing(following) {
-            const contentDiv = document.getElementById('userProfileContent');
-            
-            if (!following || following.length === 0) {
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                        <h4>Not following anyone</h4>
-                        <p>This user isn't following anyone yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            contentDiv.innerHTML = `
-                <h4 style="margin-bottom: 15px;">Following (${following.length})</h4>
-                <div class="follow-list">
-                    ${following.map(user => `
-                        <div class="follow-item">
-                            <img src="${user.profile_pic}" 
-                                alt="${user.username}" class="follow-avatar"
-                                onclick="openUserProfile(${user.id})">
-                            <div class="follow-info">
-                                <div class="follow-name" onclick="openUserProfile(${user.id})">${user.username}</div>
-                                <div class="follow-stats">${user.follower_count || 0} followers</div>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
         }
 
         // ==================== UTILITY FUNCTIONS ====================
@@ -3590,9 +3804,8 @@ Join Community Wall to share your thoughts!`;
         console.log('🚀 Community Wall System Loaded!');
         console.log('🌐 API Base URL:', API_BASE_URL);
         console.log('🔤 Language Filtering: ACTIVE');
-        console.log('👥 User Profile System: ACTIVE');
-        console.log('📧 OTP System: ACTIVE');
-        console.log('✅ Register Button: FIXED AND WORKING');
+        console.log('👥 Follow System: ACTIVE');
+        console.log('👤 User Profile System: ACTIVE');
     </script>
 </body>
 </html>
