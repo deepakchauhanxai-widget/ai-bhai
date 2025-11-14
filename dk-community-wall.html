@@ -1403,7 +1403,7 @@
             </form>
 
             <!-- Register Form (Initially Hidden) -->
-            <form id="registerForm" style="display: none;" enctype="multipart/form-data">
+            <form id="registerForm" style="display: none;" enctype="multipart/form-data" onsubmit="event.preventDefault(); registerUser();">
                 <div class="form-group">
                     <label class="form-label" id="regUsernameLabel">Username</label>
                     <input type="text" class="form-input" name="username" placeholder="Choose a username" required id="regUsernameInput">
@@ -1704,9 +1704,163 @@
         let currentPostData = null;
         let currentLanguageFilter = 'all';
         let currentViewingUserId = null;
+        let pendingRegistration = null;
 
         // ==================== API BASE URL ====================
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/community-wall/api';
+
+        // ==================== OTP SYSTEM ====================
+        function registerUser() {
+            const form = document.getElementById('registerForm');
+            const formData = new FormData(form);
+            
+            // Store registration data temporarily
+            pendingRegistration = {
+                username: formData.get('username'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                profile_pic: formData.get('profile_pic')
+            };
+
+            // Send OTP
+            fetch(`${API_BASE_URL}/register.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.requires_otp) {
+                    showOTPModal(result.email);
+                } else {
+                    showRegMessage(result.success ? 'success' : 'error', result.message);
+                }
+            })
+            .catch(error => {
+                showRegMessage('error', 'Network error. Please try again.');
+            });
+        }
+
+        function showOTPModal(email) {
+            const modalHTML = `
+                <div class="modal" id="otpModal" style="display: flex; background: rgba(0,0,0,0.8);">
+                    <div class="modal-content" style="max-width: 400px;">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Verify Your Email</h3>
+                            <span class="close" onclick="closeOTPModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <p style="margin-bottom: 20px; text-align: center;">We sent a 6-digit OTP to:</p>
+                            <p style="text-align: center; font-weight: bold; color: var(--primary); margin-bottom: 25px;">${email}</p>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Enter 6-digit OTP</label>
+                                <input type="text" class="form-input" id="otpInput" maxlength="6" placeholder="000000" style="text-align: center; letter-spacing: 10px; font-size: 18px; font-weight: bold;">
+                            </div>
+                            
+                            <button class="login-btn" onclick="verifyOTP()" style="margin-bottom: 10px;">
+                                <i class="fas fa-check-circle"></i> Verify OTP
+                            </button>
+                            <button class="register-btn" onclick="resendOTP()">
+                                <i class="fas fa-redo"></i> Resend OTP
+                            </button>
+                            
+                            <div id="otpMessage" class="message" style="display: none; margin-top: 15px;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('otpInput').value.trim();
+            
+            if (otp.length !== 6) {
+                showOTPMessage('Please enter 6-digit OTP', 'error');
+                return;
+            }
+
+            // Show loading
+            const verifyBtn = document.querySelector('#otpModal .login-btn');
+            verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            verifyBtn.disabled = true;
+
+            fetch(`${API_BASE_URL}/verify_otp.php`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    ...pendingRegistration,
+                    otp: otp
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showOTPMessage('Registration successful! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        closeOTPModal();
+                        showLoginForm();
+                        showMessage('success', 'Account created! Please login.');
+                    }, 2000);
+                } else {
+                    showOTPMessage(result.message, 'error');
+                    verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
+                    verifyBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                showOTPMessage('Network error. Please try again.', 'error');
+                verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
+                verifyBtn.disabled = false;
+            });
+        }
+
+        function resendOTP() {
+            const resendBtn = document.querySelector('#otpModal .register-btn');
+            resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            resendBtn.disabled = true;
+
+            // Call register API again to resend OTP
+            const formData = new FormData();
+            formData.append('username', pendingRegistration.username);
+            formData.append('email', pendingRegistration.email);
+            formData.append('password', pendingRegistration.password);
+            formData.append('confirm_password', pendingRegistration.password);
+
+            fetch(`${API_BASE_URL}/register.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success && result.requires_otp) {
+                    showOTPMessage('New OTP sent to your email!', 'success');
+                } else {
+                    showOTPMessage(result.message, 'error');
+                }
+                resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+                resendBtn.disabled = false;
+            })
+            .catch(error => {
+                showOTPMessage('Network error. Please try again.', 'error');
+                resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+                resendBtn.disabled = false;
+            });
+        }
+
+        function showOTPMessage(message, type) {
+            const messageDiv = document.getElementById('otpMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type === 'success' ? 'success-message' : 'error-message'}`;
+            messageDiv.style.display = 'block';
+        }
+
+        function closeOTPModal() {
+            const modal = document.getElementById('otpModal');
+            if (modal) modal.remove();
+            pendingRegistration = null;
+        }
 
         // ==================== MULTI-LANGUAGE SYSTEM ====================
         const languageTexts = {
@@ -2883,70 +3037,6 @@
             document.getElementById('reg-success-message').style.display = 'none';
         }
 
-        function registerUser() {
-            const form = document.getElementById('registerForm');
-            const formData = new FormData(form);
-            
-            const username = formData.get('username').trim();
-            const email = formData.get('email').trim();
-            const password = formData.get('password');
-            const confirmPassword = formData.get('confirm_password');
-            const profilePic = formData.get('profile_pic');
-
-            // Validation
-            if (!username || !email || !password || !confirmPassword) {
-                showRegMessage('error', 'Please fill all required fields!');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showRegMessage('error', 'Passwords do not match!');
-                return;
-            }
-
-            if (password.length < 6) {
-                showRegMessage('error', 'Password must be at least 6 characters!');
-                return;
-            }
-
-            if (!validateEmail(email)) {
-                showRegMessage('error', 'Please enter a valid email address!');
-                return;
-            }
-
-            showLoading(true, 'register');
-
-            // Send registration request with FormData (for file upload)
-            fetch(`${API_BASE_URL}/register.php`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                showLoading(false, 'register');
-
-                if (result.success) {
-                    showRegMessage('success', 'Account created successfully! Redirecting to login...');
-                    
-                    // Clear form
-                    form.reset();
-                    
-                    // Redirect to login after 2 seconds
-                    setTimeout(() => {
-                        showLoginForm();
-                        showMessage('success', 'Account created! Please login.');
-                    }, 2000);
-                } else {
-                    showRegMessage('error', result.message || 'Registration failed!');
-                }
-            })
-            .catch(error => {
-                showLoading(false, 'register');
-                showRegMessage('error', 'Network error. Please try again.');
-                console.error('Registration error:', error);
-            });
-        }
-
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
@@ -3806,6 +3896,7 @@
         console.log('🔤 Language Filtering: ACTIVE');
         console.log('👥 Follow System: ACTIVE');
         console.log('👤 User Profile System: ACTIVE');
+        console.log('📧 OTP System: ACTIVE');
     </script>
 </body>
 </html>
