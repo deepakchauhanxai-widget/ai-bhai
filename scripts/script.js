@@ -1,4 +1,4 @@
-// scripts/script.js - UPDATED (Coming Soon Message Removed)
+// scripts/script.js - CLEAN VERSION (No Duplicate Install Code)
 
 // ===== LOADING SCREEN MANAGEMENT =====
 document.addEventListener('DOMContentLoaded', function() {
@@ -20,11 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Brand Footer Banner Initialization
     function initBrandFooter() {
-        // This will be handled by brand-footer.js
         console.log('Brand Footer Banner Ready!');
     }
 
-    // Call this in your main init function
     initBrandFooter();
 
     // Fallback: if still loading after 3 seconds, force hide
@@ -39,9 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ===== BUTTON CLICK HANDLERS =====
     initializeNavigation();
-    
-    // ===== INSTALL PROMPT =====
-    initializeInstallPrompt();
 });
 
 // ===== NAVIGATION FUNCTIONALITY =====
@@ -72,14 +67,10 @@ function handleNavigation(page) {
             window.open('pages/motivational.html', '_blank');
         }, 1000);
     } else {
-        // REMOVED: Coming Soon Alert - Now directly open pages or show proper navigation
+        // Silent navigation - no alert message
         setTimeout(() => {
             hideLoadingScreen();
-            // Silent navigation - no alert message
             console.log(`Navigating to ${page} page`);
-            
-            // You can add actual page navigation here later
-            // For now, just log the navigation attempt
         }, 1500);
     }
 }
@@ -100,46 +91,6 @@ function hideLoadingScreen() {
         setTimeout(() => {
             loadingScreen.style.display = 'none';
         }, 500);
-    }
-}
-
-// ===== INSTALL PROMPT FUNCTIONALITY =====
-function initializeInstallPrompt() {
-    const installPrompt = document.getElementById('installPrompt');
-    const installBtn = document.getElementById('installBtn');
-    const cancelBtn = document.getElementById('cancelInstall');
-    
-    // REMOVED: Coming Soon alert from install button
-    if (installBtn) {
-        installBtn.addEventListener('click', function() {
-            // Install functionality will be handled by install-prompt.js
-            console.log('Install button clicked - handled by install-prompt.js');
-        });
-    }
-    
-    if (cancelBtn) {
-        cancelBtn.addEventListener('click', function() {
-            hideInstallPrompt();
-        });
-    }
-    
-    // Show install prompt after 5 seconds
-    setTimeout(() => {
-        showInstallPrompt();
-    }, 5000);
-}
-
-function showInstallPrompt() {
-    const installPrompt = document.getElementById('installPrompt');
-    if (installPrompt) {
-        installPrompt.classList.remove('hidden');
-    }
-}
-
-function hideInstallPrompt() {
-    const installPrompt = document.getElementById('installPrompt');
-    if (installPrompt) {
-        installPrompt.classList.add('hidden');
     }
 }
 
