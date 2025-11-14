@@ -394,121 +394,54 @@ body {
     text-align: center;
 }
 
-/* ===== INSTALL PROMPT ===== */
-.install-prompt {
-    position: fixed;
-    bottom: var(--spacing-lg);
-    right: var(--spacing-lg);
-    z-index: 1000;
-    animation: slideInUp 0.5s ease;
-}
+/* Add this to your styles/style.css */
 
-.install-prompt.hidden {
-    display: none;
-}
-
-.install-card {
-    background: rgba(26, 26, 26, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-md);
+.universal-install-section {
+    padding: 15px;
+    margin: 10px auto;
     max-width: 300px;
-    box-shadow: var(--shadow-lg);
 }
 
-.install-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-}
-
-.install-avatar {
-    position: relative;
-}
-
-.install-avatar img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.online-dot {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 12px;
-    height: 12px;
-    background: #00ff00;
-    border-radius: 50%;
-    border: 2px solid var(--surface-color);
-}
-
-.install-title h4 {
-    font-size: 1.1rem;
-    margin-bottom: var(--spacing-xs);
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.install-title p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-.install-actions {
-    display: flex;
-    gap: var(--spacing-sm);
-}
-
-.install-btn-primary, .install-btn-secondary {
-    flex: 1;
-    padding: var(--spacing-xs) var(--spacing-sm);
+.universal-install-btn {
+    background: linear-gradient(135deg, #ff0080, #667eea);
+    color: white;
     border: none;
-    border-radius: var(--radius-md);
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 0, 128, 0.3);
     transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
 }
 
-.install-btn-primary {
-    background: var(--gradient-primary);
-    color: white;
-}
-
-.install-btn-primary:hover {
+.universal-install-btn:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 6px 20px rgba(255, 0, 128, 0.4);
 }
 
-.install-btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+.install-icon {
+    font-size: 20px;
 }
 
-.install-btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* ===== UTILITY CLASSES ===== */
-.hidden {
-    display: none !important;
-}
-
-.text-center {
+.install-text {
+    flex: 1;
     text-align: center;
 }
 
-.gradient-text {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.install-badge {
+    background: white;
+    color: #ff0080;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 /* ===== PAGE MODAL STYLES ===== */
@@ -645,112 +578,4 @@ body {
 
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.2);
-}
-
-/* Install Prompt Styles */
-.install-prompt {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    z-index: 10000;
-    max-width: 300px;
-    animation: slideInUp 0.5s ease-out;
-}
-
-.install-prompt.hidden {
-    display: none;
-}
-
-.install-card {
-    text-align: center;
-}
-
-.install-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.install-avatar img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid white;
-}
-
-.online-dot {
-    width: 10px;
-    height: 10px;
-    background: #10B981;
-    border-radius: 50%;
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    border: 2px solid #667eea;
-}
-
-.install-title h4 {
-    margin: 0;
-    font-size: 16px;
-}
-
-.install-title p {
-    margin: 0;
-    font-size: 12px;
-    opacity: 0.8;
-}
-
-.install-actions {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.install-btn-primary {
-    background: #FFD700;
-    color: #000;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    flex: 1;
-}
-
-.install-btn-secondary {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    flex: 1;
-}
-
-@keyframes slideInUp {
-    from {
-        transform: translateY(100px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100px);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
 }
