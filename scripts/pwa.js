@@ -1,12 +1,17 @@
-// scripts/pwa.js - SERVICE WORKER ONLY
+// scripts/pwa.js - UPDATED
+
+// Service Worker Registration Only
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('/service-worker.js')
             .then(function(registration) {
-                console.log('✅ ServiceWorker registered successfully: ', registration.scope);
+                console.log('✅ DK Community: ServiceWorker registered successfully');
             })
             .catch(function(error) {
-                console.log('❌ ServiceWorker registration failed: ', error);
+                console.log('❌ DK Community: ServiceWorker registration failed: ', error);
             });
     });
 }
+
+// PWA Installation events moved to install-prompt.js
+console.log('PWA JS loaded - Service worker only');
