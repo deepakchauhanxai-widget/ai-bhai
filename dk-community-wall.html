@@ -1838,23 +1838,49 @@
             }, 100);
         }
 
-        function verifyOTP() {
-            console.log('🔄 OTP Verification called');
-            
-            const otpInput = document.getElementById('otpInput');
-            if (!otpInput) {
-                console.error('❌ OTP input not found');
-                return;
-            }
-            
-            const otp = otpInput.value.trim();
-            console.log('📧 OTP entered:', otp);
-            
-            if (otp.length !== 6) {
-                showOTPMessage('Please enter 6-digit OTP', 'error');
-                return;
-            }
+        // Temporary testing function - Hardcoded OTP check
+function verifyOTP() {
+    console.log('🔄 OTP Verification called (Testing Mode)');
+    
+    const otpInput = document.getElementById('otpInput');
+    const otp = otpInput.value.trim();
+    
+    console.log('📧 OTP entered:', otp);
+    
+    if (otp.length !== 6) {
+        showOTPMessage('Please enter 6-digit OTP', 'error');
+        return;
+    }
 
+    const verifyBtn = document.getElementById('verifyOtpBtn');
+    if (verifyBtn) {
+        verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+        verifyBtn.disabled = true;
+    }
+
+    // ✅ TEMPORARY: Hardcoded OTP check for testing
+    setTimeout(() => {
+        // Aapka actual OTP jo database mein hai (175225)
+        if (otp === "175225") {
+            console.log('✅ OTP verified successfully (Testing)');
+            showOTPMessage('Registration successful! Redirecting to login...', 'success');
+            
+            setTimeout(() => {
+                closeOTPModal();
+                showLoginForm();
+                showMessage('success', 'Account created! Please login.');
+            }, 2000);
+        } else {
+            console.log('❌ OTP verification failed (Testing)');
+            showOTPMessage('Invalid OTP! Please try again.', 'error');
+        }
+        
+        if (verifyBtn) {
+            verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
+            verifyBtn.disabled = false;
+        }
+    }, 1500);
+}
             // Show loading
             const verifyBtn = document.getElementById('verifyOtpBtn');
             if (verifyBtn) {
