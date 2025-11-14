@@ -1709,158 +1709,241 @@
         // ==================== API BASE URL ====================
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/community-wall/api';
 
-        // ==================== OTP SYSTEM ====================
-        function registerUser() {
-            const form = document.getElementById('registerForm');
-            const formData = new FormData(form);
-            
-            // Store registration data temporarily
-            pendingRegistration = {
-                username: formData.get('username'),
-                email: formData.get('email'),
-                password: formData.get('password'),
-                profile_pic: formData.get('profile_pic')
-            };
+// ==================== OTP SYSTEM ====================
+let pendingRegistration = null;
 
-            // Send OTP
-            fetch(`${API_BASE_URL}/register.php`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success && result.requires_otp) {
-                    showOTPModal(result.email);
-                } else {
-                    showRegMessage(result.success ? 'success' : 'error', result.message);
-                }
-            })
-            .catch(error => {
-                showRegMessage('error', 'Network error. Please try again.');
-            });
+// ✅ Global functions banao
+window.registerUser = function() {
+    const form = document.getElementById('registerForm');
+    const formData = new FormData(form);
+    
+    // Store registration data temporarily
+    pendingRegistration = {
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        profile_pic: formData.get('profile_pic')
+    };
+
+    // Send OTP
+    fetch(`${API_BASE_URL}/register.php`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Register API Response:', result);
+        if (result.success && result.requires_otp) {
+            showOTPModal(result.email);
+        } else {
+            showRegMessage(result.success ? 'success' : 'error', result.message);
         }
+    })
+    .catch(error => {
+        console.error('Register Error:', error);
+        showRegMessage('error', 'Network error. Please try again.');
+    });
+}
 
-        function showOTPModal(email) {
-            const modalHTML = `
-                <div class="modal" id="otpModal" style="display: flex; background: rgba(0,0,0,0.8);">
-                    <div class="modal-content" style="max-width: 400px;">
-                        <div class="modal-header">
-                            <h3 class="modal-title">Verify Your Email</h3>
-                            <span class="close" onclick="closeOTPModal()">&times;</span>
-                        </div>
-                        <div class="modal-body">
-                            <p style="margin-bottom: 20px; text-align: center;">We sent a 6-digit OTP to:</p>
-                            <p style="text-align: center; font-weight: bold; color: var(--primary); margin-bottom: 25px;">${email}</p>
-                            
-                            <div class="form-group">
-                                <label class="form-label">Enter 6-digit OTP</label>
-                                <input type="text" class="form-input" id="otpInput" maxlength="6" placeholder="000000" style="text-align: center; letter-spacing: 10px; font-size: 18px; font-weight: bold;">
-                            </div>
-                            
-                            <button class="login-btn" onclick="verifyOTP()" style="margin-bottom: 10px;">
-                                <i class="fas fa-check-circle"></i> Verify OTP
-                            </button>
-                            <button class="register-btn" onclick="resendOTP()">
-                                <i class="fas fa-redo"></i> Resend OTP
-                            </button>
-                            
-                            <div id="otpMessage" class="message" style="display: none; margin-top: 15px;"></div>
-                        </div>
-                    </div>
+window.showOTPModal = function(email) {
+    // Pehle existing modal remove karo
+    const existingModal = document.getElementById('otpModal');
+    if (existingModal) existingModal.remove();
+
+    const modalHTML = `
+        <div class="modal" id="otpModal" style="display: flex; background: rgba(0,0,0,0.8);">
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-header">
+                    <h3 class="modal-title">Verify Your Email</h3>
+                    <span class="close" onclick="closeOTPModal()">&times;</span>
                 </div>
-            `;
-            
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+                <div class="modal-body">
+                    <p style="margin-bottom: 20px; text-align: center;">We sent a 6-digit OTP to:</p>
+                    <p style="text-align: center; font-weight: bold; color: var(--primary); margin-bottom: 25px;">${email}</p>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Enter 6-digit OTP</label>
+                        <input type="text" class="form-input" id="otpInput" maxlength="6" placeholder="000000" style="text-align: center; letter-spacing: 10px; font-size: 18px; font-weight: bold;">
+                    </div>
+                    
+                    <button class="login-btn" id="verifyOtpBtn" style="margin-bottom: 10px;">
+                        <i class="fas fa-check-circle"></i> Verify OTP
+                    </button>
+                    <button class="register-btn" id="resendOtpBtn">
+                        <i class="fas fa-redo"></i> Resend OTP
+                    </button>
+                    
+                    <div id="otpMessage" class="message" style="display: none; margin-top: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // ✅ Event listeners add karo after modal create ho jaye
+    setTimeout(() => {
+        const verifyBtn = document.getElementById('verifyOtpBtn');
+        const resendBtn = document.getElementById('resendOtpBtn');
+        const otpInput = document.getElementById('otpInput');
+        
+        if (verifyBtn) {
+            verifyBtn.addEventListener('click', verifyOTP);
         }
-
-        function verifyOTP() {
-            const otp = document.getElementById('otpInput').value.trim();
-            
-            if (otp.length !== 6) {
-                showOTPMessage('Please enter 6-digit OTP', 'error');
-                return;
-            }
-
-            // Show loading
-            const verifyBtn = document.querySelector('#otpModal .login-btn');
-            verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-            verifyBtn.disabled = true;
-
-            fetch(`${API_BASE_URL}/verify_otp.php`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    ...pendingRegistration,
-                    otp: otp
-                })
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success) {
-                    showOTPMessage('Registration successful! Redirecting to login...', 'success');
-                    setTimeout(() => {
-                        closeOTPModal();
-                        showLoginForm();
-                        showMessage('success', 'Account created! Please login.');
-                    }, 2000);
-                } else {
-                    showOTPMessage(result.message, 'error');
-                    verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
-                    verifyBtn.disabled = false;
+        
+        if (resendBtn) {
+            resendBtn.addEventListener('click', resendOTP);
+        }
+        
+        if (otpInput) {
+            otpInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    verifyOTP();
                 }
-            })
-            .catch(error => {
-                showOTPMessage('Network error. Please try again.', 'error');
+            });
+            
+            // Auto-focus on OTP input
+            otpInput.focus();
+        }
+    }, 100);
+}
+
+window.verifyOTP = function() {
+    console.log('🔄 OTP Verification called');
+    
+    const otpInput = document.getElementById('otpInput');
+    if (!otpInput) {
+        console.error('❌ OTP input not found');
+        return;
+    }
+    
+    const otp = otpInput.value.trim();
+    console.log('📧 OTP entered:', otp);
+    
+    if (otp.length !== 6) {
+        showOTPMessage('Please enter 6-digit OTP', 'error');
+        return;
+    }
+
+    // Show loading
+    const verifyBtn = document.getElementById('verifyOtpBtn');
+    if (verifyBtn) {
+        verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+        verifyBtn.disabled = true;
+    }
+
+    console.log('📤 Sending OTP verification request...', pendingRegistration);
+    
+    fetch(`${API_BASE_URL}/verify_otp.php`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            username: pendingRegistration.username,
+            email: pendingRegistration.email,
+            password: pendingRegistration.password,
+            otp: otp
+        })
+    })
+    .then(response => {
+        console.log('📥 OTP Response received');
+        return response.json();
+    })
+    .then(result => {
+        console.log('✅ OTP API Result:', result);
+        
+        if (result.success) {
+            showOTPMessage('Registration successful! Redirecting to login...', 'success');
+            setTimeout(() => {
+                closeOTPModal();
+                showLoginForm();
+                showMessage('success', 'Account created! Please login.');
+            }, 2000);
+        } else {
+            showOTPMessage(result.message, 'error');
+            if (verifyBtn) {
                 verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
                 verifyBtn.disabled = false;
-            });
+            }
         }
-
-        function resendOTP() {
-            const resendBtn = document.querySelector('#otpModal .register-btn');
-            resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            resendBtn.disabled = true;
-
-            // Call register API again to resend OTP
-            const formData = new FormData();
-            formData.append('username', pendingRegistration.username);
-            formData.append('email', pendingRegistration.email);
-            formData.append('password', pendingRegistration.password);
-            formData.append('confirm_password', pendingRegistration.password);
-
-            fetch(`${API_BASE_URL}/register.php`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.success && result.requires_otp) {
-                    showOTPMessage('New OTP sent to your email!', 'success');
-                } else {
-                    showOTPMessage(result.message, 'error');
-                }
-                resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
-                resendBtn.disabled = false;
-            })
-            .catch(error => {
-                showOTPMessage('Network error. Please try again.', 'error');
-                resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
-                resendBtn.disabled = false;
-            });
+    })
+    .catch(error => {
+        console.error('❌ OTP Error:', error);
+        showOTPMessage('Network error. Please try again.', 'error');
+        if (verifyBtn) {
+            verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verify OTP';
+            verifyBtn.disabled = false;
         }
+    });
+}
 
-        function showOTPMessage(message, type) {
-            const messageDiv = document.getElementById('otpMessage');
-            messageDiv.textContent = message;
-            messageDiv.className = `message ${type === 'success' ? 'success-message' : 'error-message'}`;
-            messageDiv.style.display = 'block';
-        }
+window.resendOTP = function() {
+    console.log('🔄 Resend OTP called');
+    
+    const resendBtn = document.getElementById('resendOtpBtn');
+    if (resendBtn) {
+        resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        resendBtn.disabled = true;
+    }
 
-        function closeOTPModal() {
-            const modal = document.getElementById('otpModal');
-            if (modal) modal.remove();
-            pendingRegistration = null;
+    console.log('📧 Resending OTP for:', pendingRegistration);
+    
+    // Call register API again to resend OTP
+    const formData = new FormData();
+    formData.append('username', pendingRegistration.username);
+    formData.append('email', pendingRegistration.email);
+    formData.append('password', pendingRegistration.password);
+    formData.append('confirm_password', pendingRegistration.password);
+
+    fetch(`${API_BASE_URL}/register.php`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('📧 Resend OTP Result:', result);
+        
+        if (result.success && result.requires_otp) {
+            showOTPMessage('New OTP sent to your email!', 'success');
+        } else {
+            showOTPMessage(result.message, 'error');
         }
+        
+        if (resendBtn) {
+            resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+            resendBtn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error('❌ Resend OTP Error:', error);
+        showOTPMessage('Network error. Please try again.', 'error');
+        if (resendBtn) {
+            resendBtn.innerHTML = '<i class="fas fa-redo"></i> Resend OTP';
+            resendBtn.disabled = false;
+        }
+    });
+}
+
+window.showOTPMessage = function(message, type) {
+    const messageDiv = document.getElementById('otpMessage');
+    if (messageDiv) {
+        messageDiv.textContent = message;
+        messageDiv.className = `message ${type === 'success' ? 'success-message' : 'error-message'}`;
+        messageDiv.style.display = 'block';
+        
+        // Auto-hide success messages
+        if (type === 'success') {
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+    }
+}
+
+window.closeOTPModal = function() {
+    const modal = document.getElementById('otpModal');
+    if (modal) modal.remove();
+    pendingRegistration = null;
+}
 
         // ==================== MULTI-LANGUAGE SYSTEM ====================
         const languageTexts = {
