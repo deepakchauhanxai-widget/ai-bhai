@@ -41,7 +41,6 @@
             direction: rtl;
         }
 
-        /* RTL Layout Fixes */
         body[dir="rtl"] .header,
         body[dir="rtl"] .user-menu,
         body[dir="rtl"] .post-header,
@@ -75,7 +74,6 @@
             flex-direction: row-reverse;
         }
 
-        /* Text alignment for RTL */
         body[dir="rtl"] .post-content,
         body[dir="rtl"] .comment-text,
         body[dir="rtl"] .leader-name,
@@ -91,7 +89,6 @@
             text-align: right;
         }
 
-        /* Input and textarea alignment */
         body[dir="rtl"] .form-input,
         body[dir="rtl"] .post-input,
         body[dir="rtl"] .comment-input {
@@ -99,7 +96,6 @@
             direction: rtl;
         }
 
-        /* Fix padding and margins for RTL */
         body[dir="rtl"] .post-card,
         body[dir="rtl"] .sidebar-card,
         body[dir="rtl"] .create-post-card,
@@ -116,7 +112,6 @@
             text-align: right;
         }
 
-        /* Ensure text doesn't get cut off in RTL */
         body[dir="rtl"] .post-content,
         body[dir="rtl"] .comment-text,
         body[dir="rtl"] .leader-name,
@@ -127,22 +122,19 @@
             max-width: 100%;
         }
 
-        /* Fix dropdown menu position for RTL */
         body[dir="rtl"] .menu-dropdown {
-            direction: ltr; /* Keep dropdown content LTR */
+            direction: ltr;
         }
 
         body[dir="rtl"] .dropdown-item {
-            direction: ltr; /* Keep dropdown items LTR */
+            direction: ltr;
             text-align: left;
         }
 
-        /* Fix form switch text alignment */
         body[dir="rtl"] .form-switch {
             text-align: center;
         }
 
-        /* Language Filter Styles */
         .language-filter {
             display: flex;
             gap: 10px;
@@ -192,7 +184,6 @@
             margin: 0 auto;
         }
 
-        /* Header Styles */
         .header {
             background: var(--card);
             border-radius: 20px;
@@ -319,7 +310,6 @@
             color: var(--primary);
         }
 
-        /* Leaderboard Section */
         .leaderboard-section {
             margin-bottom: 25px;
         }
@@ -428,14 +418,12 @@
             gap: 5px;
         }
 
-        /* Main Content Grid */
         .main-content {
             display: grid;
             grid-template-columns: 1fr 350px;
             gap: 25px;
         }
 
-        /* Post Creation */
         .create-post-card {
             background: var(--card);
             border-radius: 16px;
@@ -506,7 +494,6 @@
             box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
         }
 
-        /* Posts Feed */
         .posts-feed {
             display: flex;
             flex-direction: column;
@@ -614,7 +601,6 @@
             color: var(--accent);
         }
 
-        /* Right Sidebar */
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -638,7 +624,6 @@
             gap: 10px;
         }
 
-        /* Trending Topics */
         .topics-list {
             display: flex;
             flex-direction: column;
@@ -675,7 +660,6 @@
             font-size: 12px;
         }
 
-        /* Online Users */
         .online-users {
             display: flex;
             flex-direction: column;
@@ -710,7 +694,6 @@
             background: var(--accent);
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -766,7 +749,6 @@
             padding: 25px;
         }
 
-        /* Profile Modal Styles */
         .profile-avatar-container {
             text-align: center;
             margin-bottom: 20px;
@@ -796,7 +778,6 @@
             color: white;
         }
 
-        /* Comments Section */
         .comments-list {
             max-height: 400px;
             overflow-y: auto;
@@ -879,7 +860,6 @@
             background: var(--primary-dark);
         }
 
-        /* Responsive Design */
         @media (max-width: 968px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -916,7 +896,6 @@
             }
         }
 
-        /* Animations */
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -941,7 +920,6 @@
             animation: fadeIn 0.5s ease;
         }
 
-        /* Notification */
         .notification {
             position: fixed;
             top: 20px;
@@ -973,7 +951,6 @@
             }
         }
 
-        /* Login Page Styles */
         .login-container {
             display: flex;
             justify-content: center;
@@ -1087,7 +1064,6 @@
             border: 1px solid #a7f3d0;
         }
 
-        /* Share Modal Styles */
         .share-modal-content {
             background: white;
             padding: 30px;
@@ -1170,7 +1146,6 @@
             background: var(--secondary);
         }
 
-        /* Switch between login and register forms */
         .form-switch {
             text-align: center;
             margin-top: 20px;
@@ -1189,7 +1164,6 @@
             text-decoration: underline;
         }
         
-        /* Follow Button Styles */
         .follow-btn {
             padding: 6px 12px;
             border: 1px solid var(--primary);
@@ -1213,13 +1187,11 @@
             box-shadow: var(--shadow);
         }
 
-        /* RTL support for follow button */
         body[dir="rtl"] .follow-btn {
             margin-left: 0;
             margin-right: 10px;
         }
 
-        /* Online users follow button alignment */
         .online-users .follow-btn {
             margin-left: auto;
             font-size: 10px;
@@ -1231,7 +1203,6 @@
             margin-right: auto;
         }
 
-        /* Profile Stats Styles */
         .profile-stats {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1273,7 +1244,6 @@
             color: white;
         }
 
-        /* User Profile Modal */
         .user-profile-header {
             text-align: center;
             margin-bottom: 20px;
@@ -1306,6 +1276,7 @@
             padding: 10px;
             background: var(--secondary);
             border-radius: 8px;
+            cursor: pointer;
         }
 
         .user-stat-number {
@@ -1319,7 +1290,6 @@
             color: var(--text-light);
         }
 
-        /* Followers/Following List */
         .follow-list {
             max-height: 300px;
             overflow-y: auto;
@@ -1371,10 +1341,87 @@
             font-size: 12px;
             color: var(--text-light);
         }
+
+        /* OTP System Styles */
+        .email-otp-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .otp-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .otp-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .otp-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .otp-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .otp-input {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 8px;
+        }
+
+        .otp-timer {
+            background: var(--accent);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .resend-otp-btn {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .resend-otp-btn:disabled {
+            border-color: var(--text-light);
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .resend-otp-btn:not(:disabled):hover {
+            background: var(--primary);
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <!-- Login Page (Initially Visible) -->
+    <!-- Login Page -->
     <div id="loginPage" class="login-container">
         <div class="login-card fade-in">
             <div class="login-title" id="loginTitleText">
@@ -1402,31 +1449,55 @@
                 </div>
             </form>
 
-            <!-- Register Form (Initially Hidden) -->
+            <!-- Register Form with OTP -->
             <form id="registerForm" style="display: none;" enctype="multipart/form-data">
                 <div class="form-group">
                     <label class="form-label" id="regUsernameLabel">Username</label>
                     <input type="text" class="form-input" name="username" placeholder="Choose a username" required id="regUsernameInput">
                 </div>
+                
+                <!-- Email Field with OTP Verification -->
                 <div class="form-group">
                     <label class="form-label" id="regEmailLabel">Email</label>
-                    <input type="email" class="form-input" name="email" placeholder="Enter your email" required id="regEmailInput">
+                    <div class="email-otp-container">
+                        <input type="email" class="form-input" name="email" placeholder="Enter your email" required id="regEmailInput">
+                        <button type="button" class="otp-btn" id="sendOtpBtn" onclick="sendOTP()">
+                            <i class="fas fa-paper-plane"></i> Send OTP
+                        </button>
+                    </div>
                 </div>
+                
+                <!-- OTP Verification Section -->
+                <div class="form-group" id="otpSection" style="display: none;">
+                    <label class="form-label">Enter OTP</label>
+                    <div class="otp-input-container">
+                        <input type="text" class="form-input otp-input" id="otpInput" placeholder="Enter 6-digit OTP" maxlength="6">
+                        <div class="otp-timer" id="otpTimer">05:00</div>
+                    </div>
+                    <button type="button" class="resend-otp-btn" id="resendOtpBtn" onclick="resendOTP()" disabled>
+                        Resend OTP (<span id="resendTimer">60</span>s)
+                    </button>
+                </div>
+                
                 <div class="form-group">
                     <label class="form-label" id="regPasswordLabel">Password</label>
                     <input type="password" class="form-input" name="password" placeholder="Create password" required id="regPasswordInput">
                 </div>
+                
                 <div class="form-group">
                     <label class="form-label" id="regConfirmPasswordLabel">Confirm Password</label>
                     <input type="password" class="form-input" name="confirm_password" placeholder="Confirm password" required id="regConfirmPasswordInput">
                 </div>
+                
                 <div class="form-group">
                     <label class="form-label" id="regProfilePicLabel">Profile Picture (Optional)</label>
                     <input type="file" class="form-input" name="profile_pic" accept="image/*">
                 </div>
+                
                 <div id="reg-error-message" class="message error-message"></div>
                 <div id="reg-success-message" class="message success-message"></div>
-                <button type="submit" class="register-btn" id="registerButton">
+                
+                <button type="button" class="register-btn" id="registerButton" onclick="verifyAndRegister()">
                     <i class="fas fa-user-plus"></i> <span id="registerButtonText">Create Account</span>
                 </button>
                 
@@ -1437,7 +1508,7 @@
         </div>
     </div>
 
-    <!-- Main Wall Page (Initially Hidden) -->
+    <!-- Main Wall Page -->
     <div id="wallPage" style="display: none;">
         <div class="container">
             <!-- Header -->
@@ -1693,7 +1764,7 @@
         </div>
     </div>
 
-    <!-- Professional Share Modal (Will be created by JavaScript) -->
+    <!-- Professional Share Modal -->
     <div id="professionalShareModal"></div>
 
     <script>
@@ -1705,13 +1776,213 @@
         let currentLanguageFilter = 'all';
         let currentViewingUserId = null;
 
-        // ==================== API BASE URL ====================
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/community-wall/api';
+
+        // ==================== OTP REGISTRATION SYSTEM ====================
+        let otpTimer;
+        let resendTimer;
+        let currentEmail = '';
+
+        function sendOTP() {
+            const email = document.getElementById('regEmailInput').value.trim();
+            
+            if (!email || !validateEmail(email)) {
+                showRegMessage('error', 'Please enter a valid email address');
+                return;
+            }
+
+            // Check if email already exists
+            fetch(`${API_BASE_URL}/check_email_exists.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.exists) {
+                    showRegMessage('error', 'Email already registered! Please use another email.');
+                    return;
+                }
+                
+                // Send OTP
+                return fetch(`${API_BASE_URL}/send_otp.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    currentEmail = email;
+                    document.getElementById('otpSection').style.display = 'block';
+                    document.getElementById('sendOtpBtn').disabled = true;
+                    document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-check"></i> OTP Sent';
+                    
+                    startOTPTimer();
+                    startResendTimer();
+                    
+                    showRegMessage('success', 'OTP sent to your email! Check your inbox.');
+                } else {
+                    showRegMessage('error', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showRegMessage('error', 'Error sending OTP. Please try again.');
+            });
+        }
+
+        function startOTPTimer() {
+            let timeLeft = 300; // 5 minutes
+            const timerElement = document.getElementById('otpTimer');
+            
+            clearInterval(otpTimer);
+            
+            otpTimer = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(otpTimer);
+                    document.getElementById('otpSection').style.display = 'none';
+                    document.getElementById('sendOtpBtn').disabled = false;
+                    document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+                    showRegMessage('error', 'OTP expired. Please request a new one.');
+                }
+            }, 1000);
+        }
+
+        function startResendTimer() {
+            let timeLeft = 60;
+            const resendBtn = document.getElementById('resendOtpBtn');
+            const timerElement = document.getElementById('resendTimer');
+            
+            resendBtn.disabled = true;
+            clearInterval(resendTimer);
+            
+            resendTimer = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(resendTimer);
+                    resendBtn.disabled = false;
+                    timerElement.textContent = '0';
+                }
+            }, 1000);
+        }
+
+        function resendOTP() {
+            if (!currentEmail) {
+                showRegMessage('error', 'Please enter email first');
+                return;
+            }
+            
+            sendOTP();
+        }
+
+        function verifyAndRegister() {
+            const otp = document.getElementById('otpInput').value.trim();
+            const email = document.getElementById('regEmailInput').value.trim();
+            
+            if (!otp || otp.length !== 6) {
+                showRegMessage('error', 'Please enter valid 6-digit OTP');
+                return;
+            }
+
+            // Verify OTP first
+            fetch(`${API_BASE_URL}/verify_otp_register.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    email: email,
+                    otp: otp 
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // OTP verified, now complete registration
+                    completeRegistration();
+                } else {
+                    showRegMessage('error', result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showRegMessage('error', 'Error verifying OTP');
+            });
+        }
+
+        function completeRegistration() {
+            const form = document.getElementById('registerForm');
+            const formData = new FormData(form);
+            
+            // Use the new Gmail register API
+            fetch(`${API_BASE_URL}/gmail_register.php`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showRegMessage('success', 'Account created successfully! Redirecting to login...');
+                    
+                    // Reset form and timers
+                    form.reset();
+                    clearInterval(otpTimer);
+                    clearInterval(resendTimer);
+                    document.getElementById('otpSection').style.display = 'none';
+                    document.getElementById('sendOtpBtn').disabled = false;
+                    document.getElementById('sendOtpBtn').innerHTML = '<i class="fas fa-paper-plane"></i> Send OTP';
+                    
+                    setTimeout(() => {
+                        showLoginForm();
+                        showMessage('success', 'Account created! Please login.');
+                    }, 2000);
+                } else {
+                    showRegMessage('error', result.message || 'Registration failed!');
+                }
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                showRegMessage('error', 'Network error. Please try again.');
+            });
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showRegMessage(type, message) {
+            const errorDiv = document.getElementById('reg-error-message');
+            const successDiv = document.getElementById('reg-success-message');
+            
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            } else {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            }
+        }
 
         // ==================== MULTI-LANGUAGE SYSTEM ====================
         const languageTexts = {
             en: {
-                // Login Page
                 loginTitle: "Community Wall",
                 usernameLabel: "Username",
                 usernamePlaceholder: "Enter your username",
@@ -1720,8 +1991,6 @@
                 loginButton: "Login to Community",
                 registerSwitch: "Don't have an account?",
                 registerLink: "Create one here",
-                
-                // Register Page
                 regUsernameLabel: "Username",
                 regUsernamePlaceholder: "Choose a username",
                 regEmailLabel: "Email",
@@ -1734,8 +2003,6 @@
                 registerButton: "Create Account",
                 loginSwitch: "Already have an account?",
                 loginLink: "Login here",
-                
-                // Wall Page
                 wallLogo: "Community Wall",
                 welcome: "Welcome",
                 myProfile: "My Profile",
@@ -1751,32 +2018,23 @@
                 noComments: "No comments yet. Be the first to comment!",
                 trendingTopics: "Trending Topics",
                 onlineNow: "Online Now",
-                
-                // Filter Buttons
                 filterAll: "All Languages",
                 filterEnglish: "English",
                 filterHindi: "Hindi", 
                 filterUrdu: "Urdu",
                 filterMarathi: "Marathi",
-                
-                // Share Modal
                 sharePost: "Share Post",
                 cancel: "Cancel",
                 copyLink: "Copy Link",
-                
-                // Notifications
                 postSuccess: "Post created successfully!",
                 loginSuccess: "Login successful!",
                 registerSuccess: "Account created successfully!",
-                
-                // Follow System
                 follow: "Follow",
                 following: "Following",
                 unfollow: "Unfollow"
             },
             
             hi: {
-                // Login Page
                 loginTitle: "कम्युनिटी वॉल",
                 usernameLabel: "यूज़रनेम",
                 usernamePlaceholder: "अपना यूज़रनेम डालें",
@@ -1785,8 +2043,6 @@
                 loginButton: "कम्युनिटी में लॉगिन करें",
                 registerSwitch: "खाता नहीं है?",
                 registerLink: "यहाँ बनाएं",
-                
-                // Register Page
                 regUsernameLabel: "यूज़रनेम",
                 regUsernamePlaceholder: "यूज़रनेम चुनें",
                 regEmailLabel: "ईमेल",
@@ -1799,8 +2055,6 @@
                 registerButton: "खाता बनाएं",
                 loginSwitch: "पहले से खाता है?",
                 loginLink: "यहाँ लॉगिन करें",
-                
-                // Wall Page
                 wallLogo: "कम्युनिटी वॉल",
                 welcome: "स्वागत है",
                 myProfile: "मेरी प्रोफाइल",
@@ -1816,164 +2070,282 @@
                 noComments: "अभी तक कोई टिप्पणी नहीं। पहली टिप्पणी करें!",
                 trendingTopics: "ट्रेंडिंग विषय",
                 onlineNow: "ऑनलाइन उपयोगकर्ता",
-                
-                // Filter Buttons
                 filterAll: "सभी भाषाएं",
                 filterEnglish: "अंग्रेजी",
                 filterHindi: "हिंदी",
                 filterUrdu: "उर्दू",
                 filterMarathi: "मराठी",
-                
-                // Share Modal
                 sharePost: "पोस्ट शेयर करें",
                 cancel: "रद्द करें",
                 copyLink: "लिंक कॉपी करें",
-                
-                // Notifications
                 postSuccess: "पोस्ट सफलतापूर्वक बनाई गई!",
                 loginSuccess: "लॉगिन सफल!",
                 registerSuccess: "खाता सफलतापूर्वक बन गया!",
-                
-                // Follow System
                 follow: "फॉलो करें",
                 following: "फॉलो कर रहे हैं",
                 unfollow: "अनफॉलो करें"
-            },
-            
-            ur: {
-                // Login Page
-                loginTitle: "کمیونٹی وال",
-                usernameLabel: "صارف نام",
-                usernamePlaceholder: "اپنا صارف نام درج کریں",
-                passwordLabel: "پاس ورڈ",
-                passwordPlaceholder: "اپنا پاس ورڈ درج کریں",
-                loginButton: "کمیونٹی میں لاگ ان کریں",
-                registerSwitch: "اکاؤنٹ نہیں ہے؟",
-                registerLink: "یہاں بنائیں",
-                
-                // Register Page
-                regUsernameLabel: "صارف نام",
-                regUsernamePlaceholder: "صارف نام منتخب کریں",
-                regEmailLabel: "ای میل",
-                regEmailPlaceholder: "اپنا ای میل درج کریں",
-                regPasswordLabel: "پاس ورڈ",
-                regPasswordPlaceholder: "پاس ورڈ بنائیں",
-                regConfirmPasswordLabel: "پاس ورڈ کی تصدیق کریں",
-                regConfirmPasswordPlaceholder: "پاس ورڈ کی تصدیق کریں",
-                regProfilePicLabel: "پروفائل تصویر (اختیاری)",
-                registerButton: "اکاؤنٹ بنائیں",
-                loginSwitch: "پہلے سے اکاؤنٹ ہے؟",
-                loginLink: "یہاں لاگ ان کریں",
-                
-                // Wall Page
-                wallLogo: "کمیونٹی وال",
-                welcome: "خوش آمدید",
-                myProfile: "میری پروفائل",
-                settings: "ترتیبات",
-                logout: "لاگ آؤٹ",
-                topLeaders: "ٹاپ کمیونٹی لیڈرز",
-                shareThoughts: "کمیونٹی کے ساتھ اپنے خیالات شیئر کریں...",
-                postButton: "پوسٹ بھیجیں",
-                likeButton: "پسند",
-                commentButton: "تبصرہ",
-                shareButton: "شیئر کریں",
-                writeComment: "تبصرہ لکھیں...",
-                noComments: "ابھی تک کوئی تبصرہ نہیں۔ پہلا تبصرہ کریں!",
-                trendingTopics: "ٹرینڈنگ موضوعات",
-                onlineNow: "آن لائن صارفین",
-                
-                // Filter Buttons
-                filterAll: "تمام زبانیں",
-                filterEnglish: "انگریزی",
-                filterHindi: "ہندی",
-                filterUrdu: "اردو",
-                filterMarathi: "مراٹھی",
-                
-                // Share Modal
-                sharePost: "پوسٹ شیئر کریں",
-                cancel: "منسوخ کریں",
-                copyLink: "لنک کاپی کریں",
-                
-                // Notifications
-                postSuccess: "پوسٹ کامیابی سے بن گئی!",
-                loginSuccess: "لاگ ان کامیاب!",
-                registerSuccess: "اکاؤنٹ کامیابی سے بن گیا!",
-                
-                // Follow System
-                follow: "فالو کریں",
-                following: "فالو کر رہے ہیں",
-                unfollow: "انفالو کریں"
-            },
-            
-            mr: {
-                // Login Page
-                loginTitle: "कम्युनिटी वॉल",
-                usernameLabel: "युजरनेम",
-                usernamePlaceholder: "तुमचे युजरनेम टाका",
-                passwordLabel: "पासवर्ड",
-                passwordPlaceholder: "तुमचा पासवर्ड टाका",
-                loginButton: "कम्युनिटीमध्ये लॉगिन करा",
-                registerSwitch: "खाते नाही?",
-                registerLink: "येथे तयार करा",
-                
-                // Register Page
-                regUsernameLabel: "युजरनेम",
-                regUsernamePlaceholder: "युजरनेम निवडा",
-                regEmailLabel: "ईमेल",
-                regEmailPlaceholder: "तुमचा ईमेल टाका",
-                regPasswordLabel: "पासवर्ड",
-                regPasswordPlaceholder: "पासवर्ड तयार करा",
-                regConfirmPasswordLabel: "पासवर्डची पुष्टी करा",
-                regConfirmPasswordPlaceholder: "पासवर्डची पुष्टी करा",
-                regProfilePicLabel: "प्रोफाइल फोटो (ऐच्छिक)",
-                registerButton: "खाते तयार करा",
-                loginSwitch: "आधीपासून खाते आहे?",
-                loginLink: "येथे लॉगिन करा",
-                
-                // Wall Page
-                wallLogo: "कम्युनिटी वॉल",
-                welcome: "स्वागत आहे",
-                myProfile: "माझे प्रोफाइल",
-                settings: "सेटिंग्ज",
-                logout: "लॉगआउट",
-                topLeaders: "अग्रणी समुदाय नेते",
-                shareThoughts: "समुदायासोबत तुमचे विचार शेअर करा...",
-                postButton: "पोस्ट पाठवा",
-                likeButton: "लाइक",
-                commentButton: "कमेंट",
-                shareButton: "शेअर करा",
-                writeComment: "कमेंट लिहा...",
-                noComments: "अजून कमेंट नाहीत. पहिले कमेंट करा!",
-                trendingTopics: "ट्रेंडिंग विषय",
-                onlineNow: "ऑनलाइन सदस्य",
-                
-                // Filter Buttons
-                filterAll: "सर्व भाषा",
-                filterEnglish: "इंग्रजी",
-                filterHindi: "हिंदी",
-                filterUrdu: "उर्दू",
-                filterMarathi: "मराठी",
-                
-                // Share Modal
-                sharePost: "पोस्ट शेअर करा",
-                cancel: "रद्द करा",
-                copyLink: "लिंक कॉपी करा",
-                
-                // Notifications
-                postSuccess: "पोस्ट यशस्वीरित्या तयार झाली!",
-                loginSuccess: "लॉगिन यशस्वी!",
-                registerSuccess: "खाते यशस्वीरित्या तयार झाले!",
-                
-                // Follow System
-                follow: "फॉलो करा",
-                following: "फॉलो करत आहे",
-                unfollow: "अनफॉलो करा"
             }
         };
 
+        // ==================== USER PROFILE SYSTEM ====================
+
+        function openUserProfile(userId) {
+            console.log('🔄 Opening user profile for ID:', userId);
+            currentViewingUserId = userId;
+            
+            document.getElementById('userProfileContent').innerHTML = '<div style="text-align: center; padding: 20px;">Loading...</div>';
+            
+            loadUserProfile(userId);
+            document.getElementById('userProfileModal').style.display = 'block';
+        }
+
+        function loadUserProfile(userId) {
+            console.log('📱 Loading profile for user:', userId);
+            
+            fetch(`${API_BASE_URL}/get_user_profile.php?user_id=${userId}`)
+                .then(response => response.json())
+                .then(result => {
+                    console.log('✅ User profile API response:', result);
+                    if (result.success) {
+                        displayUserProfile(result.user);
+                    } else {
+                        console.error('❌ API Error:', result.message);
+                        showProfileError('User profile not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Network Error:', error);
+                    showProfileError('Error loading user profile');
+                });
+        }
+
+        function displayUserProfile(user) {
+            console.log('🎯 Displaying user profile:', user);
+            
+            if (!user) {
+                showProfileError('No user data available');
+                return;
+            }
+            
+            document.getElementById('userProfileTitle').textContent = `${user.username}'s Profile`;
+            document.getElementById('userProfileName').textContent = user.username;
+            
+            const avatar = document.getElementById('userProfileAvatar');
+            if (user.profile_pic && user.profile_pic !== 'default.png') {
+                avatar.src = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+            } else {
+                avatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
+            }
+            
+            const followBtn = document.getElementById('userProfileFollowBtn');
+            followBtn.setAttribute('data-user-id', user.id);
+            followBtn.onclick = () => toggleFollow(user.id);
+            
+            if (user.id === currentUser?.id) {
+                followBtn.style.display = 'none';
+            } else {
+                followBtn.style.display = 'block';
+                checkFollowStatus([user.id]);
+            }
+            
+            document.getElementById('userPostsCount').textContent = user.stats.post_count || 0;
+            document.getElementById('userFollowersCount').textContent = user.stats.followers_count || 0;
+            document.getElementById('userFollowingCount').textContent = user.stats.following_count || 0;
+            
+            showUserPosts();
+        }
+
+        function showUserPosts() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_posts.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(posts => {
+                    displayUserPosts(posts);
+                })
+                .catch(error => {
+                    console.error('Error loading user posts:', error);
+                    document.getElementById('userProfileContent').innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                            <h4>Error loading posts</h4>
+                            <p>Unable to load user posts</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function displayUserPosts(posts) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!posts || posts.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>No posts yet</h4>
+                        <p>This user hasn't posted anything yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px; color: var(--text);">Posts (${posts.length})</h4>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    ${posts.map(post => `
+                        <div style="padding: 15px; border-bottom: 1px solid var(--border);">
+                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
+                                ${formatTime(post.created_at)}
+                            </div>
+                            <div style="color: var(--text);">${post.content}</div>
+                            <div style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
+                                <i class="fas fa-heart"></i> ${post.like_count || 0} likes • 
+                                <i class="fas fa-comment"></i> ${post.comment_count || 0} comments
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showUserFollowers() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_followers.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserFollowers(result.followers);
+                    } else {
+                        console.error('Error loading followers:', result.message);
+                        showProfileError('Error loading followers');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading followers:', error);
+                    showProfileError('Error loading followers');
+                });
+        }
+
+        function displayUserFollowers(followers) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!followers || followers.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>No followers yet</h4>
+                        <p>This user doesn't have any followers yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px; color: var(--text);">Followers (${followers.length})</h4>
+                <div class="follow-list">
+                    ${followers.map(follower => `
+                        <div class="follow-item">
+                            <img src="${follower.profile_pic && follower.profile_pic !== 'default.png' ? 
+                                `${API_BASE_URL}/../assets/avatars/${follower.profile_pic}` : 
+                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
+                                alt="${follower.username}" class="follow-avatar"
+                                onclick="openUserProfile(${follower.id})">
+                            <div class="follow-info">
+                                <div class="follow-name" onclick="openUserProfile(${follower.id})">${follower.username}</div>
+                                <div class="follow-stats">${follower.follower_count || 0} followers</div>
+                            </div>
+                            ${follower.id !== currentUser?.id ? `
+                                <button class="follow-btn" data-user-id="${follower.id}" onclick="toggleFollow(${follower.id})">
+                                    <i class="fas fa-user-plus"></i> Follow
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            const userIds = followers.filter(f => f.id !== currentUser?.id).map(f => f.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        function showUserFollowing() {
+            if (!currentViewingUserId) return;
+            
+            fetch(`${API_BASE_URL}/get_user_following.php?user_id=${currentViewingUserId}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        displayUserFollowing(result.following);
+                    } else {
+                        console.error('Error loading following:', result.message);
+                        showProfileError('Error loading following');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading following:', error);
+                    showProfileError('Error loading following');
+                });
+        }
+
+        function displayUserFollowing(following) {
+            const contentDiv = document.getElementById('userProfileContent');
+            
+            if (!following || following.length === 0) {
+                contentDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        <h4>Not following anyone</h4>
+                        <p>This user isn't following anyone yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contentDiv.innerHTML = `
+                <h4 style="margin-bottom: 15px; color: var(--text);">Following (${following.length})</h4>
+                <div class="follow-list">
+                    ${following.map(user => `
+                        <div class="follow-item">
+                            <img src="${user.profile_pic && user.profile_pic !== 'default.png' ? 
+                                `${API_BASE_URL}/../assets/avatars/${user.profile_pic}` : 
+                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
+                                alt="${user.username}" class="follow-avatar"
+                                onclick="openUserProfile(${user.id})">
+                            <div class="follow-info">
+                                <div class="follow-name" onclick="openUserProfile(${user.id})">${user.username}</div>
+                                <div class="follow-stats">${user.follower_count || 0} followers</div>
+                            </div>
+                            ${user.id !== currentUser?.id ? `
+                                <button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
+                                    <i class="fas fa-user-plus"></i> Follow
+                                </button>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            const userIds = following.filter(f => f.id !== currentUser?.id).map(f => f.id);
+            if (userIds.length > 0) {
+                checkFollowStatus(userIds);
+            }
+        }
+
+        function showProfileError(message) {
+            document.getElementById('userProfileContent').innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                    <h4>Error</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function closeUserProfileModal() {
+            document.getElementById('userProfileModal').style.display = 'none';
+            currentViewingUserId = null;
+        }
+
         // ==================== FOLLOW SYSTEM ====================
 
-        // Follow/Unfollow user
         function toggleFollow(userId) {
             if (!currentUser) {
                 showNotification('Please login to follow users', 'error');
@@ -1997,15 +2369,12 @@
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    // Update UI based on follow status
                     updateFollowButton(userId, result.is_following);
                     showNotification(result.message, 'success');
                     
-                    // Reload leaderboard and users to update counts
                     loadLeaderboard();
                     loadAllUsers();
                     
-                    // If viewing user profile, reload their stats
                     if (currentViewingUserId === userId) {
                         loadUserProfileStats(userId);
                     }
@@ -2019,7 +2388,6 @@
             });
         }
 
-        // Update follow button UI
         function updateFollowButton(userId, isFollowing) {
             const followBtns = document.querySelectorAll(`.follow-btn[data-user-id="${userId}"]`);
             const texts = languageTexts[localStorage.getItem('community_language') || 'en'];
@@ -2035,7 +2403,6 @@
             });
         }
 
-        // Check follow status for multiple users
         function checkFollowStatus(userIds) {
             if (!currentUser || !userIds.length) return;
 
@@ -2051,7 +2418,6 @@
             .then(response => response.json())
             .then(result => {
                 if (result.success) {
-                    // Update all follow buttons
                     result.follow_status.forEach(status => {
                         updateFollowButton(status.user_id, status.is_following);
                     });
@@ -2060,263 +2426,6 @@
             .catch(error => {
                 console.error('Error checking follow status:', error);
             });
-        }
-
-        // ==================== USER PROFILE SYSTEM ====================
-
-        // Open user profile modal
-        function openUserProfile(userId) {
-            currentViewingUserId = userId;
-            loadUserProfile(userId);
-            document.getElementById('userProfileModal').style.display = 'block';
-        }
-
-        // Close user profile modal
-        function closeUserProfileModal() {
-            document.getElementById('userProfileModal').style.display = 'none';
-            currentViewingUserId = null;
-        }
-
-        // Load user profile data
-        function loadUserProfile(userId) {
-            // Load user basic info
-            fetch(`${API_BASE_URL}/get_user_profile.php?user_id=${userId}`)
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        displayUserProfile(result.user);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading user profile:', error);
-                });
-
-            // Load user stats
-            loadUserProfileStats(userId);
-            
-            // Load user posts by default
-            showUserPosts();
-        }
-
-        // Display user profile
-        function displayUserProfile(user) {
-            document.getElementById('userProfileTitle').textContent = `${user.username}'s Profile`;
-            document.getElementById('userProfileName').textContent = user.username;
-            
-            // Set avatar - FIXED: Proper avatar URL
-            const avatar = document.getElementById('userProfileAvatar');
-            if (user.profile_pic && user.profile_pic !== 'default.png') {
-                avatar.src = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
-            } else {
-                avatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
-            }
-            
-            // Set follow button
-            const followBtn = document.getElementById('userProfileFollowBtn');
-            followBtn.setAttribute('data-user-id', user.id);
-            followBtn.onclick = () => toggleFollow(user.id);
-            
-            // Check follow status for this user
-            if (user.id !== currentUser?.id) {
-                checkFollowStatus([user.id]);
-            } else {
-                followBtn.style.display = 'none';
-            }
-        }
-
-        // Load user profile stats
-        function loadUserProfileStats(userId) {
-            fetch(`${API_BASE_URL}/get_user_profile_stats.php?user_id=${userId}`)
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        document.getElementById('userPostsCount').textContent = result.stats.post_count || 0;
-                        document.getElementById('userFollowersCount').textContent = result.stats.followers_count || 0;
-                        document.getElementById('userFollowingCount').textContent = result.stats.following_count || 0;
-                    } else {
-                        console.error('Error loading user profile stats:', result.message);
-                        // Set fallback values
-                        document.getElementById('userPostsCount').textContent = 0;
-                        document.getElementById('userFollowersCount').textContent = 0;
-                        document.getElementById('userFollowingCount').textContent = 0;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading user profile stats:', error);
-                    // Set fallback values
-                    document.getElementById('userPostsCount').textContent = 0;
-                    document.getElementById('userFollowersCount').textContent = 0;
-                    document.getElementById('userFollowingCount').textContent = 0;
-                });
-        }
-
-        // Show user posts
-        function showUserPosts() {
-            if (!currentViewingUserId) return;
-            
-            fetch(`${API_BASE_URL}/get_user_posts.php?user_id=${currentViewingUserId}`)
-                .then(response => response.json())
-                .then(posts => {
-                    displayUserPosts(posts);
-                })
-                .catch(error => {
-                    console.error('Error loading user posts:', error);
-                });
-        }
-
-        // Display user posts
-        function displayUserPosts(posts) {
-            const contentDiv = document.getElementById('userProfileContent');
-            
-            if (!posts || posts.length === 0) {
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                        <h4>No posts yet</h4>
-                        <p>This user hasn't posted anything yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            contentDiv.innerHTML = `
-                <h4 style="margin-bottom: 15px;">Posts (${posts.length})</h4>
-                <div style="max-height: 300px; overflow-y: auto;">
-                    ${posts.map(post => `
-                        <div style="padding: 15px; border-bottom: 1px solid var(--border);">
-                            <div style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
-                                ${formatTime(post.created_at)}
-                            </div>
-                            <div>${post.content}</div>
-                            <div style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
-                                <i class="fas fa-heart"></i> ${post.like_count || 0} likes • 
-                                <i class="fas fa-comment"></i> ${post.comment_count || 0} comments
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        // Show user followers
-        function showUserFollowers() {
-            if (!currentViewingUserId) return;
-            
-            fetch(`${API_BASE_URL}/get_user_followers.php?user_id=${currentViewingUserId}`)
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        displayUserFollowers(result.followers);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading user followers:', error);
-                });
-        }
-
-        // Display user followers
-        function displayUserFollowers(followers) {
-            const contentDiv = document.getElementById('userProfileContent');
-            
-            if (!followers || followers.length === 0) {
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                        <h4>No followers yet</h4>
-                        <p>This user doesn't have any followers yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            contentDiv.innerHTML = `
-                <h4 style="margin-bottom: 15px;">Followers (${followers.length})</h4>
-                <div class="follow-list">
-                    ${followers.map(follower => `
-                        <div class="follow-item">
-                            <img src="${follower.profile_pic && follower.profile_pic !== 'default.png' ? 
-                                `${API_BASE_URL}/../assets/avatars/${follower.profile_pic}` : 
-                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
-                                alt="${follower.username}" class="follow-avatar"
-                                onclick="openUserProfile(${follower.id})">
-                            <div class="follow-info">
-                                <div class="follow-name" onclick="openUserProfile(${follower.id})">${follower.username}</div>
-                                <div class="follow-stats">${follower.follower_count || 0} followers</div>
-                            </div>
-                            ${follower.id !== currentUser?.id ? `
-                                <button class="follow-btn" data-user-id="${follower.id}" onclick="toggleFollow(${follower.id})">
-                                    <i class="fas fa-user-plus"></i> Follow
-                                </button>
-                            ` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            // Check follow status for followers
-            const userIds = followers.filter(f => f.id !== currentUser?.id).map(f => f.id);
-            if (userIds.length > 0) {
-                checkFollowStatus(userIds);
-            }
-        }
-
-        // Show user following
-        function showUserFollowing() {
-            if (!currentViewingUserId) return;
-            
-            fetch(`${API_BASE_URL}/get_user_following.php?user_id=${currentViewingUserId}`)
-                .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        displayUserFollowing(result.following);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading user following:', error);
-                });
-        }
-
-        // Display user following
-        function displayUserFollowing(following) {
-            const contentDiv = document.getElementById('userProfileContent');
-            
-            if (!following || following.length === 0) {
-                contentDiv.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
-                        <h4>Not following anyone</h4>
-                        <p>This user isn't following anyone yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            contentDiv.innerHTML = `
-                <h4 style="margin-bottom: 15px;">Following (${following.length})</h4>
-                <div class="follow-list">
-                    ${following.map(user => `
-                        <div class="follow-item">
-                            <img src="${user.profile_pic && user.profile_pic !== 'default.png' ? 
-                                `${API_BASE_URL}/../assets/avatars/${user.profile_pic}` : 
-                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
-                                alt="${user.username}" class="follow-avatar"
-                                onclick="openUserProfile(${user.id})">
-                            <div class="follow-info">
-                                <div class="follow-name" onclick="openUserProfile(${user.id})">${user.username}</div>
-                                <div class="follow-stats">${user.follower_count || 0} followers</div>
-                            </div>
-                            ${user.id !== currentUser?.id ? `
-                                <button class="follow-btn" data-user-id="${user.id}" onclick="toggleFollow(${user.id})">
-                                    <i class="fas fa-user-plus"></i> Follow
-                                </button>
-                            ` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            
-            // Check follow status for following users
-            const userIds = following.filter(f => f.id !== currentUser?.id).map(f => f.id);
-            if (userIds.length > 0) {
-                checkFollowStatus(userIds);
-            }
         }
 
         // ==================== ALL USERS DISPLAY ====================
@@ -2333,14 +2442,13 @@
                 })
                 .catch(error => {
                     console.error('Error loading users:', error);
-                });
+                    });
         }
 
         function displayAllUsers(users) {
             const onlineUsersContainer = document.getElementById('onlineUsers');
             if (!onlineUsersContainer) return;
 
-            // Filter out current user
             const otherUsers = users.filter(user => user.id !== currentUser?.id);
             
             if (otherUsers.length === 0) {
@@ -2354,7 +2462,6 @@
                         <i class="fas fa-user-plus"></i> Follow
                     </button>` : '';
                 
-                // FIXED: Proper avatar URL
                 let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 if (user.profile_pic && user.profile_pic !== 'default.png') {
                     avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
@@ -2381,7 +2488,6 @@
 
             onlineUsersContainer.innerHTML = usersHTML;
             
-            // Check follow status for all users
             const userIds = otherUsers.map(user => user.id);
             if (userIds.length > 0) {
                 checkFollowStatus(userIds);
@@ -2400,7 +2506,6 @@
                         displayProfileStats(result.stats);
                     } else {
                         console.error('Error loading profile stats:', result.message);
-                        // Fallback stats
                         displayProfileStats({
                             post_count: 0,
                             followers_count: 0,
@@ -2410,7 +2515,6 @@
                 })
                 .catch(error => {
                     console.error('Error loading profile stats:', error);
-                    // Fallback stats
                     displayProfileStats({
                         post_count: 0,
                         followers_count: 0,
@@ -2441,27 +2545,25 @@
             }
         }
 
-        // Show my followers
         function showMyFollowers() {
             currentViewingUserId = currentUser.id;
             showUserFollowers();
             document.getElementById('userProfileModal').style.display = 'block';
         }
 
-        // Show my following
         function showMyFollowing() {
             currentViewingUserId = currentUser.id;
             showUserFollowing();
             document.getElementById('userProfileModal').style.display = 'block';
         }
 
-        // Set language function
+        // ==================== LANGUAGE SYSTEM ====================
+
         function setLanguage(lang) {
             if (languageTexts[lang]) {
                 localStorage.setItem('community_language', lang);
                 applyLanguage(lang);
                 
-                // Set RTL for Urdu
                 if (lang === 'ur') {
                     document.body.setAttribute('dir', 'rtl');
                     document.body.style.direction = 'rtl';
@@ -2473,18 +2575,14 @@
                 }
                 
                 showLanguageNotification(lang);
-                
-                // Reload posts with current filter
                 loadPosts();
             }
         }
 
-        // Apply language
         function applyLanguage(lang) {
             const texts = languageTexts[lang];
             if (!texts) return;
             
-            // Login Page
             if (document.getElementById('loginTitle')) {
                 document.getElementById('loginTitle').textContent = texts.loginTitle;
             }
@@ -2507,7 +2605,6 @@
                 document.getElementById('registerSwitchText').innerHTML = `${texts.registerSwitch} <a onclick="showRegisterForm()">${texts.registerLink}</a>`;
             }
             
-            // Register Page
             if (document.getElementById('regUsernameLabel')) {
                 document.getElementById('regUsernameLabel').textContent = texts.regUsernameLabel;
             }
@@ -2542,7 +2639,6 @@
                 document.getElementById('loginSwitchText').innerHTML = `${texts.loginSwitch} <a onclick="showLoginForm()">${texts.loginLink}</a>`;
             }
             
-            // Wall Page
             if (document.getElementById('wallLogoText')) {
                 document.getElementById('wallLogoText').textContent = texts.wallLogo;
             }
@@ -2570,11 +2666,7 @@
             if (document.getElementById('trendingTopicsText')) {
                 document.getElementById('trendingTopicsText').textContent = texts.trendingTopics;
             }
-            if (document.getElementById('onlineNowText')) {
-                document.getElementById('onlineNowText').textContent = texts.onlineNow;
-            }
             
-            // Filter Buttons
             if (document.getElementById('filterAll')) {
                 document.getElementById('filterAll').innerHTML = `<i class="fas fa-globe"></i> ${texts.filterAll}`;
             }
@@ -2591,10 +2683,8 @@
                 document.getElementById('filterMarathi').innerHTML = `<i class="fas fa-language"></i> ${texts.filterMarathi}`;
             }
             
-            // Update follow buttons text
             updateAllFollowButtons();
             
-            // Update input directions for RTL
             const inputs = document.querySelectorAll('input, textarea');
             inputs.forEach(input => {
                 if (lang === 'ur') {
@@ -2607,7 +2697,6 @@
             });
         }
 
-        // Update all follow buttons text
         function updateAllFollowButtons() {
             const followBtns = document.querySelectorAll('.follow-btn');
             const texts = languageTexts[localStorage.getItem('community_language') || 'en'];
@@ -2621,7 +2710,6 @@
             });
         }
 
-        // Show notification
         function showLanguageNotification(lang) {
             const langNames = {
                 'en': 'English',
@@ -2652,17 +2740,14 @@
             }, 2000);
         }
 
-        // Language Filtering System
         function filterPosts(language) {
             currentLanguageFilter = language;
             
-            // Update active button
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
             
-            // Load posts with filter
             loadPosts();
         }
 
@@ -2676,7 +2761,6 @@
         }
 
         function setupEventListeners() {
-            // Login form
             const loginForm = document.getElementById('loginForm');
             if (loginForm) {
                 loginForm.addEventListener('submit', function(e) {
@@ -2690,16 +2774,6 @@
                 });
             }
 
-            // Register form
-            const registerForm = document.getElementById('registerForm');
-            if (registerForm) {
-                registerForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    registerUser();
-                });
-            }
-
-            // Three dots menu
             const menuBtn = document.getElementById('menuBtn');
             const dropdownContent = document.getElementById('dropdownContent');
             if (menuBtn && dropdownContent) {
@@ -2709,14 +2783,12 @@
                 });
             }
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function() {
                 if (dropdownContent) {
                     dropdownContent.classList.remove('show');
                 }
             });
 
-            // Comment modal close
             const commentModal = document.getElementById('commentModal');
             const closeBtn = document.querySelector('.close');
             if (closeBtn && commentModal) {
@@ -2730,7 +2802,6 @@
                 }
             }
 
-            // User profile modal close
             const userProfileModal = document.getElementById('userProfileModal');
             const userProfileClose = userProfileModal.querySelector('.close');
             if (userProfileClose) {
@@ -2749,14 +2820,12 @@
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('wallPage').style.display = 'block';
             
-            // Apply language to welcome message
             const savedLanguage = localStorage.getItem('community_language') || 'en';
             const texts = languageTexts[savedLanguage];
             if (texts && currentUser) {
                 document.getElementById('welcome-user').textContent = `${texts.welcome}, ${currentUser.username}!`;
             }
             
-            // Header avatar update - FIXED: Proper avatar URL
             const headerAvatar = document.getElementById('headerUserAvatar');
             if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
                 headerAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
@@ -2764,13 +2833,10 @@
                 headerAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
             }
             
-            // Load all wall data
             loadPosts();
             loadLeaderboard();
             loadSidebarData();
             loadAllUsers();
-            
-            // Load current user's profile stats
             loadUserProfileStats();
         }
 
@@ -2821,21 +2887,6 @@
             }
         }
 
-        function showRegMessage(type, message) {
-            const errorDiv = document.getElementById('reg-error-message');
-            const successDiv = document.getElementById('reg-success-message');
-            
-            if (type === 'error') {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-                successDiv.style.display = 'none';
-            } else {
-                successDiv.textContent = message;
-                successDiv.style.display = 'block';
-                errorDiv.style.display = 'none';
-            }
-        }
-
         function showLoading(show, formType = 'login') {
             let submitBtn, loadingText, originalText;
             
@@ -2860,12 +2911,10 @@
             }
         }
 
-        // ==================== REGISTRATION SYSTEM ====================
         function showRegisterForm() {
             document.getElementById('loginForm').style.display = 'none';
             document.getElementById('registerForm').style.display = 'block';
             
-            // Clear messages
             document.getElementById('error-message').style.display = 'none';
             document.getElementById('success-message').style.display = 'none';
             document.getElementById('reg-error-message').style.display = 'none';
@@ -2876,80 +2925,10 @@
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('registerForm').style.display = 'none';
             
-            // Clear messages
             document.getElementById('error-message').style.display = 'none';
             document.getElementById('success-message').style.display = 'none';
             document.getElementById('reg-error-message').style.display = 'none';
             document.getElementById('reg-success-message').style.display = 'none';
-        }
-
-        function registerUser() {
-            const form = document.getElementById('registerForm');
-            const formData = new FormData(form);
-            
-            const username = formData.get('username').trim();
-            const email = formData.get('email').trim();
-            const password = formData.get('password');
-            const confirmPassword = formData.get('confirm_password');
-            const profilePic = formData.get('profile_pic');
-
-            // Validation
-            if (!username || !email || !password || !confirmPassword) {
-                showRegMessage('error', 'Please fill all required fields!');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showRegMessage('error', 'Passwords do not match!');
-                return;
-            }
-
-            if (password.length < 6) {
-                showRegMessage('error', 'Password must be at least 6 characters!');
-                return;
-            }
-
-            if (!validateEmail(email)) {
-                showRegMessage('error', 'Please enter a valid email address!');
-                return;
-            }
-
-            showLoading(true, 'register');
-
-            // Send registration request with FormData (for file upload)
-            fetch(`${API_BASE_URL}/register.php`, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                showLoading(false, 'register');
-
-                if (result.success) {
-                    showRegMessage('success', 'Account created successfully! Redirecting to login...');
-                    
-                    // Clear form
-                    form.reset();
-                    
-                    // Redirect to login after 2 seconds
-                    setTimeout(() => {
-                        showLoginForm();
-                        showMessage('success', 'Account created! Please login.');
-                    }, 2000);
-                } else {
-                    showRegMessage('error', result.message || 'Registration failed!');
-                }
-            })
-            .catch(error => {
-                showLoading(false, 'register');
-                showRegMessage('error', 'Network error. Please try again.');
-                console.error('Registration error:', error);
-            });
-        }
-
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
         }
 
         // ==================== POSTS MANAGEMENT ====================
@@ -2984,7 +2963,6 @@
             });
         }
 
-        // Load posts with language filter
         function loadPosts() {
             let url = `${API_BASE_URL}/get_posts.php`;
             if (currentLanguageFilter !== 'all') {
@@ -3002,7 +2980,6 @@
                 });
         }
 
-        // Display posts with follow buttons
         function displayPosts(posts) {
             const postsFeed = document.getElementById('postsFeed');
             
@@ -3020,13 +2997,11 @@
                 const languageBadge = post.post_language ? 
                     `<span class="language-badge">${post.post_language.toUpperCase()}</span>` : '';
                 
-                // Follow button - only show if not current user's post
                 const followButton = post.user_id !== currentUser?.id ? 
                     `<button class="follow-btn" data-user-id="${post.user_id}" onclick="toggleFollow(${post.user_id})">
                         <i class="fas fa-user-plus"></i> Follow
                     </button>` : '';
                 
-                // FIXED: Proper avatar URL
                 let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 
                 if (post.profile_pic && post.profile_pic !== 'default.png') {
@@ -3077,7 +3052,6 @@
                 `;
             }).join('');
             
-            // Check follow status for all post authors
             const userIds = posts.filter(post => post.user_id !== currentUser?.id).map(post => post.user_id);
             if (userIds.length > 0) {
                 checkFollowStatus(userIds);
@@ -3171,7 +3145,6 @@
             }
 
             commentsList.innerHTML = comments.map(comment => {
-                // FIXED: Proper avatar URL for comments
                 let commentAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 
                 if (comment.profile_pic && comment.profile_pic !== 'default.png') {
@@ -3238,14 +3211,11 @@
 
         // ==================== PROFILE SYSTEM ====================
         function openProfileModal() {
-            // Load current user data into profile modal
             document.getElementById('profileUsername').value = currentUser.username;
             document.getElementById('profileEmail').value = currentUser.email || 'Not set';
             
-            // Load user stats - FIXED: This was missing
             loadUserProfileStats();
             
-            // Set profile avatar - FIXED: Proper avatar URL
             const profileAvatar = document.getElementById('profileAvatar');
             if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
                 profileAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
@@ -3253,7 +3223,6 @@
                 profileAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
             }
             
-            // Clear password fields
             document.getElementById('newPassword').value = '';
             document.getElementById('confirmNewPassword').value = '';
             document.getElementById('profileMessage').style.display = 'none';
@@ -3307,20 +3276,16 @@
                 if (result.success) {
                     showProfileMessage('Profile updated successfully!', 'success');
                     
-                    // Update local user data if avatar was changed
                     if (result.new_avatar) {
                         currentUser.profile_pic = result.new_avatar;
                         localStorage.setItem('user', JSON.stringify(currentUser));
                         
-                        // Update header avatar
                         const headerAvatar = document.getElementById('headerUserAvatar');
                         headerAvatar.src = `${API_BASE_URL}/../assets/avatars/${result.new_avatar}`;
                         
-                        // Update profile modal avatar
                         document.getElementById('profileAvatar').src = `${API_BASE_URL}/../assets/avatars/${result.new_avatar}`;
                     }
                     
-                    // Clear password fields
                     document.getElementById('newPassword').value = '';
                     document.getElementById('confirmNewPassword').value = '';
                     document.getElementById('profileAvatarInput').value = '';
@@ -3599,7 +3564,7 @@
             }, 3000);
         }
 
-        // ==================== REAL LEADERBOARD SYSTEM ====================
+        // ==================== LEADERBOARD SYSTEM ====================
         async function loadLeaderboard() {
             console.log('🔄 Loading leaderboard...');
             
@@ -3621,7 +3586,6 @@
             }
         }
 
-        // Fallback function if API fails
         function loadFallbackLeaderboard() {
             console.log('🔄 Loading fallback demo leaderboard...');
             
@@ -3673,7 +3637,6 @@
                         <i class="fas fa-user-plus"></i> Follow
                     </button>` : '';
                 
-                // FIXED: Proper avatar URL for leaderboard
                 let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 if (user.profile_pic && user.profile_pic !== 'default.png') {
                     avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
@@ -3703,7 +3666,6 @@
             
             leaderboardContainer.innerHTML = leaderboardHTML;
             
-            // Check follow status for all users
             const userIds = users.filter(user => user.id !== currentUser?.id).map(user => user.id);
             if (userIds.length > 0) {
                 checkFollowStatus(userIds);
@@ -3712,10 +3674,9 @@
             console.log('✅ Leaderboard displayed successfully');
         }
 
-        // Load trending topics from API (if available)
+        // ==================== SIDEBAR DATA ====================
         async function loadTrendingTopics() {
             try {
-                // For now, using static data
                 const topics = [
                     { name: "Web Development", count: 45 },
                     { name: "AI & Machine Learning", count: 38 },
@@ -3785,7 +3746,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             const savedLanguage = localStorage.getItem('community_language') || 'en';
             
-            // Set initial direction
             if (savedLanguage === 'ur') {
                 document.body.setAttribute('dir', 'rtl');
                 document.body.style.direction = 'rtl';
@@ -3806,6 +3766,7 @@
         console.log('🔤 Language Filtering: ACTIVE');
         console.log('👥 Follow System: ACTIVE');
         console.log('👤 User Profile System: ACTIVE');
+        console.log('📧 Gmail OTP System: ACTIVE');
     </script>
 </body>
 </html>
