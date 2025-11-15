@@ -253,7 +253,7 @@ class ProfessionalCommunityBox {
 // Open Community Wall function
 function openCommunityWall() {
     const currentLang = localStorage.getItem('preferredLanguage') || 'en';
-    const communityWallUrl = `/community-wall.html?lang=${currentLang}`;
+    const communityWallUrl = `https://deepakchauhanxai.xyz/testing-dk/community-wall.html?lang=${currentLang}`;
     
     console.log('🚀 Opening community wall:', communityWallUrl);
     window.open(communityWallUrl, '_blank');
