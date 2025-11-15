@@ -1776,7 +1776,7 @@
         let currentLanguageFilter = 'all';
         let currentViewingUserId = null;
 
-        const API_BASE_URL = 'https://deepakchauhanxai.xyz/community-wall/api';
+        const API_BASE_URL = 'https://deepakchauhanxai.xyz';
 
         // ==================== OTP REGISTRATION SYSTEM ====================
         let otpTimer;
@@ -1792,7 +1792,7 @@
             }
 
             // Check if email already exists
-            fetch(`${API_BASE_URL}/check_email_exists.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/check_email_exists.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1807,7 +1807,7 @@
                 }
                 
                 // Send OTP
-                return fetch(`${API_BASE_URL}/send_otp.php`, {
+                return fetch(`${API_BASE_URL}/community-wall/api/send_otp.php`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1899,7 +1899,7 @@
             }
 
             // Verify OTP first
-            fetch(`${API_BASE_URL}/verify_otp_register.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/verify_otp_register.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1929,7 +1929,7 @@
             const formData = new FormData(form);
             
             // Use the new Gmail register API
-            fetch(`${API_BASE_URL}/gmail_register.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/gmail_register.php`, {
                 method: 'POST',
                 body: formData
             })
@@ -2102,7 +2102,7 @@
         function loadUserProfile(userId) {
             console.log('📱 Loading profile for user:', userId);
             
-            fetch(`${API_BASE_URL}/get_user_profile.php?user_id=${userId}`)
+            fetch(`${API_BASE_URL}/community-wall/api/get_user_profile.php?user_id=${userId}`)
                 .then(response => response.json())
                 .then(result => {
                     console.log('✅ User profile API response:', result);
@@ -2132,7 +2132,7 @@
             
             const avatar = document.getElementById('userProfileAvatar');
             if (user.profile_pic && user.profile_pic !== 'default.png') {
-                avatar.src = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+                avatar.src = `${API_BASE_URL}/community-wall/assets/avatars/${user.profile_pic}`;
             } else {
                 avatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
             }
@@ -2158,7 +2158,7 @@
         function showUserPosts() {
             if (!currentViewingUserId) return;
             
-            fetch(`${API_BASE_URL}/get_user_posts.php?user_id=${currentViewingUserId}`)
+            fetch(`${API_BASE_URL}/community-wall/api/get_user_posts.php?user_id=${currentViewingUserId}`)
                 .then(response => response.json())
                 .then(posts => {
                     displayUserPosts(posts);
@@ -2209,7 +2209,7 @@
         function showUserFollowers() {
             if (!currentViewingUserId) return;
             
-            fetch(`${API_BASE_URL}/get_user_followers.php?user_id=${currentViewingUserId}`)
+            fetch(`${API_BASE_URL}/community-wall/api/get_user_followers.php?user_id=${currentViewingUserId}`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
@@ -2244,7 +2244,7 @@
                     ${followers.map(follower => `
                         <div class="follow-item">
                             <img src="${follower.profile_pic && follower.profile_pic !== 'default.png' ? 
-                                `${API_BASE_URL}/../assets/avatars/${follower.profile_pic}` : 
+                                `${API_BASE_URL}/community-wall/assets/avatars/${follower.profile_pic}` : 
                                 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
                                 alt="${follower.username}" class="follow-avatar"
                                 onclick="openUserProfile(${follower.id})">
@@ -2271,7 +2271,7 @@
         function showUserFollowing() {
             if (!currentViewingUserId) return;
             
-            fetch(`${API_BASE_URL}/get_user_following.php?user_id=${currentViewingUserId}`)
+            fetch(`${API_BASE_URL}/community-wall/api/get_user_following.php?user_id=${currentViewingUserId}`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
@@ -2306,7 +2306,7 @@
                     ${following.map(user => `
                         <div class="follow-item">
                             <img src="${user.profile_pic && user.profile_pic !== 'default.png' ? 
-                                `${API_BASE_URL}/../assets/avatars/${user.profile_pic}` : 
+                                `${API_BASE_URL}/community-wall/assets/avatars/${user.profile_pic}` : 
                                 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face'}" 
                                 alt="${user.username}" class="follow-avatar"
                                 onclick="openUserProfile(${user.id})">
@@ -2406,7 +2406,7 @@
         function checkFollowStatus(userIds) {
             if (!currentUser || !userIds.length) return;
 
-            fetch(`${API_BASE_URL}/check_follow_status.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/check_follow_status.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2431,7 +2431,7 @@
         // ==================== ALL USERS DISPLAY ====================
 
         function loadAllUsers() {
-            fetch(`${API_BASE_URL}/get_all_users.php`)
+            fetch(`${API_BASE_URL}/community-wall/api/get_all_users.php`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
@@ -2464,7 +2464,7 @@
                 
                 let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 if (user.profile_pic && user.profile_pic !== 'default.png') {
-                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+                    avatarSrc = `${API_BASE_URL}/community-wall/assets/avatars/${user.profile_pic}`;
                 }
                 
                 return `
@@ -2499,7 +2499,7 @@
         function loadUserProfileStats() {
             if (!currentUser) return;
             
-            fetch(`${API_BASE_URL}/get_user_profile_stats.php?user_id=${currentUser.id}`)
+            fetch(`${API_BASE_URL}/community-wall/api/get_user_profile_stats.php?user_id=${currentUser.id}`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
@@ -2828,7 +2828,7 @@
             
             const headerAvatar = document.getElementById('headerUserAvatar');
             if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
-                headerAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
+                headerAvatar.src = `${API_BASE_URL}/community-wall/assets/avatars/${currentUser.profile_pic}`;
             } else {
                 headerAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
             }
@@ -2843,7 +2843,7 @@
         function loginUser(data) {
             showLoading(true, 'login');
             
-            fetch(`${API_BASE_URL}/login.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/login.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2940,7 +2940,7 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/post_message.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/post_message.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2964,7 +2964,7 @@
         }
 
         function loadPosts() {
-            let url = `${API_BASE_URL}/get_posts.php`;
+            let url = `${API_BASE_URL}/community-wall/api/get_posts.php`;
             if (currentLanguageFilter !== 'all') {
                 url += `?language=${currentLanguageFilter}`;
             }
@@ -3005,7 +3005,7 @@
                 let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 
                 if (post.profile_pic && post.profile_pic !== 'default.png') {
-                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${post.profile_pic}`;
+                    avatarSrc = `${API_BASE_URL}/community-wall/assets/avatars/${post.profile_pic}`;
                 }
                 
                 return `
@@ -3059,7 +3059,7 @@
         }
 
         function likePost(postId) {
-            fetch(`${API_BASE_URL}/like_post.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/like_post.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -3125,7 +3125,7 @@
         }
 
         function loadComments(postId) {
-            fetch(`${API_BASE_URL}/get_comments.php?post_id=${postId}`)
+            fetch(`${API_BASE_URL}/community-wall/api/get_comments.php?post_id=${postId}`)
                 .then(response => response.json())
                 .then(comments => {
                     displayComments(comments);
@@ -3148,7 +3148,7 @@
                 let commentAvatar = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 
                 if (comment.profile_pic && comment.profile_pic !== 'default.png') {
-                    commentAvatar = `${API_BASE_URL}/../assets/avatars/${comment.profile_pic}`;
+                    commentAvatar = `${API_BASE_URL}/community-wall/assets/avatars/${comment.profile_pic}`;
                 }
                 
                 return `
@@ -3183,7 +3183,7 @@
                 return;
             }
 
-            fetch(`${API_BASE_URL}/comment.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/comment.php`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -3218,7 +3218,7 @@
             
             const profileAvatar = document.getElementById('profileAvatar');
             if (currentUser.profile_pic && currentUser.profile_pic !== 'default.png') {
-                profileAvatar.src = `${API_BASE_URL}/../assets/avatars/${currentUser.profile_pic}`;
+                profileAvatar.src = `${API_BASE_URL}/community-wall/assets/avatars/${currentUser.profile_pic}`;
             } else {
                 profileAvatar.src = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
             }
@@ -3267,7 +3267,7 @@
                 formData.append('new_password', newPassword);
             }
 
-            fetch(`${API_BASE_URL}/update_profile.php`, {
+            fetch(`${API_BASE_URL}/community-wall/api/update_profile.php`, {
                 method: 'POST',
                 body: formData
             })
@@ -3281,7 +3281,7 @@
                         localStorage.setItem('user', JSON.stringify(currentUser));
                         
                         const headerAvatar = document.getElementById('headerUserAvatar');
-                        headerAvatar.src = `${API_BASE_URL}/../assets/avatars/${result.new_avatar}`;
+                        headerAvatar.src = `${API_BASE_URL}/community-wall/assets/avatars/${result.new_avatar}`;
                         
                         document.getElementById('profileAvatar').src = `${API_BASE_URL}/../assets/avatars/${result.new_avatar}`;
                     }
@@ -3569,7 +3569,7 @@
             console.log('🔄 Loading leaderboard...');
             
             try {
-                const response = await fetch(`${API_BASE_URL}/get_top_members.php`);
+                const response = await fetch(`${API_BASE_URL}/community-wall/api/get_top_members.php`);
                 const data = await response.json();
                 
                 console.log('📊 API Response:', data);
@@ -3639,7 +3639,7 @@
                 
                 let avatarSrc = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face';
                 if (user.profile_pic && user.profile_pic !== 'default.png') {
-                    avatarSrc = `${API_BASE_URL}/../assets/avatars/${user.profile_pic}`;
+                    avatarSrc = `${API_BASE_URL}/community-wall/assets/avatars/${user.profile_pic}`;
                 }
                 
                 return `
