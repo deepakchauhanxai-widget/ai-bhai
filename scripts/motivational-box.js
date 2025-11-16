@@ -22,8 +22,8 @@ class HomeMotivationalBox {
             console.log('🔄 Loading JSON from URL...');
             
             // USE THIS ABSOLUTE URL - IT WILL WORK 100%
-            const response = await fetch('https://deepakchauhanxai.xyz/testing-dk/dk-community/data/motivational.json');
             
+            const response = await fetch('https://deepakchauhanxai.xyz/testing-dk/dk-community/data/motivational.json?v=' + Date.now());
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
