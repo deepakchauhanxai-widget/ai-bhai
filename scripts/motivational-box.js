@@ -23,9 +23,9 @@ class HomeMotivationalBox {
             
             // USE THIS ABSOLUTE URL - IT WILL WORK 100%
             
-            const response = await fetch('https://deepakchauhanxai.xyz/testing-dk/dk-community/data/motivational.json?v=' + Date.now());
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            const response = await fetch('https://deepakchauhanxai.xyz/testing-dk/dk-community/data/motivational-shayari.json?v=' + Date.now());
+              if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
