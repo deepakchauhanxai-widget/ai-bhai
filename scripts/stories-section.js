@@ -36,7 +36,7 @@ class StoriesBox {
     // Fetch stories data
     async fetchStoriesData(language) {
         try {
-            const response = await fetch(`${this.storiesBaseURL}stories-${language}.json`);
+     const response = await fetch(`${this.storiesBaseURL}stories-${language}.json?v=` + Date.now());
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {
@@ -52,7 +52,7 @@ class StoriesBox {
     // Fetch section data
     async fetchSectionData(language) {
         try {
-            const response = await fetch(`${this.sectionBaseURL}${language}.json`);
+            const response = await fetch(`${this.sectionBaseURL}${language}.json?v=` + Date.now());
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {
