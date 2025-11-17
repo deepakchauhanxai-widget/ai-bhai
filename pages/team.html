@@ -407,7 +407,7 @@
             }
 
             getJsonUrl(language) {
-                return `${this.baseURL}${language}.json`;
+    return `${this.baseURL}${language}.json?v=` + Date.now();
             }
 
             async fetchTeamData(language) {
