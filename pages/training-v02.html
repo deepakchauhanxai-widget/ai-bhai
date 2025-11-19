@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bloom File Manager</title>
     <style>
+        /* Your existing CSS styles */
         * {
             margin: 0;
             padding: 0;
@@ -595,11 +596,9 @@
     </div>
 
     <script>
-        // Try different server URLs
+        // CORS Proxy Solutions
+        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
-        // const API_BASE_URL = 'https://deepakchauhanxai.com/Team-json/api';
-        // const API_BASE_URL = 'https://deepakchauhanxai.xyz/api';
-        // const API_BASE_URL = '/Team-json/api'; // For local testing
         
         const SITE_PASSWORD = 'Roshni@ai-bhai';
         const ADMIN_PASSWORD = 'Roshni@ai-bhai11';
@@ -611,11 +610,54 @@
         let currentFileToDelete = '';
         let currentFileToEdit = '';
 
+        // CORS Problem के लिए improved fetch function
+        async function corsFetch(url, options = {}) {
+            const proxyUrl = PROXY_URL + url;
+            
+            try {
+                console.log('Trying direct connection...');
+                const directResponse = await fetch(url, {
+                    ...options,
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                
+                if (directResponse.ok) {
+                    return directResponse;
+                }
+                throw new Error('Direct connection failed');
+            } catch (directError) {
+                console.log('Direct connection failed, trying proxy...', directError);
+                
+                try {
+                    const proxyResponse = await fetch(proxyUrl, {
+                        ...options,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            ...options.headers
+                        }
+                    });
+                    
+                    if (proxyResponse.ok) {
+                        return proxyResponse;
+                    }
+                    throw new Error('Proxy also failed');
+                } catch (proxyError) {
+                    console.error('Both direct and proxy failed:', proxyError);
+                    throw new Error('Network error: ' + proxyError.message);
+                }
+            }
+        }
+
         // Test server connection
         async function testServerConnection() {
             try {
                 console.log('Testing connection to:', API_BASE_URL);
-                const response = await fetch(`${API_BASE_URL}/files`);
+                const response = await corsFetch(`${API_BASE_URL}/files`);
                 console.log('Connection test response:', response);
                 
                 if (response.ok) {
@@ -657,7 +699,7 @@
             
             try {
                 console.log('Loading files from:', API_BASE_URL);
-                const response = await fetch(`${API_BASE_URL}/files`);
+                const response = await corsFetch(`${API_BASE_URL}/files`);
                 
                 if (!response.ok) {
                     throw new Error(`Server error: ${response.status} ${response.statusText}`);
@@ -690,11 +732,8 @@
 
             try {
                 console.log('Creating file:', title);
-                const response = await fetch(`${API_BASE_URL}/files`, {
+                const response = await corsFetch(`${API_BASE_URL}/files`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({
                         title: title,
                         ownerId: CURRENT_USER_ID,
@@ -720,10 +759,11 @@
                 }
             } catch (error) {
                 console.error('Error creating file:', error);
-                alert('Failed to create file: ' + error.message + '\n\nCheck console for details.');
+                alert('Failed to create file: ' + error.message + '\n\nCORS issue detected. Please check server configuration.');
             }
         }
 
+        // Rest of your existing functions (displayFiles, editFileContent, etc.)
         function displayFiles(files) {
             const filesGrid = document.getElementById('filesGrid');
             const loadingMessage = document.getElementById('loadingMessage');
@@ -787,15 +827,12 @@
 
         function isFileOwnedByCurrentUser(file) {
             if (!file.ownerId) return false;
-            
             if (file.ownerId === CURRENT_USER_ID) return true;
-            
             if (file.ownerId.includes('user_') && CURRENT_USER_ID.includes('user_')) {
                 const fileOwnerBase = file.ownerId.split('_').slice(0, 3).join('_');
                 const currentUserBase = CURRENT_USER_ID.split('_').slice(0, 3).join('_');
                 return fileOwnerBase === currentUserBase;
             }
-            
             return false;
         }
 
@@ -896,11 +933,8 @@
                     return;
                 }
 
-                const response = await fetch(`${API_BASE_URL}/files`, {
+                const response = await corsFetch(`${API_BASE_URL}/files`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({
                         fileName: currentFileToEdit,
                         title: title,
@@ -951,11 +985,8 @@
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/files`, {
+                const response = await corsFetch(`${API_BASE_URL}/files`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({
                         fileName: currentFileToDelete,
                         password: password
