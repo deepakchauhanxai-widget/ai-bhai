@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Trening File Manager</title>
+    <title>Bloom File Manager</title>
     <style>
         * {
             margin: 0;
@@ -212,6 +212,11 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        .btn-test {
+            background: #3498db;
+            color: white;
         }
 
         .files-container {
@@ -488,7 +493,7 @@
 <body>
     <div class="login-modal" id="loginModal">
         <div class="login-container">
-            <h2 class="login-title">AI File Manager</h2>
+            <h2 class="login-title">Bloom File Manager</h2>
             <p class="login-subtitle">Secure File Management System</p>
             <input type="password" class="password-input" id="loginPassword" placeholder="Enter access password">
             <button class="login-btn" onclick="checkLogin()">Access Files</button>
@@ -497,7 +502,7 @@
 
     <div class="container" id="mainContainer">
         <div class="header">
-            <h1>AI File Manager</h1>
+            <h1>Bloom File Manager</h1>
             <p>Organize and manage your files efficiently</p>
         </div>
         
@@ -518,6 +523,7 @@
             <input type="text" class="folder-input" id="fileTitle" placeholder="Enter file title">
             <button class="btn btn-primary" onclick="createNewFile()">Create New File</button>
             <button class="btn btn-primary" onclick="loadFilesFromServer()">Refresh Files</button>
+            <button class="btn btn-test" onclick="testServerConnection()">Test Connection</button>
         </div>
         
         <div class="files-container">
@@ -589,7 +595,12 @@
     </div>
 
     <script>
-        const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
+        // Try different server URLs
+       const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
+        // const API_BASE_URL = 'https://deepakchauhanxai.com/Team-json/api';
+        //const API_BASE_URL = 'https://deepakchauhanxai.xyz/api';
+         const API_BASE_URL = '/Team-json/api'; // For local testing
+        
         const SITE_PASSWORD = 'Roshni@ai-bhai';
         const ADMIN_PASSWORD = 'Roshni@ai-bhai11';
         
@@ -599,6 +610,27 @@
         let currentFiles = [];
         let currentFileToDelete = '';
         let currentFileToEdit = '';
+
+        // Test server connection
+        async function testServerConnection() {
+            try {
+                console.log('Testing connection to:', API_BASE_URL);
+                const response = await fetch(`${API_BASE_URL}/files`);
+                console.log('Connection test response:', response);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Server is working:', result);
+                    alert('✅ Server connection successful!\nStatus: ' + response.status);
+                } else {
+                    console.log('Server error:', response.status, response.statusText);
+                    alert('❌ Server error: ' + response.status + ' - ' + response.statusText);
+                }
+            } catch (error) {
+                console.error('Connection failed:', error);
+                alert('❌ Server connection failed!\nError: ' + error.message);
+            }
+        }
 
         function checkLogin() {
             const password = document.getElementById('loginPassword').value;
@@ -624,13 +656,15 @@
             showLoading();
             
             try {
+                console.log('Loading files from:', API_BASE_URL);
                 const response = await fetch(`${API_BASE_URL}/files`);
                 
                 if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
+                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
                 }
                 
                 const result = await response.json();
+                console.log('Files loaded:', result);
                 
                 if (result.success) {
                     currentFiles = result.data.files || [];
@@ -641,7 +675,52 @@
             } catch (error) {
                 console.error('Error loading files:', error);
                 displayFiles([]);
-                alert('Server connection failed! Please check if API is running.');
+                alert('Server connection failed: ' + error.message);
+            }
+        }
+
+        async function createNewFile() {
+            const fileTitleInput = document.getElementById('fileTitle');
+            let title = fileTitleInput.value.trim();
+
+            if (!title) {
+                alert('Please enter file title!');
+                return;
+            }
+
+            try {
+                console.log('Creating file:', title);
+                const response = await fetch(`${API_BASE_URL}/files`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        ownerId: CURRENT_USER_ID,
+                        content: "Start writing your content here..."
+                    })
+                });
+
+                console.log('Create file response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Create file result:', result);
+                
+                if (result.success) {
+                    fileTitleInput.value = '';
+                    loadFilesFromServer();
+                    alert(`File "${title}" created successfully!`);
+                } else {
+                    alert('Server error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error creating file:', error);
+                alert('Failed to create file: ' + error.message + '\n\nCheck console for details.');
             }
         }
 
@@ -730,43 +809,6 @@
             document.getElementById('loadingMessage').style.display = 'block';
             document.getElementById('filesGrid').style.display = 'none';
             document.getElementById('noFilesMessage').style.display = 'none';
-        }
-
-        async function createNewFile() {
-            const fileTitleInput = document.getElementById('fileTitle');
-            let title = fileTitleInput.value.trim();
-
-            if (!title) {
-                alert('Please enter file title!');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/files`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        ownerId: CURRENT_USER_ID,
-                        content: "Start writing your content here..."
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    fileTitleInput.value = '';
-                    loadFilesFromServer();
-                    alert(`File "${title}" created successfully!`);
-                } else {
-                    alert('Error: ' + result.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to create file. Server might be offline.');
-            }
         }
 
         function editFileContent(fileName) {
