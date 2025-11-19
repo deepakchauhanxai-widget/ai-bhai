@@ -438,7 +438,7 @@
             Total Files: <span id="fileCount">0</span> | 
             Your Files: <span id="userFileCount">0</span> | 
             Old Format: <span id="oldFormatCount">0</span> |
-            Admin Delete Password: 123456
+            Admin Delete Password: <span id="adminPassword">team2024</span>
         </div>
     </div>
 
@@ -498,7 +498,13 @@
 
     <script>
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
-        const CURRENT_USER_ID = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        
+        // FIXED: Use localStorage to remember user ID
+        const CURRENT_USER_ID = localStorage.getItem('fileManagerUserId') || 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        localStorage.setItem('fileManagerUserId', CURRENT_USER_ID);
+        
+        // FIXED: Set your custom password here
+        const ADMIN_PASSWORD = 'team2024'; // Change this to your desired password
         
         let currentFiles = [];
         let currentFileToDelete = '';
@@ -507,6 +513,7 @@
         // Page load पर server से files load करें
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('userId').textContent = CURRENT_USER_ID;
+            document.getElementById('adminPassword').textContent = ADMIN_PASSWORD;
             loadFilesFromServer();
         });
 
@@ -557,7 +564,8 @@
             let oldFormatCount = 0;
             
             files.forEach((file) => {
-                const isOwnedByUser = file.ownerId === CURRENT_USER_ID;
+                // FIXED: Better owner detection
+                const isOwnedByUser = isFileOwnedByCurrentUser(file);
                 const isOldFormat = file.format === 'old' || file.format === 'invalid';
                 
                 if (isOwnedByUser) userFileCount++;
@@ -601,6 +609,23 @@
             });
 
             updateFileCounts(files.length, userFileCount, oldFormatCount);
+        }
+
+        // FIXED: Better owner detection function
+        function isFileOwnedByCurrentUser(file) {
+            if (!file.ownerId) return false;
+            
+            // Direct match
+            if (file.ownerId === CURRENT_USER_ID) return true;
+            
+            // Partial match for old files
+            if (file.ownerId.includes('user_') && CURRENT_USER_ID.includes('user_')) {
+                const fileOwnerBase = file.ownerId.split('_').slice(0, 3).join('_');
+                const currentUserBase = CURRENT_USER_ID.split('_').slice(0, 3).join('_');
+                return fileOwnerBase === currentUserBase;
+            }
+            
+            return false;
         }
 
         function updateFileCounts(total, userCount, oldCount) {
@@ -661,7 +686,8 @@
                 return;
             }
             
-            if (file.ownerId !== CURRENT_USER_ID) {
+            // FIXED: Better ownership check
+            if (!isFileOwnedByCurrentUser(file)) {
                 alert('You can only edit your own files!');
                 return;
             }
@@ -735,7 +761,7 @@
 
             try {
                 const file = currentFiles.find(f => f.fileName === currentFileToEdit);
-                if (!file || file.ownerId !== CURRENT_USER_ID) {
+                if (!file || !isFileOwnedByCurrentUser(file)) {
                     alert('You can only edit your own files!');
                     return;
                 }
@@ -786,6 +812,12 @@
             
             if (!password) {
                 alert('Please enter password!');
+                return;
+            }
+
+            // FIXED: Use custom password
+            if (password !== ADMIN_PASSWORD) {
+                alert('Incorrect password! Please use: ' + ADMIN_PASSWORD);
                 return;
             }
 
