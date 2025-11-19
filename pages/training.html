@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team File Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+        
+        .user-section {
+            background: #34495e;
+            color: white;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .user-id {
+            background: #27ae60;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-family: monospace;
+        }
+        
+        .controls {
+            padding: 18px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .folder-input {
+            flex: 1;
+            min-width: 180px;
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        
+        .btn-edit:hover {
+            background: #e67e22;
+        }
+        
+        .btn-view {
+            background: #3498db;
+            color: white;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        
+        .btn-view:hover {
+            background: #2980b9;
+        }
+        
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .btn-delete:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+        
+        .files-container {
+            padding: 18px;
+            min-height: 500px;
+        }
+        
+        .files-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        /* Mobile - 2 columns */
+        @media (max-width: 768px) {
+            .files-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+        }
+        
+        /* Desktop - 3-4 columns */
+        @media (min-width: 1200px) {
+            .files-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .file-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 200px;
+        }
+        
+        .file-card.owned-by-user {
+            border-left: 4px solid #27ae60;
+            background: #f8fff8;
+        }
+        
+        .file-card.old-format {
+            border-left: 4px solid #f39c12;
+            background: #fffaf0;
+        }
+        
+        .file-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .file-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .file-icon {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+        
+        .file-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            line-height: 1.3;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .file-format {
+            font-size: 10px;
+            background: #95a5a6;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            margin-left: 5px;
+        }
+        
+        .file-content {
+            flex: 1;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            margin-bottom: 10px;
+        }
+        
+        .file-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: auto;
+        }
+        
+        .file-owner {
+            background: #e8f4fd;
+            color: #2980b9;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+        
+        .file-actions {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #667eea;
+            font-size: 16px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .no-files {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7f8c8d;
+            font-size: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+            grid-column: 1 / -1;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 90%;
+            width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .view-modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 90%;
+            width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+        
+        .file-info-bar {
+            background: #e8f4fd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        
+        .file-info-item {
+            margin-right: 15px;
+            display: inline-block;
+        }
+        
+        .file-content-view {
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #f8f9fa;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+        
+        .btn-cancel {
+            background: #95a5a6;
+            color: white;
+        }
+        
+        .btn-cancel:hover {
+            background: #7f8c8d;
+        }
+        
+        .btn-confirm {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-confirm:hover {
+            background: #219653;
+        }
+        
+        .stats {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📁 Team File Manager</h1>
+            <p>Create, View and Manage your files easily</p>
+        </div>
+        
+        <div class="user-section">
+            <div class="user-info">
+                <span>Your User ID:</span>
+                <span class="user-id" id="userId">Loading...</span>
+            </div>
+            <div>
+                🟢 Your Files | 🟡 Old Format | 🔵 View Only | 🔴 Delete (Admin)
+            </div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" class="folder-input" id="fileTitle" placeholder="Enter file title...">
+            <button class="btn btn-primary" onclick="createNewFile()">
+                📄 Create File
+            </button>
+            <button class="btn btn-primary" onclick="loadFilesFromServer()">
+                🔄 Refresh Files
+            </button>
+        </div>
+        
+        <div class="files-container">
+            <div class="loading" id="loadingMessage">
+                ⏳ Loading files from server...
+            </div>
+            <div class="files-grid" id="filesGrid" style="display: none;">
+                <!-- Files will be loaded here from server -->
+            </div>
+            <div class="no-files" id="noFilesMessage" style="display: none;">
+                📭 No files found. Create your first file!
+            </div>
+        </div>
+        
+        <div class="stats">
+            Total Files: <span id="fileCount">0</span> | 
+            Your Files: <span id="userFileCount">0</span> | 
+            Old Format: <span id="oldFormatCount">0</span> |
+            Admin Delete Password: 123456
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div class="modal" id="passwordModal">
+        <div class="modal-content">
+            <h3>🔒 Admin Delete</h3>
+            <p style="margin-bottom: 15px; color: #666; text-align: center;">
+                Enter admin password to delete<br>
+                <strong id="deleteFileName"></strong>
+            </p>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter admin password...">
+            <div class="modal-buttons">
+                <button class="btn btn-cancel" onclick="hidePasswordPrompt()">Cancel</button>
+                <button class="btn btn-confirm" onclick="confirmDelete()">Confirm Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Content Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>✏️ Edit File</h3>
+            <input type="text" class="folder-input" id="editFileTitle" placeholder="File title..." style="margin-bottom: 12px;">
+            <textarea id="fileContent" style="width: 100%; height: 300px; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; line-height: 1.5;" placeholder='Write anything here - text, notes, messages, etc...'></textarea>
+            <div class="modal-buttons" style="margin-top: 12px;">
+                <button class="btn btn-cancel" onclick="hideEditModal()">Cancel</button>
+                <button class="btn btn-confirm" onclick="saveFileContent()">💾 Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Content Modal -->
+    <div class="modal" id="viewModal">
+        <div class="view-modal-content">
+            <h3>👁️ View File - <span id="viewFileName"></span></h3>
+            
+            <div class="file-info-bar">
+                <span class="file-info-item"><strong>Format:</strong> <span id="viewFileFormat"></span></span>
+                <span class="file-info-item"><strong>Owner:</strong> <span id="viewFileOwner"></span></span>
+                <span class="file-info-item"><strong>Size:</strong> <span id="viewFileSize"></span></span>
+                <span class="file-info-item"><strong>Created:</strong> <span id="viewFileCreated"></span></span>
+            </div>
+            
+            <div class="file-content-view" id="viewFileContent">
+                Loading content...
+            </div>
+            
+            <div class="modal-buttons" style="margin-top: 15px;">
+                <button class="btn btn-cancel" onclick="hideViewModal()">Close</button>
+                <button class="btn btn-confirm" onclick="copyFileContent()" id="copyContentBtn">
+                    📋 Copy Content
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
+        const CURRENT_USER_ID = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+        
+        let currentFiles = [];
+        let currentFileToDelete = '';
+        let currentFileToEdit = '';
+
+        // Page load पर server से files load करें
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('userId').textContent = CURRENT_USER_ID;
+            loadFilesFromServer();
+        });
+
+        async function loadFilesFromServer() {
+            showLoading();
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/files`);
+                
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentFiles = result.data.files || [];
+                    displayFiles(currentFiles);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error loading files:', error);
+                displayFiles([]);
+                alert('Server connection failed! Please check if API is running.');
+            }
+        }
+
+        function displayFiles(files) {
+            const filesGrid = document.getElementById('filesGrid');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const noFilesMessage = document.getElementById('noFilesMessage');
+            
+            loadingMessage.style.display = 'none';
+            
+            if (!files || files.length === 0) {
+                filesGrid.style.display = 'none';
+                noFilesMessage.style.display = 'block';
+                updateFileCounts(0, 0, 0);
+                return;
+            }
+
+            noFilesMessage.style.display = 'none';
+            filesGrid.style.display = 'grid';
+            filesGrid.innerHTML = '';
+            
+            let userFileCount = 0;
+            let oldFormatCount = 0;
+            
+            files.forEach((file) => {
+                const isOwnedByUser = file.ownerId === CURRENT_USER_ID;
+                const isOldFormat = file.format === 'old' || file.format === 'invalid';
+                
+                if (isOwnedByUser) userFileCount++;
+                if (isOldFormat) oldFormatCount++;
+                
+                // Content preview
+                let previewContent = 'No content available';
+                if (file.content && file.content.trim() !== '' && file.content !== 'No content available') {
+                    previewContent = file.content.length > 100 ? 
+                        file.content.substring(0, 100) + '...' : 
+                        file.content;
+                }
+                
+                const fileCard = document.createElement('div');
+                fileCard.className = `file-card ${isOwnedByUser ? 'owned-by-user' : ''} ${isOldFormat ? 'old-format' : ''}`;
+                fileCard.innerHTML = `
+                    <div class="file-header">
+                        <div class="file-icon">${isOwnedByUser ? '📁' : (isOldFormat ? '📋' : '📄')}</div>
+                        <div class="file-title">${file.title || 'Untitled'}</div>
+                        ${isOldFormat ? '<span class="file-format">OLD</span>' : ''}
+                    </div>
+                    <div class="file-content">${previewContent}</div>
+                    <div class="file-meta">
+                        <span class="file-owner">${isOwnedByUser ? 'Your File' : (isOldFormat ? 'Legacy File' : 'Other User')}</span>
+                        <div class="file-actions">
+                            <button class="btn btn-view" onclick="viewFileContent('${file.fileName}')">
+                                👁️ View
+                            </button>
+                            ${isOwnedByUser ? `
+                                <button class="btn btn-edit" onclick="editFileContent('${file.fileName}')">
+                                    ✏️ Edit
+                                </button>
+                            ` : ''}
+                            <button class="btn-delete" onclick="showPasswordPrompt('${file.fileName}', '${file.title || 'Untitled'}')">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+                filesGrid.appendChild(fileCard);
+            });
+
+            updateFileCounts(files.length, userFileCount, oldFormatCount);
+        }
+
+        function updateFileCounts(total, userCount, oldCount) {
+            document.getElementById('fileCount').textContent = total;
+            document.getElementById('userFileCount').textContent = userCount;
+            document.getElementById('oldFormatCount').textContent = oldCount;
+        }
+
+        function showLoading() {
+            document.getElementById('loadingMessage').style.display = 'block';
+            document.getElementById('filesGrid').style.display = 'none';
+            document.getElementById('noFilesMessage').style.display = 'none';
+        }
+
+        async function createNewFile() {
+            const fileTitleInput = document.getElementById('fileTitle');
+            let title = fileTitleInput.value.trim();
+
+            if (!title) {
+                alert('Please enter file title!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/files`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        ownerId: CURRENT_USER_ID,
+                        content: "Start writing your content here..."
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    fileTitleInput.value = '';
+                    loadFilesFromServer();
+                    alert(`File "${title}" created successfully!`);
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to create file. Server might be offline.');
+            }
+        }
+
+        function editFileContent(fileName) {
+            currentFileToEdit = fileName;
+            const file = currentFiles.find(f => f.fileName === fileName);
+            
+            if (!file) {
+                alert('File not found!');
+                return;
+            }
+            
+            if (file.ownerId !== CURRENT_USER_ID) {
+                alert('You can only edit your own files!');
+                return;
+            }
+            
+            document.getElementById('editFileTitle').value = file.title || '';
+            document.getElementById('fileContent').value = file.content || '';
+            
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function viewFileContent(fileName) {
+            const file = currentFiles.find(f => f.fileName === fileName);
+            if (!file) {
+                alert('File not found!');
+                return;
+            }
+            
+            // Show file info
+            document.getElementById('viewFileName').textContent = file.title || 'Untitled';
+            document.getElementById('viewFileFormat').textContent = file.format || 'unknown';
+            document.getElementById('viewFileOwner').textContent = file.ownerId || 'unknown';
+            document.getElementById('viewFileSize').textContent = formatFileSize(file.fileSize || 0);
+            document.getElementById('viewFileCreated').textContent = new Date(file.createdAt * 1000).toLocaleString();
+            
+            // Show content
+            let contentToShow = file.content || 'No content available';
+            document.getElementById('viewFileContent').textContent = contentToShow;
+            
+            document.getElementById('viewModal').style.display = 'flex';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function hideEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            currentFileToEdit = '';
+        }
+
+        function hideViewModal() {
+            document.getElementById('viewModal').style.display = 'none';
+        }
+
+        function copyFileContent() {
+            const content = document.getElementById('viewFileContent').textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                const btn = document.getElementById('copyContentBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy content: ' + err);
+            });
+        }
+
+        async function saveFileContent() {
+            const title = document.getElementById('editFileTitle').value.trim();
+            const content = document.getElementById('fileContent').value;
+            
+            if (!title) {
+                alert('Title cannot be empty!');
+                return;
+            }
+
+            try {
+                const file = currentFiles.find(f => f.fileName === currentFileToEdit);
+                if (!file || file.ownerId !== CURRENT_USER_ID) {
+                    alert('You can only edit your own files!');
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/files`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fileName: currentFileToEdit,
+                        title: title,
+                        content: content,
+                        ownerId: CURRENT_USER_ID
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('File saved successfully!');
+                    hideEditModal();
+                    loadFilesFromServer();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to save file.');
+            }
+        }
+
+        function showPasswordPrompt(fileName, fileTitle) {
+            currentFileToDelete = fileName;
+            document.getElementById('deleteFileName').textContent = fileTitle;
+            document.getElementById('passwordModal').style.display = 'flex';
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
+        }
+
+        function hidePasswordPrompt() {
+            document.getElementById('passwordModal').style.display = 'none';
+            currentFileToDelete = '';
+        }
+
+        async function confirmDelete() {
+            const password = document.getElementById('passwordInput').value;
+            
+            if (!password) {
+                alert('Please enter password!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/files`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        fileName: currentFileToDelete,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    loadFilesFromServer();
+                    alert('File deleted successfully!');
+                    hidePasswordPrompt();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to delete file.');
+            }
+        }
+
+        // Keyboard shortcuts
+        document.getElementById('fileTitle').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                createNewFile();
+            }
+        });
+
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                confirmDelete();
+            }
+        });
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadFilesFromServer();
+        }, 30000);
+
+        // Handle Enter key in edit modal
+        document.getElementById('editFileTitle').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('fileContent').focus();
+            }
+        });
+    </script>
+</body>
+</html>
