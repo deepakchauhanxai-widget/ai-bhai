@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team File Manager - Secure Access</title>
+    <title>Team File Manager</title>
     <style>
         * {
             margin: 0;
@@ -15,156 +15,52 @@
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 15px;
         }
         
-        /* Login Container */
-        .login-container {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-        
-        .login-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-        
-        .login-title {
-            font-size: 1.6rem;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-        
-        .login-subtitle {
-            color: #7f8c8d;
-            margin-bottom: 20px;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 15px;
-            margin-bottom: 15px;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        .password-input:focus {
-            border-color: #667eea;
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .login-btn:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-        }
-        
-        .error-message {
-            color: #e74c3c;
-            margin-top: 12px;
-            font-size: 13px;
-            display: none;
-        }
-        
-        /* Main Container (Hidden until login) */
         .container {
-            display: none;
             max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
-            width: 100%;
-            min-height: 90vh;
         }
         
         .header {
             background: #2c3e50;
             color: white;
-            padding: 20px 15px;
+            padding: 25px;
             text-align: center;
         }
         
         .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-        
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
         }
         
         .user-section {
             background: #34495e;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
-            font-size: 13px;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            font-size: 14px;
         }
         
         .user-id {
             background: #27ae60;
-            padding: 3px 8px;
+            padding: 4px 8px;
             border-radius: 12px;
             font-size: 11px;
             font-family: monospace;
         }
         
-        .logout-btn {
-            background: #e74c3c;
-            color: white;
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 11px;
-            white-space: nowrap;
-        }
-        
-        .logout-btn:hover {
-            background: #c0392b;
-        }
-        
         .controls {
-            padding: 15px;
+            padding: 18px;
             background: #f8f9fa;
             border-bottom: 1px solid #e9ecef;
             display: flex;
@@ -175,23 +71,22 @@
         
         .folder-input {
             flex: 1;
-            min-width: 150px;
+            min-width: 180px;
             padding: 10px 12px;
             border: 2px solid #ddd;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
         }
         
         .btn {
-            padding: 10px 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            white-space: nowrap;
         }
         
         .btn-primary {
@@ -207,8 +102,8 @@
         .btn-edit {
             background: #f39c12;
             color: white;
-            padding: 5px 10px;
-            font-size: 12px;
+            padding: 6px 12px;
+            font-size: 13px;
         }
         
         .btn-edit:hover {
@@ -218,8 +113,8 @@
         .btn-view {
             background: #3498db;
             color: white;
-            padding: 5px 10px;
-            font-size: 12px;
+            padding: 6px 12px;
+            font-size: 13px;
         }
         
         .btn-view:hover {
@@ -229,11 +124,11 @@
         .btn-delete {
             background: #e74c3c;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
         }
         
         .btn-delete:hover {
@@ -242,61 +137,34 @@
         }
         
         .files-container {
-            padding: 15px;
-            min-height: 400px;
+            padding: 18px;
+            min-height: 500px;
         }
         
         .files-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
         }
         
-        /* Mobile - 1 column on very small screens */
-        @media (max-width: 480px) {
+        /* Mobile - 2 columns */
+        @media (max-width: 768px) {
             .files-grid {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .login-container {
-                padding: 25px 20px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
             
             .header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .controls {
-                padding: 12px;
+                font-size: 1.8rem;
             }
             
             .btn {
-                padding: 8px 12px;
-                font-size: 12px;
-            }
-            
-            .user-section {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-        }
-        
-        /* Tablet - 2 columns */
-        @media (min-width: 481px) and (max-width: 768px) {
-            .files-grid {
-                grid-template-columns: repeat(2, 1fr);
+                padding: 8px 16px;
+                font-size: 13px;
             }
         }
         
         /* Desktop - 3-4 columns */
-        @media (min-width: 769px) and (max-width: 1199px) {
-            .files-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        
         @media (min-width: 1200px) {
             .files-grid {
                 grid-template-columns: repeat(4, 1fr);
@@ -307,13 +175,11 @@
             background: #f8f9fa;
             border: 2px solid #e9ecef;
             border-radius: 10px;
-            padding: 12px;
+            padding: 15px;
             transition: all 0.3s;
             display: flex;
             flex-direction: column;
-            min-height: 180px;
-            max-height: 220px;
-            overflow: hidden;
+            height: 200px;
         }
         
         .file-card.owned-by-user {
@@ -335,61 +201,52 @@
         .file-header {
             display: flex;
             align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 8px;
-            min-height: 40px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         
         .file-icon {
-            font-size: 18px;
+            font-size: 20px;
             margin-top: 2px;
-            flex-shrink: 0;
         }
         
         .file-title {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             color: #2c3e50;
             line-height: 1.3;
             flex: 1;
             word-break: break-word;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
         }
         
         .file-format {
-            font-size: 9px;
+            font-size: 10px;
             background: #95a5a6;
             color: white;
             padding: 2px 6px;
             border-radius: 8px;
             margin-left: 5px;
-            flex-shrink: 0;
         }
         
         .file-content {
             flex: 1;
-            font-size: 12px;
+            font-size: 13px;
             color: #666;
             line-height: 1.4;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         
         .file-meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 10px;
+            font-size: 11px;
             color: #7f8c8d;
             margin-top: auto;
-            flex-wrap: wrap;
-            gap: 5px;
         }
         
         .file-owner {
@@ -397,33 +254,31 @@
             color: #2980b9;
             padding: 2px 6px;
             border-radius: 8px;
-            white-space: nowrap;
         }
         
         .file-actions {
             display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
+            gap: 6px;
         }
         
         .loading {
             text-align: center;
-            padding: 30px 15px;
+            padding: 40px 20px;
             color: #667eea;
-            font-size: 15px;
+            font-size: 16px;
             background: #f8f9fa;
             border-radius: 10px;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         
         .no-files {
             text-align: center;
-            padding: 30px 15px;
+            padding: 40px 20px;
             color: #7f8c8d;
-            font-size: 14px;
+            font-size: 15px;
             background: #f8f9fa;
             border-radius: 10px;
-            margin: 15px 0;
+            margin: 20px 0;
             grid-column: 1 / -1;
         }
         
@@ -439,59 +294,67 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            padding: 15px;
         }
         
         .modal-content {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            max-width: 95%;
-            width: 500px;
+            max-width: 90%;
+            width: 600px;
             max-height: 90vh;
             overflow-y: auto;
         }
         
         .view-modal-content {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            max-width: 95%;
-            width: 700px;
+            max-width: 90%;
+            width: 800px;
             max-height: 90vh;
             overflow-y: auto;
         }
         
         .modal h3 {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             color: #2c3e50;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 15px;
         }
         
         .file-info-bar {
             background: #e8f4fd;
-            padding: 8px 10px;
+            padding: 10px;
             border-radius: 6px;
-            margin-bottom: 12px;
-            font-size: 12px;
+            margin-bottom: 15px;
+            font-size: 13px;
         }
         
         .file-info-item {
-            margin-right: 12px;
+            margin-right: 15px;
             display: inline-block;
         }
         
         .file-content-view {
             width: 100%;
-            height: 300px;
-            padding: 12px;
+            height: 400px;
+            padding: 15px;
             border: 2px solid #ddd;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.5;
             background: #f8f9fa;
             white-space: pre-wrap;
@@ -503,7 +366,6 @@
             display: flex;
             gap: 8px;
             justify-content: flex-end;
-            flex-wrap: wrap;
         }
         
         .btn-cancel {
@@ -527,62 +389,14 @@
         .stats {
             background: #34495e;
             color: white;
-            padding: 10px 15px;
+            padding: 12px;
             text-align: center;
-            font-size: 12px;
-        }
-        
-        /* Permission indicators */
-        .permission-info {
-            font-size: 11px;
-            color: #7f8c8d;
-            margin-top: 5px;
-            text-align: center;
-        }
-        
-        /* Mobile optimizations */
-        @media (max-width: 360px) {
-            .file-actions {
-                flex-direction: column;
-                width: 100%;
-            }
-            
-            .file-actions .btn {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .modal-buttons {
-                flex-direction: column;
-            }
-            
-            .modal-buttons .btn {
-                width: 100%;
-            }
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div class="login-container" id="loginContainer">
-        <div class="login-icon">🔒</div>
-        <h1 class="login-title">Team File Manager</h1>
-        <p class="login-subtitle">Enter password to access files</p>
-        
-        <input type="password" class="password-input" id="loginPassword" placeholder="Enter access password...">
-        <button class="login-btn" onclick="checkLogin()">🔓 Access Files</button>
-        
-        <div class="error-message" id="loginError">
-            ❌ Incorrect password! Please try again.
-        </div>
-        
-        <div style="margin-top: 15px; font-size: 11px; color: #95a5a6;">
-            Default Password: <strong>123456</strong>
-        </div>
-    </div>
-
-    <!-- Main App (Hidden until login) -->
-    <div class="container" id="mainContainer">
+    <div class="container">
         <div class="header">
             <h1>📁 Team File Manager</h1>
             <p>Create, View and Manage your files easily</p>
@@ -592,9 +406,8 @@
             <div class="user-info">
                 <span>Your User ID:</span>
                 <span class="user-id" id="userId">Loading...</span>
-                <button class="logout-btn" onclick="logout()">🚪 Logout</button>
             </div>
-            <div style="font-size: 12px;">
+            <div>
                 🟢 Your Files | 🟡 Old Format | 🔵 View Only | 🔴 Delete (Admin)
             </div>
         </div>
@@ -625,11 +438,7 @@
             Total Files: <span id="fileCount">0</span> | 
             Your Files: <span id="userFileCount">0</span> | 
             Old Format: <span id="oldFormatCount">0</span> |
-            Access Password: 123456
-        </div>
-        
-        <div class="permission-info">
-            💡 You can only Edit/Delete your own files (Green border)
+            Admin Delete Password: 123456
         </div>
     </div>
 
@@ -637,7 +446,7 @@
     <div class="modal" id="passwordModal">
         <div class="modal-content">
             <h3>🔒 Admin Delete</h3>
-            <p style="margin-bottom: 15px; color: #666; text-align: center; font-size: 14px;">
+            <p style="margin-bottom: 15px; color: #666; text-align: center;">
                 Enter admin password to delete<br>
                 <strong id="deleteFileName"></strong>
             </p>
@@ -653,8 +462,8 @@
     <div class="modal" id="editModal">
         <div class="modal-content">
             <h3>✏️ Edit File</h3>
-            <input type="text" class="folder-input" id="editFileTitle" placeholder="File title..." style="margin-bottom: 10px;">
-            <textarea id="fileContent" style="width: 100%; height: 250px; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; line-height: 1.5;" placeholder='Write anything here - text, notes, messages, etc...'></textarea>
+            <input type="text" class="folder-input" id="editFileTitle" placeholder="File title..." style="margin-bottom: 12px;">
+            <textarea id="fileContent" style="width: 100%; height: 300px; padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px; resize: vertical; line-height: 1.5;" placeholder='Write anything here - text, notes, messages, etc...'></textarea>
             <div class="modal-buttons" style="margin-top: 12px;">
                 <button class="btn btn-cancel" onclick="hideEditModal()">Cancel</button>
                 <button class="btn btn-confirm" onclick="saveFileContent()">💾 Save Changes</button>
@@ -678,7 +487,7 @@
                 Loading content...
             </div>
             
-            <div class="modal-buttons" style="margin-top: 12px;">
+            <div class="modal-buttons" style="margin-top: 15px;">
                 <button class="btn btn-cancel" onclick="hideViewModal()">Close</button>
                 <button class="btn btn-confirm" onclick="copyFileContent()" id="copyContentBtn">
                     📋 Copy Content
@@ -688,60 +497,20 @@
     </div>
 
     <script>
-        // Configuration
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
-        const ACCESS_PASSWORD = '123456'; // Change this password as needed
         const CURRENT_USER_ID = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
         
         let currentFiles = [];
         let currentFileToDelete = '';
         let currentFileToEdit = '';
-        let isLoggedIn = false;
 
-        // Login Functions
-        function checkLogin() {
-            const password = document.getElementById('loginPassword').value;
-            const errorElement = document.getElementById('loginError');
-            
-            if (password === ACCESS_PASSWORD) {
-                isLoggedIn = true;
-                document.getElementById('loginContainer').style.display = 'none';
-                document.getElementById('mainContainer').style.display = 'block';
-                initializeApp();
-            } else {
-                errorElement.style.display = 'block';
-                document.getElementById('loginPassword').value = '';
-                document.getElementById('loginPassword').focus();
-            }
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                isLoggedIn = false;
-                document.getElementById('mainContainer').style.display = 'none';
-                document.getElementById('loginContainer').style.display = 'flex';
-                document.getElementById('loginPassword').value = '';
-                document.getElementById('loginError').style.display = 'none';
-            }
-        }
-
-        // Enter key support for login
-        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkLogin();
-            }
-        });
-
-        // Initialize app after login
-        function initializeApp() {
+        // Page load पर server से files load करें
+        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('userId').textContent = CURRENT_USER_ID;
             loadFilesFromServer();
-        }
+        });
 
-        // Main functions
         async function loadFilesFromServer() {
-            if (!isLoggedIn) return;
-            
             showLoading();
             
             try {
@@ -789,7 +558,7 @@
             
             files.forEach((file) => {
                 const isOwnedByUser = file.ownerId === CURRENT_USER_ID;
-                const isOldFormat = file.format === 'old' || file.format === 'invalid' || file.format === 'mixed';
+                const isOldFormat = file.format === 'old' || file.format === 'invalid';
                 
                 if (isOwnedByUser) userFileCount++;
                 if (isOldFormat) oldFormatCount++;
@@ -797,41 +566,13 @@
                 // Content preview
                 let previewContent = 'No content available';
                 if (file.content && file.content.trim() !== '' && file.content !== 'No content available') {
-                    previewContent = file.content.length > 120 ? 
-                        file.content.substring(0, 120) + '...' : 
+                    previewContent = file.content.length > 100 ? 
+                        file.content.substring(0, 100) + '...' : 
                         file.content;
                 }
                 
                 const fileCard = document.createElement('div');
                 fileCard.className = `file-card ${isOwnedByUser ? 'owned-by-user' : ''} ${isOldFormat ? 'old-format' : ''}`;
-                
-                // Action buttons based on ownership
-                let actionButtons = '';
-                if (isOwnedByUser) {
-                    // User's own file - can Edit and Delete
-                    actionButtons = `
-                        <button class="btn btn-view" onclick="viewFileContent('${file.fileName}')">
-                            👁️ View
-                        </button>
-                        <button class="btn btn-edit" onclick="editFileContent('${file.fileName}')">
-                            ✏️ Edit
-                        </button>
-                        <button class="btn-delete" onclick="showPasswordPrompt('${file.fileName}', '${file.title || 'Untitled'}')">
-                            🗑️ Delete
-                        </button>
-                    `;
-                } else {
-                    // Other user's file - can only View
-                    actionButtons = `
-                        <button class="btn btn-view" onclick="viewFileContent('${file.fileName}')">
-                            👁️ View
-                        </button>
-                        <button class="btn-delete" onclick="showPasswordPrompt('${file.fileName}', '${file.title || 'Untitled'}')">
-                            🗑️ Delete
-                        </button>
-                    `;
-                }
-                
                 fileCard.innerHTML = `
                     <div class="file-header">
                         <div class="file-icon">${isOwnedByUser ? '📁' : (isOldFormat ? '📋' : '📄')}</div>
@@ -842,7 +583,17 @@
                     <div class="file-meta">
                         <span class="file-owner">${isOwnedByUser ? 'Your File' : (isOldFormat ? 'Legacy File' : 'Other User')}</span>
                         <div class="file-actions">
-                            ${actionButtons}
+                            <button class="btn btn-view" onclick="viewFileContent('${file.fileName}')">
+                                👁️ View
+                            </button>
+                            ${isOwnedByUser ? `
+                                <button class="btn btn-edit" onclick="editFileContent('${file.fileName}')">
+                                    ✏️ Edit
+                                </button>
+                            ` : ''}
+                            <button class="btn-delete" onclick="showPasswordPrompt('${file.fileName}', '${file.title || 'Untitled'}')">
+                                🗑️ Delete
+                            </button>
                         </div>
                     </div>
                 `;
@@ -865,8 +616,6 @@
         }
 
         async function createNewFile() {
-            if (!isLoggedIn) return;
-            
             const fileTitleInput = document.getElementById('fileTitle');
             let title = fileTitleInput.value.trim();
 
@@ -904,8 +653,6 @@
         }
 
         function editFileContent(fileName) {
-            if (!isLoggedIn) return;
-            
             currentFileToEdit = fileName;
             const file = currentFiles.find(f => f.fileName === fileName);
             
@@ -914,7 +661,6 @@
                 return;
             }
             
-            // Check ownership - ONLY allow editing own files
             if (file.ownerId !== CURRENT_USER_ID) {
                 alert('You can only edit your own files!');
                 return;
@@ -927,8 +673,6 @@
         }
 
         function viewFileContent(fileName) {
-            if (!isLoggedIn) return;
-            
             const file = currentFiles.find(f => f.fileName === fileName);
             if (!file) {
                 alert('File not found!');
@@ -940,7 +684,7 @@
             document.getElementById('viewFileFormat').textContent = file.format || 'unknown';
             document.getElementById('viewFileOwner').textContent = file.ownerId || 'unknown';
             document.getElementById('viewFileSize').textContent = formatFileSize(file.fileSize || 0);
-            document.getElementById('viewFileCreated').textContent = new Date((file.createdAt || 0) * 1000).toLocaleString();
+            document.getElementById('viewFileCreated').textContent = new Date(file.createdAt * 1000).toLocaleString();
             
             // Show content
             let contentToShow = file.content || 'No content available';
@@ -981,8 +725,6 @@
         }
 
         async function saveFileContent() {
-            if (!isLoggedIn) return;
-            
             const title = document.getElementById('editFileTitle').value.trim();
             const content = document.getElementById('fileContent').value;
             
@@ -1027,8 +769,6 @@
         }
 
         function showPasswordPrompt(fileName, fileTitle) {
-            if (!isLoggedIn) return;
-            
             currentFileToDelete = fileName;
             document.getElementById('deleteFileName').textContent = fileTitle;
             document.getElementById('passwordModal').style.display = 'flex';
@@ -1042,8 +782,6 @@
         }
 
         async function confirmDelete() {
-            if (!isLoggedIn) return;
-            
             const password = document.getElementById('passwordInput').value;
             
             if (!password) {
@@ -1093,9 +831,7 @@
 
         // Auto-refresh every 30 seconds
         setInterval(() => {
-            if (isLoggedIn) {
-                loadFilesFromServer();
-            }
+            loadFilesFromServer();
         }, 30000);
 
         // Handle Enter key in edit modal
@@ -1104,11 +840,6 @@
                 e.preventDefault();
                 document.getElementById('fileContent').focus();
             }
-        });
-
-        // Auto-focus on password input when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loginPassword').focus();
         });
     </script>
 </body>
