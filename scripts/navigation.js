@@ -51,7 +51,7 @@ const pageConfig = {
     },
     'training': {
         title: 'AI Training - DK Community',
-        html: 'pages/training.html',
+        html: 'pages/ai-training.html',
         icon: '🤖',
         type: 'external'  // Changed from 'modal' to 'external'
     },
