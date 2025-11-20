@@ -3,1127 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom File Manager - Ultimate Fix</title>
+    <title>Folder Management System</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        :root {
-            --primary: #8e44ad;
-            --secondary: #9b59b6;
-            --accent: #e84393;
-            --light: #f8f9fa;
-            --dark: #2c3e50;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-        }
-
+        
         body {
+            font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
-
-        .login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-
-        .login-container {
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             background: white;
-            padding: 40px;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
             text-align: center;
-            max-width: 400px;
-            width: 90%;
         }
-
-        .login-title {
-            color: var(--dark);
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-            font-weight: 600;
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 600px;
         }
-
-        .login-subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
+        
+        .sidebar {
+            background: #34495e;
+            color: white;
+            padding: 20px;
         }
-
-        .password-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
+        
+        .content-area {
+            padding: 20px;
+            background: #ecf0f1;
         }
-
-        .password-input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+        
+        .form-group {
+            margin-bottom: 15px;
         }
-
-        .login-btn {
+        
+        input, textarea, button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
-        }
-
-        .container {
-            max-width: 1400px;
-            width: 100%;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: none;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 1rem;
-        }
-
-        .user-section {
-            background: var(--light);
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .user-id {
-            background: var(--success);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-family: monospace;
-        }
-
-        .controls {
-            padding: 20px 25px;
-            background: white;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .folder-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        .folder-input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
-        }
-
-        .btn-test {
+        
+        button {
             background: #3498db;
             color: white;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .files-container {
-            padding: 25px;
-            min-height: 500px;
-            background: var(--light);
-        }
-
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-
-        .file-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.3s;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-
-        .file-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-
-        .file-card.owned-by-user {
-            border-left: 4px solid var(--success);
-        }
-
-        .file-card.old-format {
-            border-left: 4px solid var(--warning);
-        }
-
-        .file-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .file-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .file-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--dark);
-            line-height: 1.4;
-            flex: 1;
-        }
-
-        .file-format {
-            background: var(--warning);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .file-content {
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .file-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        .file-owner {
-            background: #e8f4fd;
-            color: var(--primary);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-
-        .file-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .action-btn {
-            padding: 6px 10px;
             border: none;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background 0.3s;
         }
-
-        .btn-view {
-            background: #3498db;
-            color: white;
+        
+        button:hover {
+            background: #2980b9;
         }
-
-        .btn-edit {
-            background: var(--warning);
-            color: white;
+        
+        .btn-danger {
+            background: #e74c3c;
         }
-
-        .btn-delete {
-            background: var(--danger);
-            color: white;
+        
+        .btn-danger:hover {
+            background: #c0392b;
         }
-
-        .action-btn:hover {
-            transform: translateY(-1px);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--primary);
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .no-files {
-            text-align: center;
-            padding: 50px 20px;
-            color: #666;
-            grid-column: 1 / -1;
-        }
-
-        .stats {
-            background: var(--dark);
-            color: white;
-            padding: 15px 25px;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
-        .stat-item {
-            margin: 0 12px;
-            display: inline-block;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            max-width: 90%;
-            width: 500px;
-            max-height: 90vh;
+        
+        .folder-list {
+            max-height: 400px;
             overflow-y: auto;
         }
-
-        .modal h3 {
-            color: var(--dark);
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 1.3rem;
+        
+        .folder-item {
+            background: white;
+            color: #2c3e50;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
         }
-
-        .file-info-bar {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            font-size: 0.9rem;
+        
+        .folder-item:hover {
+            background: #3498db;
+            color: white;
         }
-
-        .file-info-item {
-            margin-right: 15px;
-            display: inline-block;
+        
+        .folder-item.active {
+            background: #2980b9;
+            color: white;
         }
-
-        .file-content-view {
-            width: 100%;
+        
+        .notes-area {
+            height: 400px;
+        }
+        
+        #notesContent {
             height: 300px;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #f8f9fa;
             resize: vertical;
         }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            margin-top: 15px;
-        }
-
-        .btn-cancel {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-confirm {
-            background: var(--success);
-            color: white;
-        }
-
-        .status-message {
-            padding: 10px 15px;
-            border-radius: 8px;
+        
+        .message {
+            padding: 10px;
             margin: 10px 0;
+            border-radius: 5px;
             text-align: center;
-            font-weight: 500;
         }
-
-        .status-success {
+        
+        .success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-
-        .status-error {
+        
+        .error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
-
-        .connection-info {
-            background: #fff3cd;
-            color: #856404;
-            padding: 10px;
+        
+        .delete-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
             border-radius: 8px;
-            margin: 10px 0;
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 768px) {
-            .files-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 1.8rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .folder-input {
-                min-width: 100%;
-            }
-            
-            .user-section {
-                flex-direction: column;
-                gap: 12px;
-                text-align: center;
-            }
+            border-left: 4px solid #e74c3c;
         }
     </style>
 </head>
 <body>
-    <div class="login-modal" id="loginModal">
-        <div class="login-container">
-            <h2 class="login-title">Bloom File Manager</h2>
-            <p class="login-subtitle">Secure File Management System</p>
-            <input type="password" class="password-input" id="loginPassword" placeholder="Enter access password">
-            <button class="login-btn" onclick="checkLogin()">Access Files</button>
-        </div>
-    </div>
-
-    <div class="container" id="mainContainer">
+    <div class="container">
         <div class="header">
-            <h1>Bloom File Manager</h1>
-            <p>Organize and manage your files efficiently</p>
+            <h1>📁 Folder Management System</h1>
+            <p>Create folders, write notes, and share with others!</p>
         </div>
         
-        <div class="user-section">
-            <div class="user-info">
-                <div class="user-avatar">U</div>
-                <div>
-                    <div style="font-weight: 500;">Welcome User</div>
-                    <span class="user-id" id="userId">Loading...</span>
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h3>Create New Folder</h3>
+                <div class="form-group">
+                    <input type="text" id="folderName" placeholder="Enter folder name" maxlength="50">
+                    <button onclick="createFolder()">Create Folder</button>
+                </div>
+                
+                <h3>Available Folders</h3>
+                <div class="folder-list" id="folderList">
+                    <!-- Folders will be loaded here -->
+                </div>
+                
+                <div class="delete-section">
+                    <h3>Delete Folder</h3>
+                    <input type="text" id="deleteFolderName" placeholder="Folder name to delete">
+                    <input type="password" id="deletePassword" placeholder="Enter password">
+                    <button class="btn-danger" onclick="deleteFolder()">Delete Folder</button>
                 </div>
             </div>
-            <div style="font-size: 0.9rem; opacity: 0.8;">
-                Your Files | Legacy | View Only
-            </div>
-        </div>
-        
-        <div class="controls">
-            <input type="text" class="folder-input" id="fileTitle" placeholder="Enter file title">
-            <button class="btn btn-primary" onclick="createNewFile()">Create New File</button>
-            <button class="btn btn-primary" onclick="loadFilesFromServer()">Refresh Files</button>
-            <button class="btn btn-test" onclick="testAllConnections()">Test All Connections</button>
-        </div>
-
-        <div id="statusMessage"></div>
-        <div id="connectionInfo"></div>
-        
-        <div class="files-container">
-            <div class="loading" id="loadingMessage">
-                <div class="loading-spinner"></div>
-                <div>Loading files...</div>
-            </div>
-            <div class="files-grid" id="filesGrid" style="display: none;"></div>
-            <div class="no-files" id="noFilesMessage" style="display: none;">
-                <h3>No files found</h3>
-                <p>Create your first file to get started</p>
-            </div>
-        </div>
-        
-        <div class="stats">
-            <span class="stat-item">Total Files: <strong id="fileCount">0</strong></span>
-            <span class="stat-item">Your Files: <strong id="userFileCount">0</strong></span>
-            <span class="stat-item">Legacy Files: <strong id="oldFormatCount">0</strong></span>
-            <span class="stat-item">Status: <strong id="connectionStatus">🔴 Offline</strong></span>
-        </div>
-    </div>
-
-    <div class="modal" id="passwordModal">
-        <div class="modal-content">
-            <h3>Confirm Deletion</h3>
-            <p style="margin-bottom: 15px; color: #666; text-align: center;">
-                Enter admin password to delete<br>
-                <strong id="deleteFileName" style="color: var(--danger);"></strong>
-            </p>
-            <input type="password" class="password-input" id="passwordInput" placeholder="Enter admin password">
-            <div class="modal-buttons">
-                <button class="btn btn-cancel" onclick="hidePasswordPrompt()">Cancel</button>
-                <button class="btn btn-confirm" onclick="confirmDelete()">Delete File</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="editModal">
-        <div class="modal-content">
-            <h3>Edit File</h3>
-            <input type="text" class="folder-input" id="editFileTitle" placeholder="File title" style="margin-bottom: 12px;">
-            <textarea id="fileContent" class="file-content-view" placeholder="Write your content here"></textarea>
-            <div class="modal-buttons">
-                <button class="btn btn-cancel" onclick="hideEditModal()">Cancel</button>
-                <button class="btn btn-confirm" onclick="saveFileContent()">Save Changes</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" id="viewModal">
-        <div class="modal-content" style="width: 700px;">
-            <h3>View File - <span id="viewFileName"></span></h3>
             
-            <div class="file-info-bar">
-                <span class="file-info-item"><strong>Format:</strong> <span id="viewFileFormat"></span></span>
-                <span class="file-info-item"><strong>Owner:</strong> <span id="viewFileOwner"></span></span>
-                <span class="file-info-item"><strong>Size:</strong> <span id="viewFileSize"></span></span>
-                <span class="file-info-item"><strong>Created:</strong> <span id="viewFileCreated"></span></span>
-            </div>
-            
-            <div class="file-content-view" id="viewFileContent" style="height: 350px;">
-                Loading content...
-            </div>
-            
-            <div class="modal-buttons">
-                <button class="btn btn-cancel" onclick="hideViewModal()">Close</button>
-                <button class="btn btn-confirm" onclick="copyFileContent()" id="copyContentBtn">Copy Content</button>
+            <!-- Content Area -->
+            <div class="content-area">
+                <div id="messageArea"></div>
+                
+                <div id="notesSection" style="display: none;">
+                    <h3>Notes for: <span id="currentFolderName"></span></h3>
+                    <textarea id="notesContent" placeholder="Start writing your notes here..."></textarea>
+                    <button onclick="saveNotes()">Save Notes</button>
+                    <p><small>Changes are automatically visible to all users</small></p>
+                </div>
+                
+                <div id="welcomeSection">
+                    <h3>Welcome to Folder Management System</h3>
+                    <p>Please create a new folder or select an existing folder from the sidebar to start writing notes.</p>
+                    <p>All notes are publicly viewable by anyone who has the folder name.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // MULTIPLE CONNECTION OPTIONS
-        const CONNECTION_OPTIONS = [
-            {
-                name: "Direct API",
-                url: "https://deepakchauhanxai.xyz/Team-json/api",
-                type: "direct"
-            },
-            {
-                name: "PHP Proxy", 
-                url: "proxy.php?endpoint=",
-                type: "proxy"
-            },
-            {
-                name: "Alternative API",
-                url: "https://deepakchauhanxai.xyz/api",
-                type: "direct"
+        const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
+        
+        // Load folders on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFolders();
+        });
+        
+        // Create new folder
+        async function createFolder() {
+            const folderName = document.getElementById('folderName').value.trim();
+            
+            if (!folderName) {
+                showMessage('Please enter a folder name', 'error');
+                return;
             }
-        ];
-
-        const SITE_PASSWORD = 'Roshni@ai-bhai';
-        const ADMIN_PASSWORD = 'Roshni@ai-bhai11';
+            
+            if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
+                showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('folder_name', folderName);
+                
+                const response = await fetch(API_BASE_URL + '/create_folder.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Folder created successfully!', 'success');
+                    document.getElementById('folderName').value = '';
+                    loadFolders();
+                    selectFolder(folderName);
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Error creating folder: ' + error.message, 'error');
+            }
+        }
         
-        // User management
-        const CURRENT_USER_ID = localStorage.getItem('fileManagerUserId') || 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
-        localStorage.setItem('fileManagerUserId', CURRENT_USER_ID);
+        // Load all folders
+        async function loadFolders() {
+            try {
+                const response = await fetch(API_BASE_URL + '/list_folders.php');
+                const result = await response.json();
+                
+                const folderList = document.getElementById('folderList');
+                
+                if (result.success && result.folders.length > 0) {
+                    folderList.innerHTML = '';
+                    result.folders.forEach(folder => {
+                        const folderElement = document.createElement('div');
+                        folderElement.className = 'folder-item';
+                        folderElement.textContent = folder;
+                        folderElement.onclick = () => selectFolder(folder);
+                        folderList.appendChild(folderElement);
+                    });
+                } else {
+                    folderList.innerHTML = '<p>No folders created yet</p>';
+                }
+            } catch (error) {
+                showMessage('Error loading folders: ' + error.message, 'error');
+            }
+        }
         
-        let currentFiles = [];
-        let currentFileToDelete = '';
-        let currentFileToEdit = '';
-        let currentConnection = CONNECTION_OPTIONS[0]; // Start with direct connection
-
-        // Utility Functions
-        function showStatus(message, type = 'success') {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+        // Select folder and load notes
+        async function selectFolder(folderName) {
+            // Update active folder in list
+            document.querySelectorAll('.folder-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.textContent === folderName) {
+                    item.classList.add('active');
+                }
+            });
+            
+            try {
+                const response = await fetch(API_BASE_URL + '/read_note.php?folder_name=' + encodeURIComponent(folderName));
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('currentFolderName').textContent = folderName;
+                    document.getElementById('notesContent').value = result.content;
+                    document.getElementById('notesSection').style.display = 'block';
+                    document.getElementById('welcomeSection').style.display = 'none';
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Error loading notes: ' + error.message, 'error');
+            }
+        }
+        
+        // Save notes
+        async function saveNotes() {
+            const folderName = document.getElementById('currentFolderName').textContent;
+            const content = document.getElementById('notesContent').value;
+            
+            if (!folderName) {
+                showMessage('Please select a folder first', 'error');
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('folder_name', folderName);
+                formData.append('content', content);
+                
+                const response = await fetch(API_BASE_URL + '/save_note.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Notes saved successfully!', 'success');
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Error saving notes: ' + error.message, 'error');
+            }
+        }
+        
+        // Delete folder
+        async function deleteFolder() {
+            const folderName = document.getElementById('deleteFolderName').value.trim();
+            const password = document.getElementById('deletePassword').value;
+            
+            if (!folderName || !password) {
+                showMessage('Please enter both folder name and password', 'error');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to delete folder "${folderName}"? This action cannot be undone.`)) {
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('folder_name', folderName);
+                formData.append('password', password);
+                
+                const response = await fetch(API_BASE_URL + '/delete_folder.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('Folder deleted successfully!', 'success');
+                    document.getElementById('deleteFolderName').value = '';
+                    document.getElementById('deletePassword').value = '';
+                    loadFolders();
+                    
+                    // Reset notes section if deleted folder was selected
+                    if (document.getElementById('currentFolderName').textContent === folderName) {
+                        document.getElementById('notesSection').style.display = 'none';
+                        document.getElementById('welcomeSection').style.display = 'block';
+                    }
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('Error deleting folder: ' + error.message, 'error');
+            }
+        }
+        
+        // Show message
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+            
             setTimeout(() => {
-                statusDiv.innerHTML = '';
+                messageArea.innerHTML = '';
             }, 5000);
         }
-
-        function showConnectionInfo(info) {
-            const infoDiv = document.getElementById('connectionInfo');
-            infoDiv.innerHTML = `<div class="connection-info">${info}</div>`;
-        }
-
-        function updateConnectionStatus(status) {
-            const statusElement = document.getElementById('connectionStatus');
-            statusElement.textContent = status ? '🟢 Online' : '🔴 Offline';
-            statusElement.style.color = status ? 'var(--success)' : 'var(--danger)';
-        }
-
-        // Enhanced fetch with multiple fallbacks
-        async function makeRequest(endpoint, options = {}) {
-            let lastError = null;
-            
-            // Try all connection options
-            for (let connection of CONNECTION_OPTIONS) {
-                try {
-                    const url = connection.type === 'proxy' 
-                        ? `${connection.url}${endpoint}`
-                        : `${connection.url}${endpoint}`;
-                    
-                    console.log(`🔄 Trying: ${connection.name} - ${url}`);
-                    
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-                    const response = await fetch(url, {
-                        method: options.method || 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            ...options.headers
-                        },
-                        body: options.body,
-                        mode: 'cors',
-                        signal: controller.signal
-                    });
-
-                    clearTimeout(timeoutId);
-
-                    if (response.ok) {
-                        // Success! Set this as current connection
-                        currentConnection = connection;
-                        console.log(`✅ Success with: ${connection.name}`);
-                        showConnectionInfo(`Connected via: ${connection.name}`);
-                        return response;
-                    } else {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-                } catch (error) {
-                    lastError = error;
-                    console.log(`❌ Failed: ${connection.name} - ${error.message}`);
-                    continue;
-                }
-            }
-            
-            // All connections failed
-            throw new Error(`All connection attempts failed. Last error: ${lastError?.message}`);
-        }
-
-        // Test all connections
-        async function testAllConnections() {
-            showStatus('Testing all connection methods...', 'success');
-            let workingConnections = [];
-            
-            for (let connection of CONNECTION_OPTIONS) {
-                try {
-                    const url = connection.type === 'proxy' 
-                        ? `${connection.url}/files`
-                        : `${connection.url}/files`;
-                    
-                    console.log(`Testing: ${connection.name} - ${url}`);
-                    
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        mode: 'cors'
-                    });
-                    
-                    if (response.ok) {
-                        workingConnections.push(connection.name);
-                        console.log(`✅ ${connection.name}: WORKING`);
-                    }
-                } catch (error) {
-                    console.log(`❌ ${connection.name}: FAILED - ${error.message}`);
-                }
-            }
-            
-            if (workingConnections.length > 0) {
-                showStatus(`✅ Working connections: ${workingConnections.join(', ')}`, 'success');
-                updateConnectionStatus(true);
-            } else {
-                showStatus('❌ No working connections found', 'error');
-                updateConnectionStatus(false);
-            }
-        }
-
-        // Login System
-        function checkLogin() {
-            const password = document.getElementById('loginPassword').value;
-            
-            if (password === SITE_PASSWORD) {
-                document.getElementById('loginModal').style.display = 'none';
-                document.getElementById('mainContainer').style.display = 'block';
-                loadFilesFromServer();
-                showStatus('Login successful! Testing connections...', 'success');
-                testAllConnections();
-            } else {
-                alert('Incorrect password! Please try again.');
-                document.getElementById('loginPassword').value = '';
-                document.getElementById('loginPassword').focus();
-            }
-        }
-
-        // File Operations
-        async function loadFilesFromServer() {
-            showLoading();
-            updateConnectionStatus(false);
-            
-            try {
-                const response = await makeRequest('/files');
-                const result = await response.json();
-                
-                if (result.success) {
-                    currentFiles = result.data.files || [];
-                    displayFiles(currentFiles);
-                    updateConnectionStatus(true);
-                    showStatus(`Loaded ${currentFiles.length} files successfully via ${currentConnection.name}`, 'success');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('Error loading files:', error);
-                displayFiles([]);
-                showStatus(`Failed to load files: ${error.message}`, 'error');
-                updateConnectionStatus(false);
-            }
-        }
-
-        async function createNewFile() {
-            const fileTitleInput = document.getElementById('fileTitle');
-            let title = fileTitleInput.value.trim();
-
-            if (!title) {
-                showStatus('Please enter file title!', 'error');
-                return;
-            }
-
-            try {
-                showStatus(`Creating file: ${title}...`, 'success');
-                
-                const response = await makeRequest('/files', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        title: title,
-                        ownerId: CURRENT_USER_ID,
-                        content: "Start writing your content here..."
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    fileTitleInput.value = '';
-                    loadFilesFromServer();
-                    showStatus(`File "${title}" created successfully!`, 'success');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                console.error('Error creating file:', error);
-                showStatus(`Failed to create file: ${error.message}`, 'error');
-            }
-        }
-
-        function displayFiles(files) {
-            const filesGrid = document.getElementById('filesGrid');
-            const loadingMessage = document.getElementById('loadingMessage');
-            const noFilesMessage = document.getElementById('noFilesMessage');
-            
-            loadingMessage.style.display = 'none';
-            
-            if (!files || files.length === 0) {
-                filesGrid.style.display = 'none';
-                noFilesMessage.style.display = 'block';
-                updateFileCounts(0, 0, 0);
-                return;
-            }
-
-            noFilesMessage.style.display = 'none';
-            filesGrid.style.display = 'grid';
-            filesGrid.innerHTML = '';
-            
-            let userFileCount = 0;
-            let oldFormatCount = 0;
-            
-            files.forEach((file) => {
-                const isOwnedByUser = isFileOwnedByCurrentUser(file);
-                const isOldFormat = file.format === 'old' || file.format === 'invalid';
-                
-                if (isOwnedByUser) userFileCount++;
-                if (isOldFormat) oldFormatCount++;
-                
-                let previewContent = 'No content available';
-                if (file.content && file.content.trim() !== '' && file.content !== 'No content available') {
-                    previewContent = file.content.length > 100 ? 
-                        file.content.substring(0, 100) + '...' : 
-                        file.content;
-                }
-                
-                const fileCard = document.createElement('div');
-                fileCard.className = `file-card ${isOwnedByUser ? 'owned-by-user' : ''} ${isOldFormat ? 'old-format' : ''}`;
-                fileCard.innerHTML = `
-                    <div class="file-header">
-                        <div class="file-icon">${isOwnedByUser ? '📁' : (isOldFormat ? '📋' : '📄')}</div>
-                        <div class="file-title">${file.title || 'Untitled'}</div>
-                        ${isOldFormat ? '<span class="file-format">OLD</span>' : ''}
-                    </div>
-                    <div class="file-content">${previewContent}</div>
-                    <div class="file-meta">
-                        <span class="file-owner">${isOwnedByUser ? 'Your File' : (isOldFormat ? 'Legacy File' : 'Other User')}</span>
-                        <div class="file-actions">
-                            <button class="action-btn btn-view" onclick="viewFileContent('${file.fileName}')">View</button>
-                            ${isOwnedByUser ? `
-                                <button class="action-btn btn-edit" onclick="editFileContent('${file.fileName}')">Edit</button>
-                            ` : ''}
-                            <button class="action-btn btn-delete" onclick="showPasswordPrompt('${file.fileName}', '${file.title || 'Untitled'}')">Delete</button>
-                        </div>
-                    </div>
-                `;
-                filesGrid.appendChild(fileCard);
-            });
-
-            updateFileCounts(files.length, userFileCount, oldFormatCount);
-        }
-
-        function isFileOwnedByCurrentUser(file) {
-            if (!file.ownerId) return false;
-            if (file.ownerId === CURRENT_USER_ID) return true;
-            if (file.ownerId.includes('user_') && CURRENT_USER_ID.includes('user_')) {
-                const fileOwnerBase = file.ownerId.split('_').slice(0, 3).join('_');
-                const currentUserBase = CURRENT_USER_ID.split('_').slice(0, 3).join('_');
-                return fileOwnerBase === currentUserBase;
-            }
-            return false;
-        }
-
-        function updateFileCounts(total, userCount, oldCount) {
-            document.getElementById('fileCount').textContent = total;
-            document.getElementById('userFileCount').textContent = userCount;
-            document.getElementById('oldFormatCount').textContent = oldCount;
-        }
-
-        function showLoading() {
-            document.getElementById('loadingMessage').style.display = 'block';
-            document.getElementById('filesGrid').style.display = 'none';
-            document.getElementById('noFilesMessage').style.display = 'none';
-        }
-
-        // Rest of the functions remain the same as previous version
-        function editFileContent(fileName) {
-            currentFileToEdit = fileName;
-            const file = currentFiles.find(f => f.fileName === fileName);
-            
-            if (!file) {
-                showStatus('File not found!', 'error');
-                return;
-            }
-            
-            if (!isFileOwnedByCurrentUser(file)) {
-                showStatus('You can only edit your own files!', 'error');
-                return;
-            }
-            
-            document.getElementById('editFileTitle').value = file.title || '';
-            document.getElementById('fileContent').value = file.content || '';
-            document.getElementById('editModal').style.display = 'flex';
-        }
-
-        function viewFileContent(fileName) {
-            const file = currentFiles.find(f => f.fileName === fileName);
-            if (!file) {
-                showStatus('File not found!', 'error');
-                return;
-            }
-            
-            document.getElementById('viewFileName').textContent = file.title || 'Untitled';
-            document.getElementById('viewFileFormat').textContent = file.format || 'unknown';
-            document.getElementById('viewFileOwner').textContent = file.ownerId || 'unknown';
-            document.getElementById('viewFileSize').textContent = formatFileSize(file.fileSize || 0);
-            document.getElementById('viewFileCreated').textContent = new Date(file.createdAt * 1000).toLocaleString();
-            
-            let contentToShow = file.content || 'No content available';
-            document.getElementById('viewFileContent').textContent = contentToShow;
-            document.getElementById('viewModal').style.display = 'flex';
-        }
-
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        function hideEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-            currentFileToEdit = '';
-        }
-
-        function hideViewModal() {
-            document.getElementById('viewModal').style.display = 'none';
-        }
-
-        function copyFileContent() {
-            const content = document.getElementById('viewFileContent').textContent;
-            navigator.clipboard.writeText(content).then(() => {
-                const btn = document.getElementById('copyContentBtn');
-                btn.textContent = 'Copied!';
-                setTimeout(() => {
-                    btn.textContent = 'Copy Content';
-                }, 2000);
-            }).catch(err => {
-                showStatus('Failed to copy content: ' + err, 'error');
-            });
-        }
-
-        async function saveFileContent() {
-            const title = document.getElementById('editFileTitle').value.trim();
-            const content = document.getElementById('fileContent').value;
-            
-            if (!title) {
-                showStatus('Title cannot be empty!', 'error');
-                return;
-            }
-
-            try {
-                const file = currentFiles.find(f => f.fileName === currentFileToEdit);
-                if (!file || !isFileOwnedByCurrentUser(file)) {
-                    showStatus('You can only edit your own files!', 'error');
-                    return;
-                }
-
-                const response = await makeRequest('/files', {
-                    method: 'PUT',
-                    body: JSON.stringify({
-                        fileName: currentFileToEdit,
-                        title: title,
-                        content: content,
-                        ownerId: CURRENT_USER_ID
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    showStatus('File saved successfully!', 'success');
-                    hideEditModal();
-                    loadFilesFromServer();
-                } else {
-                    showStatus('Error: ' + result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showStatus('Failed to save file.', 'error');
-            }
-        }
-
-        function showPasswordPrompt(fileName, fileTitle) {
-            currentFileToDelete = fileName;
-            document.getElementById('deleteFileName').textContent = fileTitle;
-            document.getElementById('passwordModal').style.display = 'flex';
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('passwordInput').focus();
-        }
-
-        function hidePasswordPrompt() {
-            document.getElementById('passwordModal').style.display = 'none';
-            currentFileToDelete = '';
-        }
-
-        async function confirmDelete() {
-            const password = document.getElementById('passwordInput').value;
-            
-            if (!password) {
-                showStatus('Please enter password!', 'error');
-                return;
-            }
-
-            if (password !== ADMIN_PASSWORD) {
-                showStatus('Incorrect password!', 'error');
-                return;
-            }
-
-            try {
-                const response = await makeRequest('/files', {
-                    method: 'DELETE',
-                    body: JSON.stringify({
-                        fileName: currentFileToDelete,
-                        password: password
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    loadFilesFromServer();
-                    showStatus('File deleted successfully!', 'success');
-                    hidePasswordPrompt();
-                } else {
-                    showStatus('Error: ' + result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showStatus('Failed to delete file.', 'error');
-            }
-        }
-
-        // Event Listeners
-        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkLogin();
-        });
-
-        document.getElementById('fileTitle').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') createNewFile();
-        });
-
-        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') confirmDelete();
-        });
-
-        document.getElementById('editFileTitle').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                document.getElementById('fileContent').focus();
-            }
-        });
-
-        // Auto-refresh and initialization
-        setInterval(() => {
-            if (document.getElementById('mainContainer').style.display === 'block') {
-                loadFilesFromServer();
-            }
-        }, 30000);
-
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('userId').textContent = CURRENT_USER_ID;
-            showStatus('Ready to connect...', 'success');
-            showConnectionInfo('Click "Test All Connections" to find working connection');
-        });
     </script>
 </body>
 </html>
