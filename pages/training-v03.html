@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom File Manager</title>
+    <title>Bloom File Manager - Fixed Version</title>
     <style>
         * {
             margin: 0;
@@ -82,6 +82,7 @@
         .password-input:focus {
             border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
         }
 
         .login-btn {
@@ -189,6 +190,7 @@
         .folder-input:focus {
             border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
         }
 
         .btn {
@@ -212,6 +214,16 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+
+        .btn-test {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
         }
 
         .files-container {
@@ -460,6 +472,26 @@
             color: white;
         }
 
+        .status-message {
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
         @media (max-width: 768px) {
             .files-grid {
                 grid-template-columns: 1fr;
@@ -518,7 +550,11 @@
             <input type="text" class="folder-input" id="fileTitle" placeholder="Enter file title">
             <button class="btn btn-primary" onclick="createNewFile()">Create New File</button>
             <button class="btn btn-primary" onclick="loadFilesFromServer()">Refresh Files</button>
+            <button class="btn btn-test" onclick="testServerConnection()">Test Connection</button>
+            <button class="btn btn-success" onclick="fixCorsIssues()">Fix CORS</button>
         </div>
+
+        <div id="statusMessage"></div>
         
         <div class="files-container">
             <div class="loading" id="loadingMessage">
@@ -536,6 +572,7 @@
             <span class="stat-item">Total Files: <strong id="fileCount">0</strong></span>
             <span class="stat-item">Your Files: <strong id="userFileCount">0</strong></span>
             <span class="stat-item">Legacy Files: <strong id="oldFormatCount">0</strong></span>
+            <span class="stat-item">Status: <strong id="connectionStatus">🔴 Offline</strong></span>
         </div>
     </div>
 
@@ -589,10 +626,12 @@
     </div>
 
     <script>
+        // Configuration
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
         const SITE_PASSWORD = 'Roshni@ai-bhai';
         const ADMIN_PASSWORD = 'Roshni@ai-bhai11';
         
+        // User management
         const CURRENT_USER_ID = localStorage.getItem('fileManagerUserId') || 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
         localStorage.setItem('fileManagerUserId', CURRENT_USER_ID);
         
@@ -600,6 +639,117 @@
         let currentFileToDelete = '';
         let currentFileToEdit = '';
 
+        // Utility Functions
+        function showStatus(message, type = 'success') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.innerHTML = `<div class="status-message status-${type}">${message}</div>`;
+            setTimeout(() => {
+                statusDiv.innerHTML = '';
+            }, 5000);
+        }
+
+        function updateConnectionStatus(status) {
+            const statusElement = document.getElementById('connectionStatus');
+            statusElement.textContent = status ? '🟢 Online' : '🔴 Offline';
+            statusElement.style.color = status ? 'var(--success)' : 'var(--danger)';
+        }
+
+        // Enhanced fetch with CORS handling
+        async function makeRequest(url, options = {}) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+            try {
+                console.log('🔄 Making request to:', url);
+                
+                const response = await fetch(url, {
+                    ...options,
+                    mode: 'cors',
+                    credentials: 'omit',
+                    signal: controller.signal,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+
+                clearTimeout(timeoutId);
+                
+                console.log('✅ Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                console.error('❌ Request failed:', error);
+                
+                if (error.name === 'AbortError') {
+                    throw new Error('Request timeout: Server took too long to respond');
+                }
+                
+                throw error;
+            }
+        }
+
+        // CORS Fix Function
+        async function fixCorsIssues() {
+            showStatus('Attempting to fix CORS issues...', 'success');
+            
+            try {
+                // Test multiple endpoints
+                const endpoints = [
+                    `${API_BASE_URL}/files`,
+                    `https://deepakchauhanxai.xyz/Team-json/api/files`,
+                    `${API_BASE_URL.replace('/api', '')}/files`
+                ];
+                
+                for (let endpoint of endpoints) {
+                    try {
+                        console.log(`Testing endpoint: ${endpoint}`);
+                        const response = await makeRequest(endpoint);
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            showStatus(`✅ CORS fixed! Using: ${endpoint}`, 'success');
+                            updateConnectionStatus(true);
+                            return endpoint;
+                        }
+                    } catch (e) {
+                        console.log(`Endpoint failed: ${endpoint}`, e.message);
+                    }
+                }
+                
+                throw new Error('All endpoints failed');
+            } catch (error) {
+                showStatus(`❌ CORS fix failed: ${error.message}`, 'error');
+                updateConnectionStatus(false);
+            }
+        }
+
+        // Test server connection
+        async function testServerConnection() {
+            try {
+                showStatus('Testing server connection...', 'success');
+                
+                const response = await makeRequest(`${API_BASE_URL}/files`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('✅ Server connection successful! CORS is working properly.', 'success');
+                    updateConnectionStatus(true);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                showStatus(`❌ Connection failed: ${error.message}`, 'error');
+                updateConnectionStatus(false);
+            }
+        }
+
+        // Login System
         function checkLogin() {
             const password = document.getElementById('loginPassword').value;
             
@@ -607,6 +757,7 @@
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('mainContainer').style.display = 'block';
                 loadFilesFromServer();
+                showStatus('Login successful! Loading files...', 'success');
             } else {
                 alert('Incorrect password! Please try again.');
                 document.getElementById('loginPassword').value = '';
@@ -614,34 +765,64 @@
             }
         }
 
-        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkLogin();
-            }
-        });
-
+        // File Operations
         async function loadFilesFromServer() {
             showLoading();
+            updateConnectionStatus(false);
             
             try {
-                const response = await fetch(`${API_BASE_URL}/files`);
-                
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
-                
+                const response = await makeRequest(`${API_BASE_URL}/files`);
                 const result = await response.json();
                 
                 if (result.success) {
                     currentFiles = result.data.files || [];
                     displayFiles(currentFiles);
+                    updateConnectionStatus(true);
+                    showStatus(`Loaded ${currentFiles.length} files successfully`, 'success');
                 } else {
                     throw new Error(result.message);
                 }
             } catch (error) {
                 console.error('Error loading files:', error);
                 displayFiles([]);
-                alert('Server connection failed! Please check if API is running.');
+                showStatus(`Failed to load files: ${error.message}`, 'error');
+                updateConnectionStatus(false);
+            }
+        }
+
+        async function createNewFile() {
+            const fileTitleInput = document.getElementById('fileTitle');
+            let title = fileTitleInput.value.trim();
+
+            if (!title) {
+                showStatus('Please enter file title!', 'error');
+                return;
+            }
+
+            try {
+                showStatus(`Creating file: ${title}...`, 'success');
+                
+                const response = await makeRequest(`${API_BASE_URL}/files`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title: title,
+                        ownerId: CURRENT_USER_ID,
+                        content: "Start writing your content here..."
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    fileTitleInput.value = '';
+                    loadFilesFromServer();
+                    showStatus(`File "${title}" created successfully!`, 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Error creating file:', error);
+                showStatus(`Failed to create file: ${error.message}`, 'error');
             }
         }
 
@@ -708,15 +889,12 @@
 
         function isFileOwnedByCurrentUser(file) {
             if (!file.ownerId) return false;
-            
             if (file.ownerId === CURRENT_USER_ID) return true;
-            
             if (file.ownerId.includes('user_') && CURRENT_USER_ID.includes('user_')) {
                 const fileOwnerBase = file.ownerId.split('_').slice(0, 3).join('_');
                 const currentUserBase = CURRENT_USER_ID.split('_').slice(0, 3).join('_');
                 return fileOwnerBase === currentUserBase;
             }
-            
             return false;
         }
 
@@ -732,67 +910,30 @@
             document.getElementById('noFilesMessage').style.display = 'none';
         }
 
-        async function createNewFile() {
-            const fileTitleInput = document.getElementById('fileTitle');
-            let title = fileTitleInput.value.trim();
-
-            if (!title) {
-                alert('Please enter file title!');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/files`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        title: title,
-                        ownerId: CURRENT_USER_ID,
-                        content: "Start writing your content here..."
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    fileTitleInput.value = '';
-                    loadFilesFromServer();
-                    alert(`File "${title}" created successfully!`);
-                } else {
-                    alert('Error: ' + result.message);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to create file. Server might be offline.');
-            }
-        }
-
+        // Rest of the functions (edit, view, delete, etc.)
         function editFileContent(fileName) {
             currentFileToEdit = fileName;
             const file = currentFiles.find(f => f.fileName === fileName);
             
             if (!file) {
-                alert('File not found!');
+                showStatus('File not found!', 'error');
                 return;
             }
             
             if (!isFileOwnedByCurrentUser(file)) {
-                alert('You can only edit your own files!');
+                showStatus('You can only edit your own files!', 'error');
                 return;
             }
             
             document.getElementById('editFileTitle').value = file.title || '';
             document.getElementById('fileContent').value = file.content || '';
-            
             document.getElementById('editModal').style.display = 'flex';
         }
 
         function viewFileContent(fileName) {
             const file = currentFiles.find(f => f.fileName === fileName);
             if (!file) {
-                alert('File not found!');
+                showStatus('File not found!', 'error');
                 return;
             }
             
@@ -804,7 +945,6 @@
             
             let contentToShow = file.content || 'No content available';
             document.getElementById('viewFileContent').textContent = contentToShow;
-            
             document.getElementById('viewModal').style.display = 'flex';
         }
 
@@ -834,7 +974,7 @@
                     btn.textContent = 'Copy Content';
                 }, 2000);
             }).catch(err => {
-                alert('Failed to copy content: ' + err);
+                showStatus('Failed to copy content: ' + err, 'error');
             });
         }
 
@@ -843,22 +983,19 @@
             const content = document.getElementById('fileContent').value;
             
             if (!title) {
-                alert('Title cannot be empty!');
+                showStatus('Title cannot be empty!', 'error');
                 return;
             }
 
             try {
                 const file = currentFiles.find(f => f.fileName === currentFileToEdit);
                 if (!file || !isFileOwnedByCurrentUser(file)) {
-                    alert('You can only edit your own files!');
+                    showStatus('You can only edit your own files!', 'error');
                     return;
                 }
 
-                const response = await fetch(`${API_BASE_URL}/files`, {
+                const response = await makeRequest(`${API_BASE_URL}/files`, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({
                         fileName: currentFileToEdit,
                         title: title,
@@ -870,15 +1007,15 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    alert('File saved successfully!');
+                    showStatus('File saved successfully!', 'success');
                     hideEditModal();
                     loadFilesFromServer();
                 } else {
-                    alert('Error: ' + result.message);
+                    showStatus('Error: ' + result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to save file.');
+                showStatus('Failed to save file.', 'error');
             }
         }
 
@@ -899,21 +1036,18 @@
             const password = document.getElementById('passwordInput').value;
             
             if (!password) {
-                alert('Please enter password!');
+                showStatus('Please enter password!', 'error');
                 return;
             }
 
             if (password !== ADMIN_PASSWORD) {
-                alert('Incorrect password!');
+                showStatus('Incorrect password!', 'error');
                 return;
             }
 
             try {
-                const response = await fetch(`${API_BASE_URL}/files`, {
+                const response = await makeRequest(`${API_BASE_URL}/files`, {
                     method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
                     body: JSON.stringify({
                         fileName: currentFileToDelete,
                         password: password
@@ -924,32 +1058,29 @@
                 
                 if (result.success) {
                     loadFilesFromServer();
-                    alert('File deleted successfully!');
+                    showStatus('File deleted successfully!', 'success');
                     hidePasswordPrompt();
                 } else {
-                    alert('Error: ' + result.message);
+                    showStatus('Error: ' + result.message, 'error');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to delete file.');
+                showStatus('Failed to delete file.', 'error');
             }
         }
 
+        // Event Listeners
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkLogin();
+        });
+
         document.getElementById('fileTitle').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                createNewFile();
-            }
+            if (e.key === 'Enter') createNewFile();
         });
 
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                confirmDelete();
-            }
+            if (e.key === 'Enter') confirmDelete();
         });
-
-        setInterval(() => {
-            loadFilesFromServer();
-        }, 30000);
 
         document.getElementById('editFileTitle').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -958,8 +1089,16 @@
             }
         });
 
+        // Auto-refresh and initialization
+        setInterval(() => {
+            if (document.getElementById('mainContainer').style.display === 'block') {
+                loadFilesFromServer();
+            }
+        }, 30000);
+
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('userId').textContent = CURRENT_USER_ID;
+            showStatus('Ready to connect...', 'success');
         });
     </script>
 </body>
