@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ai File Manager</title>
+    <title>Bloom File Manager</title>
     <style>
-        /* Your existing CSS styles */
         * {
             margin: 0;
             padding: 0;
@@ -494,7 +493,7 @@
 <body>
     <div class="login-modal" id="loginModal">
         <div class="login-container">
-            <h2 class="login-title">Ai File Manager</h2>
+            <h2 class="login-title">Bloom File Manager</h2>
             <p class="login-subtitle">Secure File Management System</p>
             <input type="password" class="password-input" id="loginPassword" placeholder="Enter access password">
             <button class="login-btn" onclick="checkLogin()">Access Files</button>
@@ -503,7 +502,7 @@
 
     <div class="container" id="mainContainer">
         <div class="header">
-            <h1>Ai File Manager</h1>
+            <h1>Bloom File Manager</h1>
             <p>Organize and manage your files efficiently</p>
         </div>
         
@@ -596,6 +595,7 @@
     </div>
 
     <script>
+        // Direct API URL - CORS enabled होने के बाद यही काम करेगा
         const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
         
         const SITE_PASSWORD = 'Roshni@ai-bhai';
@@ -608,13 +608,12 @@
         let currentFileToDelete = '';
         let currentFileToEdit = '';
 
-        // CORS Problem के लिए improved fetch function
-        async function corsFetch(url, options = {}) {
-            const proxyUrl = PROXY_URL + url;
-            
+        // Improved fetch function with CORS handling
+        async function makeRequest(url, options = {}) {
             try {
-                console.log('Trying direct connection...');
-                const directResponse = await fetch(url, {
+                console.log('Making request to:', url);
+                
+                const response = await fetch(url, {
                     ...options,
                     mode: 'cors',
                     headers: {
@@ -623,52 +622,34 @@
                     }
                 });
                 
-                if (directResponse.ok) {
-                    return directResponse;
-                }
-                throw new Error('Direct connection failed');
-            } catch (directError) {
-                console.log('Direct connection failed, trying proxy...', directError);
+                console.log('Response status:', response.status);
                 
-                try {
-                    const proxyResponse = await fetch(proxyUrl, {
-                        ...options,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                            ...options.headers
-                        }
-                    });
-                    
-                    if (proxyResponse.ok) {
-                        return proxyResponse;
-                    }
-                    throw new Error('Proxy also failed');
-                } catch (proxyError) {
-                    console.error('Both direct and proxy failed:', proxyError);
-                    throw new Error('Network error: ' + proxyError.message);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
+                
+                return response;
+            } catch (error) {
+                console.error('Request failed:', error);
+                throw error;
             }
         }
 
         // Test server connection
         async function testServerConnection() {
             try {
-                console.log('Testing connection to:', API_BASE_URL);
-                const response = await corsFetch(`${API_BASE_URL}/files`);
-                console.log('Connection test response:', response);
+                const response = await makeRequest(`${API_BASE_URL}/files`);
                 
                 if (response.ok) {
                     const result = await response.json();
                     console.log('Server is working:', result);
-                    alert('✅ Server connection successful!\nStatus: ' + response.status);
+                    alert('✅ Server connection successful!\nCORS is enabled properly.');
                 } else {
-                    console.log('Server error:', response.status, response.statusText);
-                    alert('❌ Server error: ' + response.status + ' - ' + response.statusText);
+                    alert('❌ Server error: ' + response.status);
                 }
             } catch (error) {
                 console.error('Connection failed:', error);
-                alert('❌ Server connection failed!\nError: ' + error.message);
+                alert('❌ Server connection failed!\nError: ' + error.message + '\n\nPlease check CORS configuration on server.');
             }
         }
 
@@ -696,15 +677,8 @@
             showLoading();
             
             try {
-                console.log('Loading files from:', API_BASE_URL);
-                const response = await corsFetch(`${API_BASE_URL}/files`);
-                
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status} ${response.statusText}`);
-                }
-                
+                const response = await makeRequest(`${API_BASE_URL}/files`);
                 const result = await response.json();
-                console.log('Files loaded:', result);
                 
                 if (result.success) {
                     currentFiles = result.data.files || [];
@@ -715,7 +689,7 @@
             } catch (error) {
                 console.error('Error loading files:', error);
                 displayFiles([]);
-                alert('Server connection failed: ' + error.message);
+                alert('Failed to load files: ' + error.message);
             }
         }
 
@@ -729,8 +703,7 @@
             }
 
             try {
-                console.log('Creating file:', title);
-                const response = await corsFetch(`${API_BASE_URL}/files`, {
+                const response = await makeRequest(`${API_BASE_URL}/files`, {
                     method: 'POST',
                     body: JSON.stringify({
                         title: title,
@@ -739,14 +712,7 @@
                     })
                 });
 
-                console.log('Create file response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
                 const result = await response.json();
-                console.log('Create file result:', result);
                 
                 if (result.success) {
                     fileTitleInput.value = '';
@@ -757,11 +723,10 @@
                 }
             } catch (error) {
                 console.error('Error creating file:', error);
-                alert('Failed to create file: ' + error.message + '\n\nCORS issue detected. Please check server configuration.');
+                alert('Failed to create file: ' + error.message);
             }
         }
 
-        // Rest of your existing functions (displayFiles, editFileContent, etc.)
         function displayFiles(files) {
             const filesGrid = document.getElementById('filesGrid');
             const loadingMessage = document.getElementById('loadingMessage');
@@ -931,7 +896,7 @@
                     return;
                 }
 
-                const response = await corsFetch(`${API_BASE_URL}/files`, {
+                const response = await makeRequest(`${API_BASE_URL}/files`, {
                     method: 'PUT',
                     body: JSON.stringify({
                         fileName: currentFileToEdit,
@@ -983,7 +948,7 @@
             }
 
             try {
-                const response = await corsFetch(`${API_BASE_URL}/files`, {
+                const response = await makeRequest(`${API_BASE_URL}/files`, {
                     method: 'DELETE',
                     body: JSON.stringify({
                         fileName: currentFileToDelete,
