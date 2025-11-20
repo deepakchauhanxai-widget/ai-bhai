@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bloom File Manager - Fixed Version</title>
+    <title>Bloom File Manager - Ultimate Fix</title>
     <style>
         * {
             margin: 0;
@@ -492,6 +492,15 @@
             border: 1px solid #f5c6cb;
         }
 
+        .connection-info {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
             .files-grid {
                 grid-template-columns: 1fr;
@@ -550,11 +559,11 @@
             <input type="text" class="folder-input" id="fileTitle" placeholder="Enter file title">
             <button class="btn btn-primary" onclick="createNewFile()">Create New File</button>
             <button class="btn btn-primary" onclick="loadFilesFromServer()">Refresh Files</button>
-            <button class="btn btn-test" onclick="testServerConnection()">Test Connection</button>
-            <button class="btn btn-success" onclick="fixCorsIssues()">Fix CORS</button>
+            <button class="btn btn-test" onclick="testAllConnections()">Test All Connections</button>
         </div>
 
         <div id="statusMessage"></div>
+        <div id="connectionInfo"></div>
         
         <div class="files-container">
             <div class="loading" id="loadingMessage">
@@ -626,8 +635,25 @@
     </div>
 
     <script>
-        // Configuration
-        const API_BASE_URL = 'https://deepakchauhanxai.xyz/Team-json/api';
+        // MULTIPLE CONNECTION OPTIONS
+        const CONNECTION_OPTIONS = [
+            {
+                name: "Direct API",
+                url: "https://deepakchauhanxai.xyz/Team-json/api",
+                type: "direct"
+            },
+            {
+                name: "PHP Proxy", 
+                url: "proxy.php?endpoint=",
+                type: "proxy"
+            },
+            {
+                name: "Alternative API",
+                url: "https://deepakchauhanxai.xyz/api",
+                type: "direct"
+            }
+        ];
+
         const SITE_PASSWORD = 'Roshni@ai-bhai';
         const ADMIN_PASSWORD = 'Roshni@ai-bhai11';
         
@@ -638,6 +664,7 @@
         let currentFiles = [];
         let currentFileToDelete = '';
         let currentFileToEdit = '';
+        let currentConnection = CONNECTION_OPTIONS[0]; // Start with direct connection
 
         // Utility Functions
         function showStatus(message, type = 'success') {
@@ -648,103 +675,98 @@
             }, 5000);
         }
 
+        function showConnectionInfo(info) {
+            const infoDiv = document.getElementById('connectionInfo');
+            infoDiv.innerHTML = `<div class="connection-info">${info}</div>`;
+        }
+
         function updateConnectionStatus(status) {
             const statusElement = document.getElementById('connectionStatus');
             statusElement.textContent = status ? '🟢 Online' : '🔴 Offline';
             statusElement.style.color = status ? 'var(--success)' : 'var(--danger)';
         }
 
-        // Enhanced fetch with CORS handling
-        async function makeRequest(url, options = {}) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-            try {
-                console.log('🔄 Making request to:', url);
-                
-                const response = await fetch(url, {
-                    ...options,
-                    mode: 'cors',
-                    credentials: 'omit',
-                    signal: controller.signal,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...options.headers
-                    }
-                });
-
-                clearTimeout(timeoutId);
-                
-                console.log('✅ Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                return response;
-            } catch (error) {
-                clearTimeout(timeoutId);
-                console.error('❌ Request failed:', error);
-                
-                if (error.name === 'AbortError') {
-                    throw new Error('Request timeout: Server took too long to respond');
-                }
-                
-                throw error;
-            }
-        }
-
-        // CORS Fix Function
-        async function fixCorsIssues() {
-            showStatus('Attempting to fix CORS issues...', 'success');
+        // Enhanced fetch with multiple fallbacks
+        async function makeRequest(endpoint, options = {}) {
+            let lastError = null;
             
-            try {
-                // Test multiple endpoints
-                const endpoints = [
-                    `${API_BASE_URL}/files`,
-                    `https://deepakchauhanxai.xyz/Team-json/api/files`,
-                    `${API_BASE_URL.replace('/api', '')}/files`
-                ];
-                
-                for (let endpoint of endpoints) {
-                    try {
-                        console.log(`Testing endpoint: ${endpoint}`);
-                        const response = await makeRequest(endpoint);
-                        const result = await response.json();
-                        
-                        if (result.success) {
-                            showStatus(`✅ CORS fixed! Using: ${endpoint}`, 'success');
-                            updateConnectionStatus(true);
-                            return endpoint;
-                        }
-                    } catch (e) {
-                        console.log(`Endpoint failed: ${endpoint}`, e.message);
+            // Try all connection options
+            for (let connection of CONNECTION_OPTIONS) {
+                try {
+                    const url = connection.type === 'proxy' 
+                        ? `${connection.url}${endpoint}`
+                        : `${connection.url}${endpoint}`;
+                    
+                    console.log(`🔄 Trying: ${connection.name} - ${url}`);
+                    
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+                    const response = await fetch(url, {
+                        method: options.method || 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...options.headers
+                        },
+                        body: options.body,
+                        mode: 'cors',
+                        signal: controller.signal
+                    });
+
+                    clearTimeout(timeoutId);
+
+                    if (response.ok) {
+                        // Success! Set this as current connection
+                        currentConnection = connection;
+                        console.log(`✅ Success with: ${connection.name}`);
+                        showConnectionInfo(`Connected via: ${connection.name}`);
+                        return response;
+                    } else {
+                        throw new Error(`HTTP ${response.status}`);
                     }
+                } catch (error) {
+                    lastError = error;
+                    console.log(`❌ Failed: ${connection.name} - ${error.message}`);
+                    continue;
                 }
-                
-                throw new Error('All endpoints failed');
-            } catch (error) {
-                showStatus(`❌ CORS fix failed: ${error.message}`, 'error');
-                updateConnectionStatus(false);
             }
+            
+            // All connections failed
+            throw new Error(`All connection attempts failed. Last error: ${lastError?.message}`);
         }
 
-        // Test server connection
-        async function testServerConnection() {
-            try {
-                showStatus('Testing server connection...', 'success');
-                
-                const response = await makeRequest(`${API_BASE_URL}/files`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    showStatus('✅ Server connection successful! CORS is working properly.', 'success');
-                    updateConnectionStatus(true);
-                } else {
-                    throw new Error(result.message);
+        // Test all connections
+        async function testAllConnections() {
+            showStatus('Testing all connection methods...', 'success');
+            let workingConnections = [];
+            
+            for (let connection of CONNECTION_OPTIONS) {
+                try {
+                    const url = connection.type === 'proxy' 
+                        ? `${connection.url}/files`
+                        : `${connection.url}/files`;
+                    
+                    console.log(`Testing: ${connection.name} - ${url}`);
+                    
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        mode: 'cors'
+                    });
+                    
+                    if (response.ok) {
+                        workingConnections.push(connection.name);
+                        console.log(`✅ ${connection.name}: WORKING`);
+                    }
+                } catch (error) {
+                    console.log(`❌ ${connection.name}: FAILED - ${error.message}`);
                 }
-            } catch (error) {
-                showStatus(`❌ Connection failed: ${error.message}`, 'error');
+            }
+            
+            if (workingConnections.length > 0) {
+                showStatus(`✅ Working connections: ${workingConnections.join(', ')}`, 'success');
+                updateConnectionStatus(true);
+            } else {
+                showStatus('❌ No working connections found', 'error');
                 updateConnectionStatus(false);
             }
         }
@@ -757,7 +779,8 @@
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('mainContainer').style.display = 'block';
                 loadFilesFromServer();
-                showStatus('Login successful! Loading files...', 'success');
+                showStatus('Login successful! Testing connections...', 'success');
+                testAllConnections();
             } else {
                 alert('Incorrect password! Please try again.');
                 document.getElementById('loginPassword').value = '';
@@ -771,14 +794,14 @@
             updateConnectionStatus(false);
             
             try {
-                const response = await makeRequest(`${API_BASE_URL}/files`);
+                const response = await makeRequest('/files');
                 const result = await response.json();
                 
                 if (result.success) {
                     currentFiles = result.data.files || [];
                     displayFiles(currentFiles);
                     updateConnectionStatus(true);
-                    showStatus(`Loaded ${currentFiles.length} files successfully`, 'success');
+                    showStatus(`Loaded ${currentFiles.length} files successfully via ${currentConnection.name}`, 'success');
                 } else {
                     throw new Error(result.message);
                 }
@@ -802,7 +825,7 @@
             try {
                 showStatus(`Creating file: ${title}...`, 'success');
                 
-                const response = await makeRequest(`${API_BASE_URL}/files`, {
+                const response = await makeRequest('/files', {
                     method: 'POST',
                     body: JSON.stringify({
                         title: title,
@@ -910,7 +933,7 @@
             document.getElementById('noFilesMessage').style.display = 'none';
         }
 
-        // Rest of the functions (edit, view, delete, etc.)
+        // Rest of the functions remain the same as previous version
         function editFileContent(fileName) {
             currentFileToEdit = fileName;
             const file = currentFiles.find(f => f.fileName === fileName);
@@ -994,7 +1017,7 @@
                     return;
                 }
 
-                const response = await makeRequest(`${API_BASE_URL}/files`, {
+                const response = await makeRequest('/files', {
                     method: 'PUT',
                     body: JSON.stringify({
                         fileName: currentFileToEdit,
@@ -1046,7 +1069,7 @@
             }
 
             try {
-                const response = await makeRequest(`${API_BASE_URL}/files`, {
+                const response = await makeRequest('/files', {
                     method: 'DELETE',
                     body: JSON.stringify({
                         fileName: currentFileToDelete,
@@ -1099,6 +1122,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('userId').textContent = CURRENT_USER_ID;
             showStatus('Ready to connect...', 'success');
+            showConnectionInfo('Click "Test All Connections" to find working connection');
         });
     </script>
 </body>
