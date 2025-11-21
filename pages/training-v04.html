@@ -555,256 +555,268 @@
         </div>
     </div>
 
-    <script>
-        const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
-        let currentUser = '';
-        let currentFolder = '';
+<script>
+    const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
+    let currentUser = '';
+    let currentFolder = '';
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            // Generate random user ID for demo
-            currentUser = 'user_' + Math.random().toString(36).substr(2, 9);
-            document.getElementById('userName').textContent = 'User: ' + currentUser.substr(0, 8);
-            document.getElementById('userAvatar').textContent = currentUser.substr(0, 1).toUpperCase();
-            
-            loadFolders();
-            setupEventListeners();
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        // Generate random user ID and store in localStorage
+        if (localStorage.getItem('notesUser')) {
+            currentUser = localStorage.getItem('notesUser');
+        } else {
+            currentUser = 'user_' + Math.random().toString(36).substr(2, 12);
+            localStorage.setItem('notesUser', currentUser);
+        }
+        
+        document.getElementById('userName').textContent = 'User: ' + currentUser.substr(0, 10);
+        document.getElementById('userAvatar').textContent = 'U';
+        
+        loadFolders();
+        setupEventListeners();
+    });
+
+    function setupEventListeners() {
+        // Enter key support
+        document.getElementById('folderName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') createFolder();
         });
 
-        function setupEventListeners() {
-            // Enter key support
-            document.getElementById('folderName').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') createFolder();
-            });
+        document.getElementById('deleteFolderName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') deleteFolder();
+        });
 
-            document.getElementById('deleteFolderName').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') deleteFolder();
-            });
+        document.getElementById('deletePassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') deleteFolder();
+        });
+    }
 
-            document.getElementById('deletePassword').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') deleteFolder();
-            });
+    // Create new folder - UPDATED
+    async function createFolder() {
+        const folderName = document.getElementById('folderName').value.trim();
+        
+        if (!folderName) {
+            showMessage('Please enter a folder name', 'error');
+            return;
         }
 
-        // Create new folder
-        async function createFolder() {
-            const folderName = document.getElementById('folderName').value.trim();
+        if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
+            showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(API_BASE_URL + '/create_folder.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    folder_name: folderName,
+                    current_user: currentUser  // Send current user
+                })
+            });
+
+            const result = await response.json();
             
-            if (!folderName) {
-                showMessage('Please enter a folder name', 'error');
-                return;
+            if (result.success) {
+                showMessage('🎉 Folder created successfully!', 'success');
+                document.getElementById('folderName').value = '';
+                loadFolders();
+                // Auto-select the new folder
+                setTimeout(() => selectFolder(folderName), 500);
+            } else {
+                showMessage('❌ ' + result.message, 'error');
             }
-
-            if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
-                showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
-                return;
-            }
-
-            try {
-                const response = await fetch(API_BASE_URL + '/create_folder.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ folder_name: folderName })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('🎉 Folder created successfully!', 'success');
-                    document.getElementById('folderName').value = '';
-                    loadFolders();
-                    // Auto-select the new folder
-                    setTimeout(() => selectFolder(folderName), 500);
-                } else {
-                    showMessage('❌ ' + result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('❌ Error creating folder', 'error');
-            }
+        } catch (error) {
+            showMessage('❌ Error creating folder', 'error');
         }
+    }
 
-        // Load all folders
-        async function loadFolders() {
-            try {
-                const response = await fetch(API_BASE_URL + '/list_folders.php');
-                const result = await response.json();
-                
-                const folderList = document.getElementById('folderList');
-                
-                if (result.success && result.folders.length > 0) {
-                    folderList.innerHTML = '';
-                    result.folders.forEach(folder => {
-                        const isOwnedByCurrentUser = folder.owner === folder.name;
-                        const folderElement = document.createElement('div');
-                        folderElement.className = `folder-item ${isOwnedByCurrentUser ? 'your-folder' : ''}`;
-                        folderElement.onclick = () => selectFolder(folder.name);
-                        
-                        folderElement.innerHTML = `
-                            <div class="folder-name">
-                                <i class="fas fa-folder${isOwnedByCurrentUser ? '-open' : ''}"></i>
-                                ${folder.name}
-                            </div>
-                            <div class="folder-owner">
-                                <i class="fas fa-user${isOwnedByCurrentUser ? '-edit' : ''}"></i>
-                                ${isOwnedByCurrentUser ? 'Your Folder' : 'By: ' + folder.owner}
-                            </div>
-                        `;
-                        
-                        folderList.appendChild(folderElement);
-                    });
-                } else {
-                    folderList.innerHTML = `
-                        <div style="text-align: center; color: var(--text-light); padding: 20px;">
-                            <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
-                            <p>No folders created yet</p>
+    // Load all folders - UPDATED
+    async function loadFolders() {
+        try {
+            const response = await fetch(API_BASE_URL + '/list_folders.php');
+            const result = await response.json();
+            
+            const folderList = document.getElementById('folderList');
+            
+            if (result.success && result.folders.length > 0) {
+                folderList.innerHTML = '';
+                result.folders.forEach(folder => {
+                    const isOwnedByCurrentUser = folder.owner === currentUser; // Compare with current user
+                    const folderElement = document.createElement('div');
+                    folderElement.className = `folder-item ${isOwnedByCurrentUser ? 'your-folder' : ''}`;
+                    folderElement.onclick = () => selectFolder(folder.name);
+                    
+                    folderElement.innerHTML = `
+                        <div class="folder-name">
+                            <i class="fas fa-folder${isOwnedByCurrentUser ? '-open' : ''}"></i>
+                            ${folder.name}
+                        </div>
+                        <div class="folder-owner">
+                            <i class="fas fa-user${isOwnedByCurrentUser ? '-edit' : ''}"></i>
+                            ${isOwnedByCurrentUser ? 'Your Folder' : 'By: ' + folder.owner}
                         </div>
                     `;
-                }
-            } catch (error) {
-                console.error('Error loading folders:', error);
+                    
+                    folderList.appendChild(folderElement);
+                });
+            } else {
+                folderList.innerHTML = `
+                    <div style="text-align: center; color: var(--text-light); padding: 20px;">
+                        <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                        <p>No folders created yet</p>
+                    </div>
+                `;
             }
+        } catch (error) {
+            console.error('Error loading folders:', error);
+        }
+    }
+
+    // Select folder and load notes - UPDATED
+    async function selectFolder(folderName) {
+        currentFolder = folderName;
+        
+        // Update UI
+        document.querySelectorAll('.folder-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/read_note.php?folder_name=${encodeURIComponent(folderName)}&current_user=${encodeURIComponent(currentUser)}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                document.getElementById('contentTitle').textContent = `Notes: ${folderName}`;
+                document.getElementById('notesContent').value = result.content;
+                document.getElementById('notesSection').style.display = 'flex';
+                document.getElementById('welcomeSection').style.display = 'none';
+                
+                // Update access badge
+                const accessBadge = document.getElementById('accessBadge');
+                const folderBadge = document.getElementById('folderBadge');
+                
+                if (result.is_owner) {
+                    accessBadge.innerHTML = '<i class="fas fa-crown"></i> Folder Owner';
+                    accessBadge.className = 'folder-badge badge-owner';
+                    document.getElementById('saveNotesBtn').disabled = false;
+                    document.getElementById('notesContent').readOnly = false;
+                    document.getElementById('notesContent').placeholder = "Start typing your notes here... You can write anything! ✨";
+                } else {
+                    accessBadge.innerHTML = '<i class="fas fa-eye"></i> View Only';
+                    accessBadge.className = 'folder-badge badge-viewer';
+                    document.getElementById('saveNotesBtn').disabled = true;
+                    document.getElementById('notesContent').readOnly = true;
+                    document.getElementById('notesContent').placeholder = "View only mode - You cannot edit this folder";
+                }
+                folderBadge.style.display = 'block';
+            } else {
+                showMessage('❌ ' + result.message, 'error');
+            }
+        } catch (error) {
+            showMessage('❌ Error loading notes', 'error');
+        }
+    }
+
+    // Save notes - UPDATED
+    async function saveNotes() {
+        if (!currentFolder) {
+            showMessage('Please select a folder first', 'error');
+            return;
         }
 
-        // Select folder and load notes
-        async function selectFolder(folderName) {
-            currentFolder = folderName;
-            
-            // Update UI
-            document.querySelectorAll('.folder-item').forEach(item => {
-                item.classList.remove('active');
+        const content = document.getElementById('notesContent').value;
+        const button = document.getElementById('saveNotesBtn');
+        
+        // Save button loading state
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        button.disabled = true;
+
+        try {
+            const response = await fetch(API_BASE_URL + '/save_note.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    folder_name: currentFolder,
+                    content: content,
+                    current_user: currentUser
+                })
             });
-            event.currentTarget.classList.add('active');
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/read_note.php?folder_name=${encodeURIComponent(folderName)}&current_user=${encodeURIComponent(currentUser)}`);
-                const result = await response.json();
-                
-                if (result.success) {
-                    document.getElementById('contentTitle').textContent = `Notes: ${folderName}`;
-                    document.getElementById('notesContent').value = result.content;
-                    document.getElementById('notesSection').style.display = 'flex';
-                    document.getElementById('welcomeSection').style.display = 'none';
-                    
-                    // Update access badge
-                    const accessBadge = document.getElementById('accessBadge');
-                    const folderBadge = document.getElementById('folderBadge');
-                    
-                    if (result.is_owner) {
-                        accessBadge.innerHTML = '<i class="fas fa-crown"></i> Folder Owner';
-                        accessBadge.className = 'folder-badge badge-owner';
-                        document.getElementById('saveNotesBtn').disabled = false;
-                    } else {
-                        accessBadge.innerHTML = '<i class="fas fa-eye"></i> View Only';
-                        accessBadge.className = 'folder-badge badge-viewer';
-                        document.getElementById('saveNotesBtn').disabled = true;
-                        document.getElementById('notesContent').readOnly = true;
-                    }
-                    folderBadge.style.display = 'block';
-                } else {
-                    showMessage('❌ ' + result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('❌ Error loading notes', 'error');
-            }
-        }
-
-        // Save notes
-        async function saveNotes() {
-            if (!currentFolder) {
-                showMessage('Please select a folder first', 'error');
-                return;
-            }
-
-            const content = document.getElementById('notesContent').value;
-            const button = document.getElementById('saveNotesBtn');
+            const result = await response.json();
             
-            // Save button loading state
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-            button.disabled = true;
-
-            try {
-                const response = await fetch(API_BASE_URL + '/save_note.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        folder_name: currentFolder,
-                        content: content,
-                        current_user: currentUser
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('💾 Notes saved successfully!', 'success');
-                } else {
-                    showMessage('❌ ' + result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('❌ Error saving notes', 'error');
-            } finally {
-                // Reset button state
-                button.innerHTML = '<i class="fas fa-save"></i> Save Notes';
-                button.disabled = false;
+            if (result.success) {
+                showMessage('💾 Notes saved successfully!', 'success');
+            } else {
+                showMessage('❌ ' + result.message, 'error');
             }
+        } catch (error) {
+            showMessage('❌ Error saving notes', 'error');
+        } finally {
+            // Reset button state
+            button.innerHTML = '<i class="fas fa-save"></i> Save Notes';
+            button.disabled = false;
+        }
+    }
+
+    // Delete folder (Admin only) - No changes needed
+    async function deleteFolder() {
+        const folderName = document.getElementById('deleteFolderName').value.trim();
+        const password = document.getElementById('deletePassword').value;
+
+        if (!folderName || !password) {
+            showMessage('Please enter both folder name and password', 'error');
+            return;
         }
 
-        // Delete folder (Admin only)
-        async function deleteFolder() {
-            const folderName = document.getElementById('deleteFolderName').value.trim();
-            const password = document.getElementById('deletePassword').value;
-
-            if (!folderName || !password) {
-                showMessage('Please enter both folder name and password', 'error');
-                return;
-            }
-
-            if (!confirm(`🚨 Are you sure you want to delete folder "${folderName}"? This action cannot be undone!`)) {
-                return;
-            }
-
-            try {
-                const response = await fetch(API_BASE_URL + '/delete_folder.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        folder_name: folderName,
-                        password: password
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('🗑️ Folder deleted successfully!', 'success');
-                    document.getElementById('deleteFolderName').value = '';
-                    document.getElementById('deletePassword').value = '';
-                    loadFolders();
-                    
-                    // Reset if current folder was deleted
-                    if (currentFolder === folderName) {
-                        document.getElementById('notesSection').style.display = 'none';
-                        document.getElementById('welcomeSection').style.display = 'flex';
-                        document.getElementById('folderBadge').style.display = 'none';
-                        currentFolder = '';
-                    }
-                } else {
-                    showMessage('❌ ' + result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('❌ Error deleting folder', 'error');
-            }
+        if (!confirm(`🚨 Are you sure you want to delete folder "${folderName}"? This action cannot be undone!`)) {
+            return;
         }
 
-        // Show message
-        function showMessage(message, type) {
-            const messageArea = document.getElementById('messageArea');
-            messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+        try {
+            const response = await fetch(API_BASE_URL + '/delete_folder.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    folder_name: folderName,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
             
-            setTimeout(() => {
-                messageArea.innerHTML = '';
-            }, 5000);
+            if (result.success) {
+                showMessage('🗑️ Folder deleted successfully!', 'success');
+                document.getElementById('deleteFolderName').value = '';
+                document.getElementById('deletePassword').value = '';
+                loadFolders();
+                
+                // Reset if current folder was deleted
+                if (currentFolder === folderName) {
+                    document.getElementById('notesSection').style.display = 'none';
+                    document.getElementById('welcomeSection').style.display = 'flex';
+                    document.getElementById('folderBadge').style.display = 'none';
+                    currentFolder = '';
+                }
+            } else {
+                showMessage('❌ ' + result.message, 'error');
+            }
+        } catch (error) {
+            showMessage('❌ Error deleting folder', 'error');
         }
-    </script>
+    }
+
+    // Show message
+    function showMessage(message, type) {
+        const messageArea = document.getElementById('messageArea');
+        messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+        
+        setTimeout(() => {
+            messageArea.innerHTML = '';
+        }, 5000);
+    }
+</script>
 </body>
 </html>
