@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Notes - Professional Folder Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f8fafc;
+            --accent: #06d6a0;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --glass: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --shadow-sm: 0 4px 16px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            height: 95vh;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sidebar-content {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .user-section {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            margin-bottom: 10px;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), #06b6d4);
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            z-index: 2;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: var(--text-light);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Folder List Styles */
+        .folder-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .folder-item {
+            padding: 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .folder-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+
+        .folder-item.active {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+        }
+
+        .folder-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .folder-owner {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .your-folder {
+            background: rgba(6, 214, 160, 0.1);
+            border: 1px solid rgba(6, 214, 160, 0.3);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .content-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .folder-info {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            gap: 16px;
+        }
+
+        .folder-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-owner {
+            background: rgba(6, 214, 160, 0.2);
+            color: var(--accent);
+            border: 1px solid rgba(6, 214, 160, 0.3);
+        }
+
+        .badge-viewer {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        /* Notes Editor Styles */
+        .notes-editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .notes-area {
+            flex: 1;
+            padding: 0;
+            position: relative;
+        }
+
+        #notesContent {
+            width: 100%;
+            height: 100%;
+            padding: 24px;
+            border: none;
+            background: transparent;
+            resize: none;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+        }
+
+        #notesContent:focus {
+            outline: none;
+        }
+
+        .editor-actions {
+            padding: 20px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--accent), #06b6d4);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(6, 214, 160, 0.4);
+        }
+
+        .btn-save:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .welcome-screen h2 {
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .welcome-screen p {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        /* Message Styles */
+        .message {
+            padding: 16px;
+            margin: 16px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .success {
+            background: rgba(6, 214, 160, 0.2);
+            color: var(--accent);
+            border: 1px solid rgba(6, 214, 160, 0.3);
+        }
+
+        .error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .sidebar {
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar glass-card">
+            <div class="header">
+                <h1><i class="fas fa-robot"></i> AI Notes</h1>
+                <p>Professional Folder Management System</p>
+            </div>
+            
+            <div class="sidebar-content">
+                <!-- User Section -->
+                <div class="user-section">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <h3 id="userName">Welcome, User!</h3>
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">Create and manage your notes</p>
+                </div>
+
+                <!-- Create Folder Section -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-folder-plus"></i>
+                        Create New Folder
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-folder input-icon"></i>
+                        <input type="text" id="folderName" placeholder="Enter your folder name" maxlength="30">
+                    </div>
+                    <button class="btn btn-primary" onclick="createFolder()">
+                        <i class="fas fa-plus"></i>
+                        Create Folder
+                    </button>
+                </div>
+
+                <!-- Folder List -->
+                <div class="folders-section">
+                    <div class="section-title">
+                        <i class="fas fa-folders"></i>
+                        Your Folders
+                    </div>
+                    <div class="folder-list" id="folderList">
+                        <div style="text-align: center; color: var(--text-light); padding: 20px;">
+                            <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>No folders created yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Delete Section -->
+                <div class="admin-section">
+                    <div class="section-title">
+                        <i class="fas fa-shield-alt"></i>
+                        Admin Tools
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-folder input-icon"></i>
+                        <input type="text" id="deleteFolderName" placeholder="Folder name to delete">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="deletePassword" placeholder="Admin password">
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteFolder()">
+                        <i class="fas fa-trash"></i>
+                        Delete Folder
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content glass-card">
+            <div class="content-header">
+                <h2 id="contentTitle">Welcome to AI Notes</h2>
+                <div id="folderBadge" style="display: none;">
+                    <span class="folder-badge" id="accessBadge">
+                        <i class="fas fa-crown"></i> Folder Owner
+                    </span>
+                </div>
+            </div>
+
+            <div id="messageArea"></div>
+
+            <!-- Notes Editor -->
+            <div id="notesSection" class="notes-editor" style="display: none;">
+                <div class="notes-area">
+                    <textarea id="notesContent" placeholder="Start typing your notes here... You can write anything! ✨"></textarea>
+                </div>
+                <div class="editor-actions">
+                    <button class="btn-save" id="saveNotesBtn" onclick="saveNotes()">
+                        <i class="fas fa-save"></i>
+                        Save Notes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Welcome Screen -->
+            <div id="welcomeSection" class="welcome-screen">
+                <div class="welcome-icon">
+                    <i class="fas fa-sticky-note"></i>
+                </div>
+                <h2>Welcome to Your Notes</h2>
+                <p>Create a new folder or select an existing one to start writing.</p>
+                <p style="font-size: 0.9rem; margin-top: 20px;">
+                    <i class="fas fa-info-circle"></i>
+                    You can only edit folders you create. Other folders are view-only.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
+        let currentUser = '';
+        let currentFolder = '';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Generate random user ID for demo
+            currentUser = 'user_' + Math.random().toString(36).substr(2, 9);
+            document.getElementById('userName').textContent = 'User: ' + currentUser.substr(0, 8);
+            document.getElementById('userAvatar').textContent = currentUser.substr(0, 1).toUpperCase();
+            
+            loadFolders();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Enter key support
+            document.getElementById('folderName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') createFolder();
+            });
+
+            document.getElementById('deleteFolderName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') deleteFolder();
+            });
+
+            document.getElementById('deletePassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') deleteFolder();
+            });
+        }
+
+        // Create new folder
+        async function createFolder() {
+            const folderName = document.getElementById('folderName').value.trim();
+            
+            if (!folderName) {
+                showMessage('Please enter a folder name', 'error');
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
+                showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + '/create_folder.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ folder_name: folderName })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('🎉 Folder created successfully!', 'success');
+                    document.getElementById('folderName').value = '';
+                    loadFolders();
+                    // Auto-select the new folder
+                    setTimeout(() => selectFolder(folderName), 500);
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error creating folder', 'error');
+            }
+        }
+
+        // Load all folders
+        async function loadFolders() {
+            try {
+                const response = await fetch(API_BASE_URL + '/list_folders.php');
+                const result = await response.json();
+                
+                const folderList = document.getElementById('folderList');
+                
+                if (result.success && result.folders.length > 0) {
+                    folderList.innerHTML = '';
+                    result.folders.forEach(folder => {
+                        const isOwnedByCurrentUser = folder.owner === folder.name;
+                        const folderElement = document.createElement('div');
+                        folderElement.className = `folder-item ${isOwnedByCurrentUser ? 'your-folder' : ''}`;
+                        folderElement.onclick = () => selectFolder(folder.name);
+                        
+                        folderElement.innerHTML = `
+                            <div class="folder-name">
+                                <i class="fas fa-folder${isOwnedByCurrentUser ? '-open' : ''}"></i>
+                                ${folder.name}
+                            </div>
+                            <div class="folder-owner">
+                                <i class="fas fa-user${isOwnedByCurrentUser ? '-edit' : ''}"></i>
+                                ${isOwnedByCurrentUser ? 'Your Folder' : 'By: ' + folder.owner}
+                            </div>
+                        `;
+                        
+                        folderList.appendChild(folderElement);
+                    });
+                } else {
+                    folderList.innerHTML = `
+                        <div style="text-align: center; color: var(--text-light); padding: 20px;">
+                            <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                            <p>No folders created yet</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading folders:', error);
+            }
+        }
+
+        // Select folder and load notes
+        async function selectFolder(folderName) {
+            currentFolder = folderName;
+            
+            // Update UI
+            document.querySelectorAll('.folder-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/read_note.php?folder_name=${encodeURIComponent(folderName)}&current_user=${encodeURIComponent(currentUser)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('contentTitle').textContent = `Notes: ${folderName}`;
+                    document.getElementById('notesContent').value = result.content;
+                    document.getElementById('notesSection').style.display = 'flex';
+                    document.getElementById('welcomeSection').style.display = 'none';
+                    
+                    // Update access badge
+                    const accessBadge = document.getElementById('accessBadge');
+                    const folderBadge = document.getElementById('folderBadge');
+                    
+                    if (result.is_owner) {
+                        accessBadge.innerHTML = '<i class="fas fa-crown"></i> Folder Owner';
+                        accessBadge.className = 'folder-badge badge-owner';
+                        document.getElementById('saveNotesBtn').disabled = false;
+                    } else {
+                        accessBadge.innerHTML = '<i class="fas fa-eye"></i> View Only';
+                        accessBadge.className = 'folder-badge badge-viewer';
+                        document.getElementById('saveNotesBtn').disabled = true;
+                        document.getElementById('notesContent').readOnly = true;
+                    }
+                    folderBadge.style.display = 'block';
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error loading notes', 'error');
+            }
+        }
+
+        // Save notes
+        async function saveNotes() {
+            if (!currentFolder) {
+                showMessage('Please select a folder first', 'error');
+                return;
+            }
+
+            const content = document.getElementById('notesContent').value;
+            const button = document.getElementById('saveNotesBtn');
+            
+            // Save button loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch(API_BASE_URL + '/save_note.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        folder_name: currentFolder,
+                        content: content,
+                        current_user: currentUser
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('💾 Notes saved successfully!', 'success');
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error saving notes', 'error');
+            } finally {
+                // Reset button state
+                button.innerHTML = '<i class="fas fa-save"></i> Save Notes';
+                button.disabled = false;
+            }
+        }
+
+        // Delete folder (Admin only)
+        async function deleteFolder() {
+            const folderName = document.getElementById('deleteFolderName').value.trim();
+            const password = document.getElementById('deletePassword').value;
+
+            if (!folderName || !password) {
+                showMessage('Please enter both folder name and password', 'error');
+                return;
+            }
+
+            if (!confirm(`🚨 Are you sure you want to delete folder "${folderName}"? This action cannot be undone!`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + '/delete_folder.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        folder_name: folderName,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('🗑️ Folder deleted successfully!', 'success');
+                    document.getElementById('deleteFolderName').value = '';
+                    document.getElementById('deletePassword').value = '';
+                    loadFolders();
+                    
+                    // Reset if current folder was deleted
+                    if (currentFolder === folderName) {
+                        document.getElementById('notesSection').style.display = 'none';
+                        document.getElementById('welcomeSection').style.display = 'flex';
+                        document.getElementById('folderBadge').style.display = 'none';
+                        currentFolder = '';
+                    }
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error deleting folder', 'error');
+            }
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
