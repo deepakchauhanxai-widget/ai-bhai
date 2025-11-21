@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Notes - Dk community</title>
+    <title>AI Notes - Secure Folder Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -18,6 +18,8 @@
             --primary-dark: #4f46e5;
             --secondary: #f8fafc;
             --accent: #06d6a0;
+            --warning: #f59e0b;
+            --danger: #ef4444;
             --text: #1e293b;
             --text-light: #64748b;
             --glass: rgba(255, 255, 255, 0.25);
@@ -32,11 +34,91 @@
             min-height: 100vh;
             padding: 20px;
             color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .login-subtitle {
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text);
+            font-size: 15px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .password-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 15px;
+        }
+
+        /* Main App */
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -46,54 +128,6 @@
             height: 95vh;
         }
 
-        /* Login Screen Styles */
-        .login-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            z-index: 1000;
-        }
-
-        .login-box {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .login-icon {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .login-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: white;
-        }
-
-        .login-subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
-            margin-bottom: 30px;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Glassmorphism Cards */
         .glass-card {
             background: var(--glass);
             backdrop-filter: blur(16px);
@@ -104,31 +138,35 @@
             overflow: hidden;
         }
 
-        /* Header Styles */
         .header {
             text-align: center;
-            padding: 30px;
+            padding: 25px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border-radius: 20px 20px 0 0;
             position: relative;
         }
 
-        .session-timer {
+        .session-info {
             position: absolute;
-            top: 20px;
+            top: 15px;
             right: 20px;
             background: rgba(255, 255, 255, 0.2);
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
+        .session-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fff;
+        }
+
         .header h1 {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
             margin-bottom: 8px;
             display: flex;
@@ -138,12 +176,11 @@
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 1rem;
             opacity: 0.9;
             font-weight: 300;
         }
 
-        /* Sidebar Styles */
         .sidebar {
             display: flex;
             flex-direction: column;
@@ -194,7 +231,6 @@
             color: var(--primary);
         }
 
-        /* Form Styles */
         .form-group {
             margin-bottom: 20px;
         }
@@ -237,7 +273,6 @@
             color: var(--text-light);
         }
 
-        /* Button Styles */
         .btn {
             padding: 14px 24px;
             border: none;
@@ -264,7 +299,7 @@
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: white;
         }
 
@@ -273,7 +308,6 @@
             box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
         }
 
-        /* Folder List Styles */
         .folder-list {
             flex: 1;
             overflow-y: auto;
@@ -322,7 +356,6 @@
             border: 1px solid rgba(6, 214, 160, 0.3);
         }
 
-        /* Main Content Styles */
         .main-content {
             display: flex;
             flex-direction: column;
@@ -332,12 +365,14 @@
         .content-header {
             padding: 24px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: between;
+            align-items: center;
         }
 
         .folder-info {
             display: flex;
             align-items: center;
-            justify-content: between;
             gap: 16px;
         }
 
@@ -360,7 +395,6 @@
             border: 1px solid rgba(99, 102, 241, 0.3);
         }
 
-        /* Notes Editor Styles */
         .notes-editor {
             flex: 1;
             display: flex;
@@ -421,7 +455,6 @@
             transform: none;
         }
 
-        /* Welcome Screen */
         .welcome-screen {
             text-align: center;
             padding: 60px 40px;
@@ -450,7 +483,6 @@
             margin-bottom: 8px;
         }
 
-        /* Message Styles */
         .message {
             padding: 16px;
             margin: 16px;
@@ -473,11 +505,16 @@
 
         .error {
             background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
+            color: var(--danger);
             border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
-        /* Scrollbar Styling */
+        .warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -496,7 +533,6 @@
             background: var(--primary-dark);
         }
 
-        /* Responsive Design */
         @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr;
@@ -507,572 +543,536 @@
                 height: auto;
             }
         }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
     <!-- Login Screen -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-box glass-card">
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
             <div class="login-icon">
                 <i class="fas fa-lock"></i>
             </div>
-            <h1 class="login-title">AI Notes</h1>
-            <p class="login-subtitle">Dk Community - Secure Access</p>
+            <h1 class="login-title">Secure Notes</h1>
+            <p class="login-subtitle">Enter password to access your notes</p>
             
-            <div class="input-group">
-                <i class="fas fa-key input-icon"></i>
-                <input type="password" id="loginPassword" placeholder="Enter your password">
-            </div>
-            
-            <div class="input-group" style="margin-top: 20px;">
-                <label style="color: white; display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                    <input type="checkbox" id="rememberMe">
-                    Remember me for 2 hours
-                </label>
-            </div>
-            
-            <button class="btn btn-primary" onclick="login()" style="margin-top: 20px;">
-                <i class="fas fa-sign-in-alt"></i>
-                Access Notes
+            <input type="password" id="loginPassword" class="login-input" placeholder="Enter access password" autocomplete="off">
+            <button class="login-btn" onclick="login()">
+                <i class="fas fa-unlock"></i>
+                Unlock Notes
             </button>
             
-            <div id="loginMessage" style="margin-top: 16px;"></div>
+            <div class="password-hint">
+                <i class="fas fa-info-circle"></i>
+                Default password: connect admin
+            </div>
         </div>
     </div>
 
-    <!-- Main Application (Hidden until login) -->
-    <div id="appContainer" class="container" style="display: none;">
-        <!-- Sidebar -->
-        <div class="sidebar glass-card">
-            <div class="header">
-                <div class="session-timer" id="sessionTimer">
-                    <i class="fas fa-clock"></i>
-                    <span id="timerText">02:00:00</span>
+    <!-- Main App (Hidden until login) -->
+    <div id="mainApp" class="hidden">
+        <div class="container">
+            <!-- Sidebar -->
+            <div class="sidebar glass-card">
+                <div class="header">
+                    <div class="session-info" id="sessionTimer">
+                        <i class="fas fa-clock"></i>
+                        <span id="timeRemaining">2:00:00</span>
+                    </div>
+                    <h1><i class="fas fa-robot"></i> AI Notes</h1>
+                    <p>Secure Folder Management</p>
                 </div>
-                <h1><i class="fas fa-robot"></i> AI Notes</h1>
-                <p>Dk community</p>
+                
+                <div class="sidebar-content">
+                    <!-- User Section -->
+                    <div class="user-section">
+                        <div class="user-avatar" id="userAvatar">U</div>
+                        <h3 id="userName">Welcome, User!</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;" id="userSessionInfo">Session active</p>
+                    </div>
+
+                    <!-- Create Folder Section -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-folder-plus"></i>
+                            Create New Folder
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-folder input-icon"></i>
+                            <input type="text" id="folderName" placeholder="Enter your folder name" maxlength="30">
+                        </div>
+                        <button class="btn btn-primary" onclick="createFolder()">
+                            <i class="fas fa-plus"></i>
+                            Create Folder
+                        </button>
+                    </div>
+
+                    <!-- Folder List -->
+                    <div class="folders-section">
+                        <div class="section-title">
+                            <i class="fas fa-folders"></i>
+                            Your Folders
+                        </div>
+                        <div class="folder-list" id="folderList">
+                            <div style="text-align: center; color: var(--text-light); padding: 20px;">
+                                <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
+                                <p>No folders created yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Delete Section -->
+                    <div class="admin-section">
+                        <div class="section-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Admin Tools
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-folder input-icon"></i>
+                            <input type="text" id="deleteFolderName" placeholder="Folder name to delete">
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="deletePassword" placeholder="Admin password">
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteFolder()">
+                            <i class="fas fa-trash"></i>
+                            Delete Folder
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            <!-- Main Content -->
+            <div class="main-content glass-card">
+                <div class="content-header">
+                    <h2 id="contentTitle">Welcome to Secure Notes</h2>
+                    <div id="folderBadge" style="display: none;">
+                        <span class="folder-badge" id="accessBadge">
+                            <i class="fas fa-crown"></i> Folder Owner
+                        </span>
+                    </div>
+                </div>
+
+                <div id="messageArea"></div>
+
+                <!-- Notes Editor -->
+                <div id="notesSection" class="notes-editor" style="display: none;">
+                    <div class="notes-area">
+                        <textarea id="notesContent" placeholder="Start typing your notes here... You can write anything! ✨"></textarea>
+                    </div>
+                    <div class="editor-actions">
+                        <button class="btn-save" id="saveNotesBtn" onclick="saveNotes()">
+                            <i class="fas fa-save"></i>
+                            Save Notes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Welcome Screen -->
+                <div id="welcomeSection" class="welcome-screen">
+                    <div class="welcome-icon">
+                        <i class="fas fa-sticky-note"></i>
+                    </div>
+                    <h2>Welcome to Secure Notes</h2>
+                    <p>Create a new folder or select an existing one to start writing.</p>
+                    <p style="font-size: 0.9rem; margin-top: 20px;">
+                        <i class="fas fa-info-circle"></i>
+                        You can only edit folders you create. Other folders are view-only.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
+        const SESSION_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+        let currentUser = '';
+        let currentFolder = '';
+        let sessionTimer = null;
+        let sessionExpiry = null;
+
+        // Check for existing session on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingSession();
+        });
+
+        // Check if valid session exists
+        function checkExistingSession() {
+            const savedSession = localStorage.getItem('notesSession');
+            const savedUser = localStorage.getItem('notesUser');
             
-            <div class="sidebar-content">
-                <!-- User Section -->
-                <div class="user-section">
-                    <div class="user-avatar" id="userAvatar">U</div>
-                    <h3 id="userName">Welcome, User!</h3>
-                    <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">Create and manage your notes</p>
-                    <button class="btn btn-danger" onclick="logout()" style="margin-top: 15px; padding: 10px;">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </button>
-                </div>
+            if (savedSession && savedUser) {
+                const session = JSON.parse(savedSession);
+                const now = Date.now();
+                
+                if (now < session.expiry) {
+                    // Valid session exists
+                    currentUser = savedUser;
+                    sessionExpiry = session.expiry;
+                    startApp();
+                    startSessionTimer();
+                } else {
+                    // Session expired
+                    localStorage.removeItem('notesSession');
+                    showLoginScreen();
+                }
+            } else {
+                showLoginScreen();
+            }
+        }
 
-                <!-- Create Folder Section -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="fas fa-folder-plus"></i>
-                        Create New Folder
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-folder input-icon"></i>
-                        <input type="text" id="folderName" placeholder="Enter your folder name" maxlength="30">
-                    </div>
-                    <button class="btn btn-primary" onclick="createFolder()">
-                        <i class="fas fa-plus"></i>
-                        Create Folder
-                    </button>
-                </div>
+        // Show login screen
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
 
-                <!-- Folder List -->
-                <div class="folders-section">
-                    <div class="section-title">
-                        <i class="fas fa-folders"></i>
-                        Your Folders
-                    </div>
-                    <div class="folder-list" id="folderList">
+        // Login function
+        async function login() {
+            const password = document.getElementById('loginPassword').value.trim();
+            
+            if (!password) {
+                alert('Please enter password');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + '/auth.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        password: password,
+                        action: 'verify'
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Generate user ID if not exists
+                    if (!localStorage.getItem('notesUser')) {
+                        currentUser = 'user_' + Math.random().toString(36).substr(2, 12);
+                        localStorage.setItem('notesUser', currentUser);
+                    } else {
+                        currentUser = localStorage.getItem('notesUser');
+                    }
+                    
+                    // Save session
+                    const sessionData = {
+                        token: result.session_token,
+                        expiry: result.expiry_time * 1000, // Convert to milliseconds
+                        created: Date.now()
+                    };
+                    
+                    localStorage.setItem('notesSession', JSON.stringify(sessionData));
+                    sessionExpiry = sessionData.expiry;
+                    
+                    startApp();
+                    startSessionTimer();
+                } else {
+                    alert('❌ ' + result.message);
+                }
+            } catch (error) {
+                alert('❌ Login failed. Please try again.');
+            }
+        }
+
+        // Start the main application
+        function startApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            document.getElementById('userName').textContent = 'User: ' + currentUser.substr(0, 10);
+            document.getElementById('userAvatar').textContent = 'U';
+            
+            loadFolders();
+            setupEventListeners();
+            updateSessionInfo();
+        }
+
+        // Start session countdown timer
+        function startSessionTimer() {
+            clearInterval(sessionTimer);
+            
+            sessionTimer = setInterval(() => {
+                updateSessionInfo();
+                
+                // Check if session expired
+                if (Date.now() >= sessionExpiry) {
+                    clearInterval(sessionTimer);
+                    alert('Session expired! Please login again.');
+                    localStorage.removeItem('notesSession');
+                    showLoginScreen();
+                }
+            }, 1000);
+        }
+
+        // Update session info display
+        function updateSessionInfo() {
+            const now = Date.now();
+            const timeLeft = sessionExpiry - now;
+            
+            if (timeLeft <= 0) {
+                document.getElementById('timeRemaining').textContent = 'Expired';
+                document.getElementById('sessionTimer').classList.add('session-warning');
+                return;
+            }
+            
+            const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            
+            const timeString = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timeRemaining').textContent = timeString;
+            
+            // Update user session info
+            document.getElementById('userSessionInfo').textContent = 
+                `Session expires in ${hours}h ${minutes}m`;
+            
+            // Add warning class when less than 5 minutes remaining
+            if (timeLeft < 5 * 60 * 1000) {
+                document.getElementById('sessionTimer').classList.add('session-warning');
+            }
+        }
+
+        // Rest of your existing functions (createFolder, loadFolders, selectFolder, saveNotes, deleteFolder) remain the same
+        function setupEventListeners() {
+            document.getElementById('folderName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') createFolder();
+            });
+
+            document.getElementById('deleteFolderName').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') deleteFolder();
+            });
+
+            document.getElementById('deletePassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') deleteFolder();
+            });
+
+            // Enter key for login
+            document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') login();
+            });
+        }
+
+        async function createFolder() {
+            const folderName = document.getElementById('folderName').value.trim();
+            
+            if (!folderName) {
+                showMessage('Please enter a folder name', 'error');
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
+                showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + '/create_folder.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        folder_name: folderName,
+                        current_user: currentUser
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('🎉 Folder created successfully!', 'success');
+                    document.getElementById('folderName').value = '';
+                    loadFolders();
+                    setTimeout(() => selectFolder(folderName), 500);
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error creating folder', 'error');
+            }
+        }
+
+        async function loadFolders() {
+            try {
+                const response = await fetch(API_BASE_URL + '/list_folders.php');
+                const result = await response.json();
+                
+                const folderList = document.getElementById('folderList');
+                
+                if (result.success && result.folders.length > 0) {
+                    folderList.innerHTML = '';
+                    result.folders.forEach(folder => {
+                        const isOwnedByCurrentUser = folder.owner === currentUser;
+                        const folderElement = document.createElement('div');
+                        folderElement.className = `folder-item ${isOwnedByCurrentUser ? 'your-folder' : ''}`;
+                        folderElement.onclick = () => selectFolder(folder.name);
+                        
+                        folderElement.innerHTML = `
+                            <div class="folder-name">
+                                <i class="fas fa-folder${isOwnedByCurrentUser ? '-open' : ''}"></i>
+                                ${folder.name}
+                            </div>
+                            <div class="folder-owner">
+                                <i class="fas fa-user${isOwnedByCurrentUser ? '-edit' : ''}"></i>
+                                ${isOwnedByCurrentUser ? 'Your Folder' : 'By: ' + folder.owner}
+                            </div>
+                        `;
+                        
+                        folderList.appendChild(folderElement);
+                    });
+                } else {
+                    folderList.innerHTML = `
                         <div style="text-align: center; color: var(--text-light); padding: 20px;">
                             <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
                             <p>No folders created yet</p>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Admin Delete Section -->
-                <div class="admin-section">
-                    <div class="section-title">
-                        <i class="fas fa-shield-alt"></i>
-                        Admin Tools
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-folder input-icon"></i>
-                        <input type="text" id="deleteFolderName" placeholder="Folder name to delete">
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="deletePassword" placeholder="Admin password">
-                    </div>
-                    <button class="btn btn-danger" onclick="deleteFolder()">
-                        <i class="fas fa-trash"></i>
-                        Delete Folder
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content glass-card">
-            <div class="content-header">
-                <h2 id="contentTitle">Welcome to AI Notes</h2>
-                <div id="folderBadge" style="display: none;">
-                    <span class="folder-badge" id="accessBadge">
-                        <i class="fas fa-crown"></i> Folder Owner
-                    </span>
-                </div>
-            </div>
-
-            <div id="messageArea"></div>
-
-            <!-- Notes Editor -->
-            <div id="notesSection" class="notes-editor" style="display: none;">
-                <div class="notes-area">
-                    <textarea id="notesContent" placeholder="Start typing your notes here... You can write anything! ✨"></textarea>
-                </div>
-                <div class="editor-actions">
-                    <button class="btn-save" id="saveNotesBtn" onclick="saveNotes()">
-                        <i class="fas fa-save"></i>
-                        Save Notes
-                    </button>
-                </div>
-            </div>
-
-            <!-- Welcome Screen -->
-            <div id="welcomeSection" class="welcome-screen">
-                <div class="welcome-icon">
-                    <i class="fas fa-sticky-note"></i>
-                </div>
-                <h2>Welcome to Your Notes</h2>
-                <p>Create a new folder or select an existing one to start writing.</p>
-                <p style="font-size: 0.9rem; margin-top: 20px;">
-                    <i class="fas fa-info-circle"></i>
-                    You can only edit folders you create. Other folders are view-only.
-                </p>
-            </div>
-        </div>
-    </div>
-
-<script>
-    const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
-    const DEFAULT_PASSWORD = 'admin123'; // Default password
-    const SESSION_DURATION = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-    
-    let currentUser = '';
-    let currentFolder = '';
-    let sessionTimer = null;
-    let sessionEndTime = null;
-
-    // Initialize the application
-    document.addEventListener('DOMContentLoaded', function() {
-        // Check if user is already logged in
-        checkExistingSession();
-        
-        // Generate random user ID and store in localStorage
-        if (localStorage.getItem('notesUser')) {
-            currentUser = localStorage.getItem('notesUser');
-        } else {
-            currentUser = 'user_' + Math.random().toString(36).substr(2, 12);
-            localStorage.setItem('notesUser', currentUser);
-        }
-        
-        document.getElementById('userName').textContent = 'User: ' + currentUser.substr(0, 10);
-        document.getElementById('userAvatar').textContent = 'U';
-        
-        setupEventListeners();
-    });
-
-    function checkExistingSession() {
-        const sessionData = localStorage.getItem('notesSession');
-        
-        if (sessionData) {
-            const { timestamp, rememberMe } = JSON.parse(sessionData);
-            const now = new Date().getTime();
-            
-            // Check if session is still valid (within 2 hours)
-            if (rememberMe && (now - timestamp) < SESSION_DURATION) {
-                // Calculate remaining time
-                const remainingTime = SESSION_DURATION - (now - timestamp);
-                startSession(remainingTime);
-                showApp();
-            } else {
-                // Session expired or "remember me" not selected
-                localStorage.removeItem('notesSession');
-                showLogin();
-            }
-        } else {
-            showLogin();
-        }
-    }
-
-    function showLogin() {
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.getElementById('appContainer').style.display = 'none';
-    }
-
-    function showApp() {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'grid';
-        loadFolders();
-    }
-
-    function login() {
-        const password = document.getElementById('loginPassword').value;
-        const rememberMe = document.getElementById('rememberMe').checked;
-        const loginMessage = document.getElementById('loginMessage');
-        
-        if (!password) {
-            showLoginMessage('Please enter a password', 'error');
-            return;
-        }
-        
-        // Simple password check (in a real app, this would be more secure)
-        if (password === DEFAULT_PASSWORD) {
-            // Store session data if "remember me" is checked
-            if (rememberMe) {
-                const sessionData = {
-                    timestamp: new Date().getTime(),
-                    rememberMe: true
-                };
-                localStorage.setItem('notesSession', JSON.stringify(sessionData));
-            }
-            
-            showLoginMessage('Login successful! Redirecting...', 'success');
-            
-            // Start session with full duration
-            startSession(SESSION_DURATION);
-            
-            // Show app after a brief delay
-            setTimeout(() => {
-                showApp();
-            }, 1000);
-        } else {
-            showLoginMessage('Incorrect password. Try "admin123"', 'error');
-        }
-    }
-
-    function showLoginMessage(message, type) {
-        const loginMessage = document.getElementById('loginMessage');
-        loginMessage.innerHTML = `<div class="message ${type}">${message}</div>`;
-        
-        if (type === 'success') {
-            setTimeout(() => {
-                loginMessage.innerHTML = '';
-            }, 3000);
-        }
-    }
-
-    function startSession(duration) {
-        sessionEndTime = new Date().getTime() + duration;
-        
-        // Update timer immediately
-        updateSessionTimer();
-        
-        // Update timer every second
-        sessionTimer = setInterval(updateSessionTimer, 1000);
-    }
-
-    function updateSessionTimer() {
-        const now = new Date().getTime();
-        const remainingTime = sessionEndTime - now;
-        
-        if (remainingTime <= 0) {
-            // Session expired
-            clearInterval(sessionTimer);
-            logout();
-            return;
-        }
-        
-        // Convert to hours, minutes, seconds
-        const hours = Math.floor(remainingTime / (1000 * 60 * 60));
-        const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-        
-        // Format as HH:MM:SS
-        const timerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        document.getElementById('timerText').textContent = timerText;
-        
-        // Change color when less than 5 minutes remaining
-        if (remainingTime < 5 * 60 * 1000) {
-            document.getElementById('sessionTimer').style.background = 'rgba(239, 68, 68, 0.3)';
-        }
-    }
-
-    function logout() {
-        // Clear session
-        clearInterval(sessionTimer);
-        localStorage.removeItem('notesSession');
-        
-        // Reset UI
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('sessionTimer').style.background = 'rgba(255, 255, 255, 0.2)';
-        
-        // Show login screen
-        showLogin();
-        
-        // Show logout message
-        showLoginMessage('You have been logged out', 'success');
-    }
-
-    function setupEventListeners() {
-        // Enter key support for login
-        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') login();
-        });
-
-        // Enter key support for folder creation
-        document.getElementById('folderName').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') createFolder();
-        });
-
-        document.getElementById('deleteFolderName').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') deleteFolder();
-        });
-
-        document.getElementById('deletePassword').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') deleteFolder();
-        });
-    }
-
-    // Create new folder
-    async function createFolder() {
-        const folderName = document.getElementById('folderName').value.trim();
-        
-        if (!folderName) {
-            showMessage('Please enter a folder name', 'error');
-            return;
-        }
-
-        if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
-            showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
-            return;
-        }
-
-        try {
-            const response = await fetch(API_BASE_URL + '/create_folder.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    folder_name: folderName,
-                    current_user: currentUser
-                })
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                showMessage('🎉 Folder created successfully!', 'success');
-                document.getElementById('folderName').value = '';
-                loadFolders();
-                // Auto-select the new folder
-                setTimeout(() => selectFolder(folderName), 500);
-            } else {
-                showMessage('❌ ' + result.message, 'error');
-            }
-        } catch (error) {
-            showMessage('❌ Error creating folder', 'error');
-        }
-    }
-
-    // Load all folders
-    async function loadFolders() {
-        try {
-            const response = await fetch(API_BASE_URL + '/list_folders.php');
-            const result = await response.json();
-            
-            const folderList = document.getElementById('folderList');
-            
-            if (result.success && result.folders.length > 0) {
-                folderList.innerHTML = '';
-                result.folders.forEach(folder => {
-                    const isOwnedByCurrentUser = folder.owner === currentUser;
-                    const folderElement = document.createElement('div');
-                    folderElement.className = `folder-item ${isOwnedByCurrentUser ? 'your-folder' : ''}`;
-                    folderElement.onclick = () => selectFolder(folder.name);
-                    
-                    folderElement.innerHTML = `
-                        <div class="folder-name">
-                            <i class="fas fa-folder${isOwnedByCurrentUser ? '-open' : ''}"></i>
-                            ${folder.name}
-                        </div>
-                        <div class="folder-owner">
-                            <i class="fas fa-user${isOwnedByCurrentUser ? '-edit' : ''}"></i>
-                            ${isOwnedByCurrentUser ? 'Your Folder' : 'By: ' + folder.owner}
-                        </div>
                     `;
+                }
+            } catch (error) {
+                console.error('Error loading folders:', error);
+            }
+        }
+
+        async function selectFolder(folderName) {
+            currentFolder = folderName;
+            
+            document.querySelectorAll('.folder-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/read_note.php?folder_name=${encodeURIComponent(folderName)}&current_user=${encodeURIComponent(currentUser)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('contentTitle').textContent = `Notes: ${folderName}`;
+                    document.getElementById('notesContent').value = result.content;
+                    document.getElementById('notesSection').style.display = 'flex';
+                    document.getElementById('welcomeSection').style.display = 'none';
                     
-                    folderList.appendChild(folderElement);
-                });
-            } else {
-                folderList.innerHTML = `
-                    <div style="text-align: center; color: var(--text-light); padding: 20px;">
-                        <i class="fas fa-folder-open" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i>
-                        <p>No folders created yet</p>
-                    </div>
-                `;
-            }
-        } catch (error) {
-            console.error('Error loading folders:', error);
-        }
-    }
-
-    // Select folder and load notes
-    async function selectFolder(folderName) {
-        currentFolder = folderName;
-        
-        // Update UI
-        document.querySelectorAll('.folder-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        // Find and activate the clicked folder
-        const folderElements = document.querySelectorAll('.folder-item');
-        for (let i = 0; i < folderElements.length; i++) {
-            const folderNameElement = folderElements[i].querySelector('.folder-name');
-            if (folderNameElement && folderNameElement.textContent.includes(folderName)) {
-                folderElements[i].classList.add('active');
-                break;
-            }
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/read_note.php?folder_name=${encodeURIComponent(folderName)}&current_user=${encodeURIComponent(currentUser)}`);
-            const result = await response.json();
-            
-            if (result.success) {
-                document.getElementById('contentTitle').textContent = `Notes: ${folderName}`;
-                document.getElementById('notesContent').value = result.content;
-                document.getElementById('notesSection').style.display = 'flex';
-                document.getElementById('welcomeSection').style.display = 'none';
-                
-                // Update access badge
-                const accessBadge = document.getElementById('accessBadge');
-                const folderBadge = document.getElementById('folderBadge');
-                
-                if (result.is_owner) {
-                    accessBadge.innerHTML = '<i class="fas fa-crown"></i> Folder Owner';
-                    accessBadge.className = 'folder-badge badge-owner';
-                    document.getElementById('saveNotesBtn').disabled = false;
-                    document.getElementById('notesContent').readOnly = false;
-                    document.getElementById('notesContent').placeholder = "Start typing your notes here... You can write anything! ✨";
+                    const accessBadge = document.getElementById('accessBadge');
+                    const folderBadge = document.getElementById('folderBadge');
+                    
+                    if (result.is_owner) {
+                        accessBadge.innerHTML = '<i class="fas fa-crown"></i> Folder Owner';
+                        accessBadge.className = 'folder-badge badge-owner';
+                        document.getElementById('saveNotesBtn').disabled = false;
+                        document.getElementById('notesContent').readOnly = false;
+                        document.getElementById('notesContent').placeholder = "Start typing your notes here... You can write anything! ✨";
+                    } else {
+                        accessBadge.innerHTML = '<i class="fas fa-eye"></i> View Only';
+                        accessBadge.className = 'folder-badge badge-viewer';
+                        document.getElementById('saveNotesBtn').disabled = true;
+                        document.getElementById('notesContent').readOnly = true;
+                        document.getElementById('notesContent').placeholder = "View only mode - You cannot edit this folder";
+                    }
+                    folderBadge.style.display = 'block';
                 } else {
-                    accessBadge.innerHTML = '<i class="fas fa-eye"></i> View Only';
-                    accessBadge.className = 'folder-badge badge-viewer';
-                    document.getElementById('saveNotesBtn').disabled = true;
-                    document.getElementById('notesContent').readOnly = true;
-                    document.getElementById('notesContent').placeholder = "View only mode - You cannot edit this folder";
+                    showMessage('❌ ' + result.message, 'error');
                 }
-                folderBadge.style.display = 'block';
-            } else {
-                showMessage('❌ ' + result.message, 'error');
+            } catch (error) {
+                showMessage('❌ Error loading notes', 'error');
             }
-        } catch (error) {
-            showMessage('❌ Error loading notes', 'error');
-        }
-    }
-
-    // Save notes
-    async function saveNotes() {
-        if (!currentFolder) {
-            showMessage('Please select a folder first', 'error');
-            return;
         }
 
-        const content = document.getElementById('notesContent').value;
-        const button = document.getElementById('saveNotesBtn');
-        
-        // Save button loading state
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-        button.disabled = true;
-
-        try {
-            const response = await fetch(API_BASE_URL + '/save_note.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    folder_name: currentFolder,
-                    content: content,
-                    current_user: currentUser
-                })
-            });
-
-            const result = await response.json();
-            
-            if (result.success) {
-                showMessage('💾 Notes saved successfully!', 'success');
-            } else {
-                showMessage('❌ ' + result.message, 'error');
+        async function saveNotes() {
+            if (!currentFolder) {
+                showMessage('Please select a folder first', 'error');
+                return;
             }
-        } catch (error) {
-            showMessage('❌ Error saving notes', 'error');
-        } finally {
-            // Reset button state
-            button.innerHTML = '<i class="fas fa-save"></i> Save Notes';
-            button.disabled = false;
-        }
-    }
 
-    // Delete folder (Admin only)
-    async function deleteFolder() {
-        const folderName = document.getElementById('deleteFolderName').value.trim();
-        const password = document.getElementById('deletePassword').value;
-
-        if (!folderName || !password) {
-            showMessage('Please enter both folder name and password', 'error');
-            return;
-        }
-
-        if (!confirm(`🚨 Are you sure you want to delete folder "${folderName}"? This action cannot be undone!`)) {
-            return;
-        }
-
-        try {
-            const response = await fetch(API_BASE_URL + '/delete_folder.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    folder_name: folderName,
-                    password: password
-                })
-            });
-
-            const result = await response.json();
+            const content = document.getElementById('notesContent').value;
+            const button = document.getElementById('saveNotesBtn');
             
-            if (result.success) {
-                showMessage('🗑️ Folder deleted successfully!', 'success');
-                document.getElementById('deleteFolderName').value = '';
-                document.getElementById('deletePassword').value = '';
-                loadFolders();
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            button.disabled = true;
+
+            try {
+                const response = await fetch(API_BASE_URL + '/save_note.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        folder_name: currentFolder,
+                        content: content,
+                        current_user: currentUser
+                    })
+                });
+
+                const result = await response.json();
                 
-                // Reset if current folder was deleted
-                if (currentFolder === folderName) {
-                    document.getElementById('notesSection').style.display = 'none';
-                    document.getElementById('welcomeSection').style.display = 'flex';
-                    document.getElementById('folderBadge').style.display = 'none';
-                    currentFolder = '';
+                if (result.success) {
+                    showMessage('💾 Notes saved successfully!', 'success');
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
                 }
-            } else {
-                showMessage('❌ ' + result.message, 'error');
+            } catch (error) {
+                showMessage('❌ Error saving notes', 'error');
+            } finally {
+                button.innerHTML = '<i class="fas fa-save"></i> Save Notes';
+                button.disabled = false;
             }
-        } catch (error) {
-            showMessage('❌ Error deleting folder', 'error');
         }
-    }
 
-    // Show message
-    function showMessage(message, type) {
-        const messageArea = document.getElementById('messageArea');
-        messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
-        
-        setTimeout(() => {
-            messageArea.innerHTML = '';
-        }, 5000);
-    }
-</script>
+        async function deleteFolder() {
+            const folderName = document.getElementById('deleteFolderName').value.trim();
+            const password = document.getElementById('deletePassword').value;
+
+            if (!folderName || !password) {
+                showMessage('Please enter both folder name and password', 'error');
+                return;
+            }
+
+            if (!confirm(`🚨 Are you sure you want to delete folder "${folderName}"? This action cannot be undone!`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(API_BASE_URL + '/delete_folder.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        folder_name: folderName,
+                        password: password
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('🗑️ Folder deleted successfully!', 'success');
+                    document.getElementById('deleteFolderName').value = '';
+                    document.getElementById('deletePassword').value = '';
+                    loadFolders();
+                    
+                    if (currentFolder === folderName) {
+                        document.getElementById('notesSection').style.display = 'none';
+                        document.getElementById('welcomeSection').style.display = 'flex';
+                        document.getElementById('folderBadge').style.display = 'none';
+                        currentFolder = '';
+                    }
+                } else {
+                    showMessage('❌ ' + result.message, 'error');
+                }
+            } catch (error) {
+                showMessage('❌ Error deleting folder', 'error');
+            }
+        }
+
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+    </script>
 </body>
 </html>
