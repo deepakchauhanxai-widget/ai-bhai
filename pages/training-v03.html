@@ -12,18 +12,18 @@
         }
         
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             overflow: hidden;
         }
         
@@ -35,18 +35,19 @@
         }
         
         .main-content {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            min-height: 600px;
+            display: flex;
+            min-height: 500px;
         }
         
         .sidebar {
+            width: 300px;
             background: #34495e;
             color: white;
             padding: 20px;
         }
         
         .content-area {
+            flex: 1;
             padding: 20px;
             background: #ecf0f1;
         }
@@ -57,7 +58,7 @@
         
         input, textarea, button {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             margin: 5px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -69,7 +70,7 @@
             color: white;
             border: none;
             cursor: pointer;
-            transition: background 0.3s;
+            padding: 12px;
         }
         
         button:hover {
@@ -84,11 +85,6 @@
             background: #c0392b;
         }
         
-        .folder-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
         .folder-item {
             background: white;
             color: #2c3e50;
@@ -96,7 +92,6 @@
             margin: 5px 0;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s;
         }
         
         .folder-item:hover {
@@ -107,10 +102,6 @@
         .folder-item.active {
             background: #2980b9;
             color: white;
-        }
-        
-        .notes-area {
-            height: 400px;
         }
         
         #notesContent {
@@ -154,7 +145,6 @@
         </div>
         
         <div class="main-content">
-            <!-- Sidebar -->
             <div class="sidebar">
                 <h3>Create New Folder</h3>
                 <div class="form-group">
@@ -164,7 +154,7 @@
                 
                 <h3>Available Folders</h3>
                 <div class="folder-list" id="folderList">
-                    <!-- Folders will be loaded here -->
+                    Loading folders...
                 </div>
                 
                 <div class="delete-section">
@@ -172,10 +162,10 @@
                     <input type="text" id="deleteFolderName" placeholder="Folder name to delete">
                     <input type="password" id="deletePassword" placeholder="Enter password">
                     <button class="btn-danger" onclick="deleteFolder()">Delete Folder</button>
+                    <p style="font-size: 12px; margin-top: 5px; color: #666;">Password: admin123</p>
                 </div>
             </div>
             
-            <!-- Content Area -->
             <div class="content-area">
                 <div id="messageArea"></div>
                 
@@ -195,190 +185,239 @@
         </div>
     </div>
 
-    <script>
-        const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
+<script>
+    const API_BASE_URL = 'https://deepakchauhanxai.xyz/ai-api';
+    
+    // Load folders on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded, loading folders...');
+        loadFolders();
+    });
+    
+    // Create new folder
+    async function createFolder() {
+        const folderName = document.getElementById('folderName').value.trim();
         
-        // Load folders on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            loadFolders();
-        });
-        
-        // Create new folder
-        async function createFolder() {
-            const folderName = document.getElementById('folderName').value.trim();
-            
-            if (!folderName) {
-                showMessage('Please enter a folder name', 'error');
-                return;
-            }
-            
-            if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
-                showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
-                return;
-            }
-            
-            try {
-                const formData = new FormData();
-                formData.append('folder_name', folderName);
-                
-                const response = await fetch(API_BASE_URL + '/create_folder.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('Folder created successfully!', 'success');
-                    document.getElementById('folderName').value = '';
-                    loadFolders();
-                    selectFolder(folderName);
-                } else {
-                    showMessage(result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('Error creating folder: ' + error.message, 'error');
-            }
+        if (!folderName) {
+            showMessage('Please enter a folder name', 'error');
+            return;
         }
         
-        // Load all folders
-        async function loadFolders() {
-            try {
-                const response = await fetch(API_BASE_URL + '/list_folders.php');
-                const result = await response.json();
-                
-                const folderList = document.getElementById('folderList');
-                
-                if (result.success && result.folders.length > 0) {
-                    folderList.innerHTML = '';
-                    result.folders.forEach(folder => {
-                        const folderElement = document.createElement('div');
-                        folderElement.className = 'folder-item';
-                        folderElement.textContent = folder;
-                        folderElement.onclick = () => selectFolder(folder);
-                        folderList.appendChild(folderElement);
-                    });
-                } else {
-                    folderList.innerHTML = '<p>No folders created yet</p>';
-                }
-            } catch (error) {
-                showMessage('Error loading folders: ' + error.message, 'error');
-            }
+        if (!/^[a-zA-Z0-9_-]+$/.test(folderName)) {
+            showMessage('Folder name can only contain letters, numbers, hyphens, and underscores', 'error');
+            return;
         }
         
-        // Select folder and load notes
-        async function selectFolder(folderName) {
-            // Update active folder in list
-            document.querySelectorAll('.folder-item').forEach(item => {
-                item.classList.remove('active');
-                if (item.textContent === folderName) {
-                    item.classList.add('active');
-                }
+        try {
+            console.log('Creating folder:', folderName);
+            
+            const response = await fetch(API_BASE_URL + '/create_folder.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ folder_name: folderName })
             });
             
-            try {
-                const response = await fetch(API_BASE_URL + '/read_note.php?folder_name=' + encodeURIComponent(folderName));
-                const result = await response.json();
-                
-                if (result.success) {
-                    document.getElementById('currentFolderName').textContent = folderName;
-                    document.getElementById('notesContent').value = result.content;
-                    document.getElementById('notesSection').style.display = 'block';
-                    document.getElementById('welcomeSection').style.display = 'none';
-                } else {
-                    showMessage(result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('Error loading notes: ' + error.message, 'error');
+            console.log('Response status:', response.status);
+            const result = await response.json();
+            console.log('Response result:', result);
+            
+            if (result.success) {
+                showMessage('Folder created successfully!', 'success');
+                document.getElementById('folderName').value = '';
+                loadFolders();
+                // Automatically select the new folder
+                setTimeout(() => selectFolder(folderName), 1000);
+            } else {
+                showMessage(result.message, 'error');
             }
+        } catch (error) {
+            console.error('Error:', error);
+            showMessage('Error creating folder: ' + error.message, 'error');
         }
-        
-        // Save notes
-        async function saveNotes() {
-            const folderName = document.getElementById('currentFolderName').textContent;
-            const content = document.getElementById('notesContent').value;
+    }
+    
+    // Load all folders
+    async function loadFolders() {
+        try {
+            console.log('Loading folders...');
+            const response = await fetch(API_BASE_URL + '/list_folders.php');
+            const result = await response.json();
+            console.log('Folders loaded:', result);
             
-            if (!folderName) {
-                showMessage('Please select a folder first', 'error');
-                return;
-            }
+            const folderList = document.getElementById('folderList');
             
-            try {
-                const formData = new FormData();
-                formData.append('folder_name', folderName);
-                formData.append('content', content);
-                
-                const response = await fetch(API_BASE_URL + '/save_note.php', {
-                    method: 'POST',
-                    body: formData
+            if (result.success && result.folders.length > 0) {
+                folderList.innerHTML = '';
+                result.folders.forEach(folder => {
+                    const folderElement = document.createElement('div');
+                    folderElement.className = 'folder-item';
+                    folderElement.textContent = folder;
+                    folderElement.onclick = () => selectFolder(folder);
+                    folderList.appendChild(folderElement);
                 });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('Notes saved successfully!', 'success');
-                } else {
-                    showMessage(result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('Error saving notes: ' + error.message, 'error');
+            } else {
+                folderList.innerHTML = '<div style="color: #bbb; text-align: center;">No folders created yet</div>';
             }
+        } catch (error) {
+            console.error('Error loading folders:', error);
+            folderList.innerHTML = '<div style="color: red; text-align: center;">Error loading folders</div>';
+        }
+    }
+    
+    // Select folder and load notes
+    async function selectFolder(folderName) {
+        console.log('Selecting folder:', folderName);
+        
+        // Update active folder in list
+        document.querySelectorAll('.folder-item').forEach(item => {
+            item.classList.remove('active');
+            if (item.textContent === folderName) {
+                item.classList.add('active');
+            }
+        });
+        
+        try {
+            const response = await fetch(API_BASE_URL + '/read_note.php?folder_name=' + encodeURIComponent(folderName));
+            const result = await response.json();
+            console.log('Notes loaded:', result);
+            
+            if (result.success) {
+                document.getElementById('currentFolderName').textContent = folderName;
+                document.getElementById('notesContent').value = result.content;
+                document.getElementById('notesSection').style.display = 'block';
+                document.getElementById('welcomeSection').style.display = 'none';
+            } else {
+                showMessage(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error loading notes:', error);
+            showMessage('Error loading notes: ' + error.message, 'error');
+        }
+    }
+    
+    // Save notes
+    async function saveNotes() {
+        const folderName = document.getElementById('currentFolderName').textContent;
+        const content = document.getElementById('notesContent').value;
+        
+        if (!folderName || folderName === '') {
+            showMessage('Please select a folder first', 'error');
+            return;
         }
         
-        // Delete folder
-        async function deleteFolder() {
-            const folderName = document.getElementById('deleteFolderName').value.trim();
-            const password = document.getElementById('deletePassword').value;
+        console.log('Saving notes for folder:', folderName);
+        console.log('Content length:', content.length);
+        
+        try {
+            const response = await fetch(API_BASE_URL + '/save_note.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    folder_name: folderName,
+                    content: content 
+                })
+            });
             
-            if (!folderName || !password) {
-                showMessage('Please enter both folder name and password', 'error');
-                return;
-            }
+            const result = await response.json();
+            console.log('Save result:', result);
             
-            if (!confirm(`Are you sure you want to delete folder "${folderName}"? This action cannot be undone.`)) {
-                return;
+            if (result.success) {
+                showMessage('Notes saved successfully!', 'success');
+            } else {
+                showMessage(result.message, 'error');
             }
-            
-            try {
-                const formData = new FormData();
-                formData.append('folder_name', folderName);
-                formData.append('password', password);
-                
-                const response = await fetch(API_BASE_URL + '/delete_folder.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showMessage('Folder deleted successfully!', 'success');
-                    document.getElementById('deleteFolderName').value = '';
-                    document.getElementById('deletePassword').value = '';
-                    loadFolders();
-                    
-                    // Reset notes section if deleted folder was selected
-                    if (document.getElementById('currentFolderName').textContent === folderName) {
-                        document.getElementById('notesSection').style.display = 'none';
-                        document.getElementById('welcomeSection').style.display = 'block';
-                    }
-                } else {
-                    showMessage(result.message, 'error');
-                }
-            } catch (error) {
-                showMessage('Error deleting folder: ' + error.message, 'error');
-            }
+        } catch (error) {
+            console.error('Error saving notes:', error);
+            showMessage('Error saving notes: ' + error.message, 'error');
+        }
+    }
+    
+ // Delete folder - UPDATED FUNCTION
+    async function deleteFolder() {
+        const folderName = document.getElementById('deleteFolderName').value.trim();
+        const password = document.getElementById('deletePassword').value;
+        
+        console.log('Delete attempt - Folder:', folderName, 'Password:', password);
+        
+        if (!folderName || !password) {
+            showMessage('Please enter both folder name and password', 'error');
+            return;
         }
         
-        // Show message
-        function showMessage(message, type) {
-            const messageArea = document.getElementById('messageArea');
-            messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
-            
-            setTimeout(() => {
-                messageArea.innerHTML = '';
-            }, 5000);
+        if (!confirm(`Are you sure you want to delete folder "${folderName}"? All notes will be lost forever!`)) {
+            return;
         }
-    </script>
+        
+        try {
+            console.log('Sending delete request...');
+            
+            const response = await fetch(API_BASE_URL + '/delete_folder.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    folder_name: folderName,
+                    password: password 
+                })
+            });
+            
+            console.log('Delete response status:', response.status);
+            const result = await response.json();
+            console.log('Delete result:', result);
+            
+            if (result.success) {
+                showMessage('✅ Folder deleted successfully!', 'success');
+                document.getElementById('deleteFolderName').value = '';
+                document.getElementById('deletePassword').value = '';
+                loadFolders();
+                
+                // Reset notes section if deleted folder was selected
+                if (document.getElementById('currentFolderName').textContent === folderName) {
+                    document.getElementById('notesSection').style.display = 'none';
+                    document.getElementById('welcomeSection').style.display = 'block';
+                }
+            } else {
+                showMessage('❌ ' + result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting folder:', error);
+            showMessage('❌ Error deleting folder: ' + error.message, 'error');
+        }
+    }
+    
+    // Show message
+    function showMessage(message, type) {
+        const messageArea = document.getElementById('messageArea');
+        messageArea.innerHTML = `<div class="message ${type}">${message}</div>`;
+        
+        setTimeout(() => {
+            messageArea.innerHTML = '';
+        }, 5000);
+    }
+    
+    // Enter key support
+    document.getElementById('folderName').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            createFolder();
+        }
+    });
+    
+document.getElementById('deleteFolderName').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            deleteFolder();
+        }
+    });
+    
+    document.getElementById('deletePassword').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            deleteFolder();
+        }
+    });
+</script>
 </body>
 </html>
