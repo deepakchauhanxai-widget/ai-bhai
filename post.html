@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+  <title>DK Community Post – AI Bhai</title>
+  <meta
+    name="description"
+    content="Human + AI powered motivational and truth based posts from DK Community."
+  />
+  <link
+    rel="icon"
+    href="https://deepakchauhanai.xyz/images/dk-community.jpg"
+  />
+
+  <!-- AdSense main script -->
+  <script
+    async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9700069665343208"
+    crossorigin="anonymous"
+  ></script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%);
+      color: #e5e7eb;
+    }
+    header {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid rgba(96, 165, 250, 0.7);
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
+      flex-shrink: 0;
+    }
+    .logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .header-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+    .header-sub {
+      font-size: 0.72rem;
+      color: #9ca3af;
+    }
+
+    main {
+      flex: 1;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      background: rgba(56, 189, 248, 0.12);
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+    .tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .card {
+      margin-top: 12px;
+      background: radial-gradient(circle at top, rgba(56, 189, 248, 0.13), transparent 55%),
+        rgba(15, 23, 42, 0.96);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: 0 22px 60px rgba(15, 23, 42, 0.95);
+    }
+
+    .post-title {
+      margin: 8px 0 4px;
+      font-size: 1.35rem;
+      line-height: 1.3;
+    }
+    .post-sub {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+
+    .image-wrap {
+      margin: 12px 0;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+    .image-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 520px;
+      object-fit: contain;
+      background: #020617;
+    }
+
+    .desc {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #e5e7eb;
+    }
+
+    .meta-row {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #9ca3af;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .actions-row {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .btn span.icon {
+      font-size: 0.95rem;
+    }
+    .btn:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.5);
+    }
+
+    .ads-block {
+      margin: 16px 0;
+      text-align: center;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 18px;
+      font-size: 0.82rem;
+      text-decoration: none;
+      color: #7dd3fc;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .status-box {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+    }
+
+    footer {
+      padding: 10px 16px 14px;
+      border-top: 1px solid rgba(30, 64, 175, 0.6);
+      background: rgba(15, 23, 42, 0.98);
+    }
+    footer p {
+      margin: 0;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .post-title {
+        font-size: 1.55rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo-circle">
+        <img
+          src="https://deepakchauhanai.xyz/images/dk-community.jpg"
+          alt="DK Community"
+        />
+      </div>
+      <div class="header-text">
+        <div class="header-title">DK Community × AI Bhai</div>
+        <div class="header-sub">Human + AI Collaboration • Post View</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 🔹 TOP AD (1) -->
+    <div class="ads-block">
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-9700069665343208"
+        data-ad-slot="1234567890"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <section class="card" id="postCard">
+      <div id="categoryTag" class="tag" style="display:none;">
+        <span class="tag-dot"></span>
+        <span id="categoryText"></span>
+      </div>
+
+      <h1 id="postTitle" class="post-title">Loading…</h1>
+      <div id="postSub" class="post-sub">
+        AI Bhai is fetching this post from DK Community…
+      </div>
+
+      <!-- 🔹 AD ABOVE IMAGE (2) -->
+      <div class="ads-block">
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9700069665343208"
+          data-ad-slot="1234567890"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+
+      <div class="image-wrap" id="imageWrap" style="display:none;">
+        <img id="postImage" src="" alt="" loading="lazy" />
+      </div>
+
+      <!-- 🔹 MID-DESCRIPTION AD (3) -->
+      <div class="ads-block">
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-9700069665343208"
+          data-ad-slot="1234567890"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+
+      <p id="postDescription" class="desc"></p>
+
+      <div class="meta-row" id="metaRow" style="display:none;">
+        <span id="metaId"></span>
+        <span>•</span>
+        <span>DK Community • Human + AI</span>
+      </div>
+
+      <div class="actions-row" id="actionsRow" style="display:none;">
+        <button class="btn" id="shareBtn">
+          <span class="icon">📤</span>
+          <span>Share</span>
+        </button>
+        <button class="btn" id="whatsBtn">
+          <span class="icon">🟢</span>
+          <span>WhatsApp</span>
+        </button>
+        <button class="btn" id="nextBtn">
+          <span class="icon">➡️</span>
+          <span>Next Post</span>
+        </button>
+      </div>
+
+      <div id="statusBox" class="status-box" style="display:none;"></div>
+    </section>
+
+    <!-- 🔹 BOTTOM AD (4) -->
+    <div class="ads-block">
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client="ca-pub-9700069665343208"
+        data-ad-slot="1234567890"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      ></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <a class="back-link" href="/index.html">
+      <span>←</span>
+      <span>Back to DK Community Home</span>
+    </a>
+  </main>
+
+  <footer>
+    <p>
+      © 2025 DK Community – Deepak Chauhan × AI Bhai. All rights reserved.
+    </p>
+  </footer>
+
+  <script>
+    const JSON_URL =
+      "https://deepakchauhanxai.xyz/testing/data/images.json";
+    const DEFAULT_LANG = "en";
+    const FALLBACK_LANG = "hi";
+
+    function getQueryId() {
+      const sp = new URLSearchParams(window.location.search);
+      const id = sp.get("id");
+      return id ? String(id).trim() : null;
+    }
+
+    function setMetaDescription(text) {
+      const head = document.querySelector("head");
+      let meta = head.querySelector('meta[name="description"]');
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.name = "description";
+        head.appendChild(meta);
+      }
+      meta.content = text.slice(0, 155);
+    }
+
+    async function loadPost() {
+      const id = getQueryId();
+      const titleEl = document.getElementById("postTitle");
+      const subEl = document.getElementById("postSub");
+      const descEl = document.getElementById("postDescription");
+      const imgWrap = document.getElementById("imageWrap");
+      const imgEl = document.getElementById("postImage");
+      const metaRow = document.getElementById("metaRow");
+      const metaId = document.getElementById("metaId");
+      const catTag = document.getElementById("categoryTag");
+      const catText = document.getElementById("categoryText");
+      const statusBox = document.getElementById("statusBox");
+      const actionsRow = document.getElementById("actionsRow");
+      const nextBtn = document.getElementById("nextBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const whatsBtn = document.getElementById("whatsBtn");
+
+      if (!id) {
+        titleEl.textContent = "Post ID missing";
+        subEl.textContent = "Please open like: post.html?id=1";
+        descEl.textContent =
+          "AI Bhai ko samajh nahi aaya kaunsa post dikhाना hai. URL mein ?id=NUMBER zaroor bhejo.";
+        return;
+      }
+
+      try {
+        subEl.textContent = "AI Bhai is loading this post for you…";
+
+        const res = await fetch(JSON_URL, { cache: "no-store" });
+        const data = await res.json();
+
+        if (!data.images || !Array.isArray(data.images)) {
+          throw new Error("Invalid JSON format: images[] not found.");
+        }
+
+        const images = data.images;
+        const post = images.find((it) => String(it.id) === String(id));
+
+        if (!post) {
+          titleEl.textContent = "Post not found";
+          subEl.textContent = "No post found for id = " + id;
+          descEl.textContent =
+            "Ho sakta hai ye post abhi JSON mein add nahi hua ya delete ho gaya ho.";
+          return;
+        }
+
+        const t =
+          (post.title && (post.title[DEFAULT_LANG] || post.title[FALLBACK_LANG])) ||
+          "DK Community Post";
+        const d =
+          (post.description &&
+            (post.description[DEFAULT_LANG] ||
+              post.description[FALLBACK_LANG])) ||
+          "";
+        const category = post.category || "post";
+
+        document.title = t + " – DK Community";
+        setMetaDescription(d);
+
+        titleEl.textContent = t;
+        subEl.textContent = "Powered by DK Community × AI Bhai";
+
+        if (post.url) {
+          imgEl.src = post.url;
+          imgEl.alt = t;
+          imgWrap.style.display = "block";
+        }
+
+        descEl.textContent = d;
+
+        metaId.textContent = "Post ID: " + post.id;
+        metaRow.style.display = "flex";
+
+        if (category) {
+          catText.textContent = category;
+          catTag.style.display = "inline-flex";
+        }
+
+        statusBox.style.display = "block";
+        statusBox.textContent =
+          "AI Bhai note: Ye post live data se aa raha hai (JSON). Roz naya content add karoge to Google ko daily update dikheगा.";
+
+        actionsRow.style.display = "flex";
+
+        // NEXT post button
+        nextBtn.onclick = () => {
+          const allIds = images
+            .map((it) => Number(it.id))
+            .filter((n) => !Number.isNaN(n))
+            .sort((a, b) => a - b);
+
+          const current = Number(post.id);
+          const idx = allIds.indexOf(current);
+          let nextId;
+          if (idx >= 0 && idx < allIds.length - 1) {
+            nextId = allIds[idx + 1];
+          } else {
+            nextId = allIds[0]; // loop to first
+          }
+          window.location.search = "?id=" + nextId;
+        };
+
+        // Web Share API
+        shareBtn.onclick = async () => {
+          const shareUrl = window.location.href;
+          try {
+            if (navigator.share) {
+              await navigator.share({
+                title: t,
+                text: d.slice(0, 100),
+                url: shareUrl,
+              });
+            } else {
+              alert("Share link copied:\n" + shareUrl);
+            }
+          } catch (e) {
+            console.warn(e);
+          }
+        };
+
+        // WhatsApp share
+        whatsBtn.onclick = () => {
+          const shareUrl = encodeURIComponent(window.location.href);
+          const text = encodeURIComponent(t + " – " + d.slice(0, 100));
+          const wa = "https://wa.me/?text=" + text + "%20" + shareUrl;
+          window.open(wa, "_blank");
+        };
+      } catch (err) {
+        console.error(err);
+        titleEl.textContent = "Error loading post";
+        subEl.textContent = "AI Bhai ko JSON load karne mein dikkat aayi.";
+        descEl.textContent =
+          "Network ya JSON URL issue ho सकता hai. Thodi der baad dubara try karo.";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadPost);
+  </script>
+</body>
+</html>
