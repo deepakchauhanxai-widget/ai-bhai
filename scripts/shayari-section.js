@@ -7,6 +7,10 @@ class ShayariSection {
         this.isMobileView = window.innerWidth <= 768;
         this.displayedIndices = new Set(); // Track displayed shayaris
         
+        // Cache busting ke liye
+        this.cacheBuster = Date.now();
+        this.jsonURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/motivational-shayari.json';
+        
         this.init();
     }
 
@@ -20,11 +24,14 @@ class ShayariSection {
         console.log('✅ Shayari Section Initialized!');
     }
 
+    // CACHE BUSTING ADDED - Har bar fresh data milega
     async loadShayaris() {
         try {
             console.log('📁 Loading shayaris from JSON...');
             
-            const response = await fetch('./assets/motivational-shayari.json');
+            // Cache busting parameters add kiye
+            const timestamp = Date.now();
+            const response = await fetch(`${this.jsonURL}?t=${timestamp}&v=${this.cacheBuster}&nocache=${Math.random()}`);
             
             if (!response.ok) {
                 throw new Error('JSON not found');
@@ -290,12 +297,40 @@ class ShayariSection {
         this.renderShayaris();
     }
 
-    refreshShayaris() {
+    // REFRESH WITH CACHE BUSTING
+    async refreshShayaris() {
         console.log('🔄 Refreshing with new random shayaris');
+        
+        // Cache busting update karo
+        this.cacheBuster = Date.now();
+        
+        // Fresh data load karo
+        await this.loadShayaris();
+        
         this.setupRandomOrder();
         this.currentSlide = 0;
         this.renderShayaris();
         showNotification('New motivational shayaris loaded! ✨');
+    }
+
+    // MANUAL FORCE REFRESH FUNCTION - JSON update ke baad call karo
+    async forceRefreshJSON() {
+        console.log('🔄 FORCE REFRESH: Loading fresh JSON data...');
+        
+        // Purani cache clear karo
+        this.cacheBuster = Date.now();
+        this.shayarisData = [];
+        
+        // Fresh data load karo
+        await this.loadShayaris();
+        
+        // Naye random shayaris select karo
+        this.setupRandomOrder();
+        this.currentSlide = 0;
+        this.renderShayaris();
+        
+        showNotification('Shayari database updated! 🎉');
+        console.log('✅ Force refresh completed');
     }
 }
 
@@ -355,7 +390,35 @@ function showNotification(message) {
     }, 3000);
 }
 
+// MANUAL REFRESH FUNCTIONS - JSON update ke baad use karo
+function refreshShayariData() {
+    if (window.shayariInstance) {
+        window.shayariInstance.forceRefreshJSON();
+    } else {
+        console.log('Shayari instance not initialized yet');
+        showNotification('Please wait, loading...');
+    }
+}
+
+function hardRefreshShayari() {
+    // Sab kuch reset karo
+    if (window.shayariInstance) {
+        window.shayariInstance.cacheBuster = Date.now();
+        window.shayariInstance.shayarisData = [];
+        window.shayariInstance.displayedIndices.clear();
+        window.shayariInstance.forceRefreshJSON();
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     window.shayariInstance = new ShayariSection();
 });
+
+// Auto-refresh every 5 minutes (optional)
+setInterval(() => {
+    if (window.shayariInstance) {
+        window.shayariInstance.cacheBuster = Date.now();
+        console.log('🔄 Auto-refreshing shayari data...');
+    }
+}, 300000); // 5 minutes
