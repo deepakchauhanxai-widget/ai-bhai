@@ -9,7 +9,7 @@ class ShayariSection {
         
         // Cache busting ke liye
         this.cacheBuster = Date.now();
-        this.jsonURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/motivational-shayari.json';
+        this.jsonURL = 'https://deepakchauhanxai.xyz/testing-dk/dk-community/data/motivational-shayari.json';
         
         this.init();
     }
