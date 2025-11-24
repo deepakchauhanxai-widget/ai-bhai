@@ -7,6 +7,9 @@ class StoriesBox {
         this.storiesBaseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/stories/';
         this.sectionBaseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/stories-section/';
         
+        // Cache busting ke liye
+        this.cacheBuster = Date.now();
+        
         this.initializeStoriesBox();
     }
 
@@ -33,10 +36,13 @@ class StoriesBox {
         return 'en';
     }
 
-    // Fetch stories data
+    // Fetch stories data - CACHE BUSTING ADDED
     async fetchStoriesData(language) {
         try {
-     const response = await fetch(`${this.storiesBaseURL}stories-${language}.json?v=` + Date.now());
+            // Cache busting - har bar naya timestamp
+            const timestamp = Date.now();
+            const response = await fetch(`${this.storiesBaseURL}stories-${language}.json?t=${timestamp}&v=${this.cacheBuster}`);
+            
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {
@@ -49,10 +55,13 @@ class StoriesBox {
         }
     }
 
-    // Fetch section data
+    // Fetch section data - CACHE BUSTING ADDED
     async fetchSectionData(language) {
         try {
-            const response = await fetch(`${this.sectionBaseURL}${language}.json?v=` + Date.now());
+            // Cache busting - har bar naya timestamp
+            const timestamp = Date.now();
+            const response = await fetch(`${this.sectionBaseURL}${language}.json?t=${timestamp}&v=${this.cacheBuster}`);
+            
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {
@@ -381,9 +390,16 @@ class StoriesBox {
         }
     }
 
-    // Load all data
+    // Load all data - CACHE BUSTING IMPROVED
     async loadStoriesData(language) {
         try {
+            // Cache clear karo purani data
+            this.storiesData = null;
+            this.sectionData = null;
+            
+            // Naya cache buster generate karo
+            this.cacheBuster = Date.now();
+            
             const [storiesData, sectionData] = await Promise.all([
                 this.fetchStoriesData(language),
                 this.fetchSectionData(language)
@@ -392,10 +408,19 @@ class StoriesBox {
             this.storiesData = storiesData;
             this.sectionData = sectionData;
             
-            console.log('Stories data loaded for language:', language);
+            console.log('Stories data loaded for language:', language, 'Cache buster:', this.cacheBuster);
         } catch (error) {
             console.error('Failed to load stories data:', error);
         }
+    }
+
+    // MANUAL REFRESH FUNCTION ADDED
+    async forceRefresh() {
+        console.log('Force refreshing stories data...');
+        this.cacheBuster = Date.now();
+        await this.loadStoriesData(this.currentLanguage);
+        this.renderStoriesBox();
+        this.showToast('Stories updated!');
     }
 
     // Setup language listener
@@ -422,6 +447,9 @@ class StoriesBox {
         this.renderStoriesBox();
 
         console.log('Stories Box initialized with language:', this.currentLanguage);
+        
+        // Global function banaya refresh ke liye
+        window.refreshStories = () => this.forceRefresh();
     }
 }
 
@@ -438,3 +466,13 @@ setTimeout(() => {
         storiesBox = new StoriesBox();
     }
 }, 2000);
+
+// MANUAL REFRESH KE LIYE EXTRA FUNCTION
+// Browser console se bhi call kar sakte ho: refreshStoriesData()
+function refreshStoriesData() {
+    if (window.storiesBox) {
+        window.storiesBox.forceRefresh();
+    } else {
+        console.log('Stories box not initialized yet');
+    }
+}
