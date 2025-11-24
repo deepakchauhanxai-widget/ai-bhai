@@ -6,6 +6,10 @@ class HomeMotivationalBox {
         this.quotesData = [];
         this.isDataLoaded = false;
         
+        // Cache busting ke liye
+        this.cacheBuster = Date.now();
+        this.jsonURL = 'https://deepakchauhanxai.xyz/testing-dk/dk-community/data/motivational-shayari.json';
+        
         this.init();
     }
 
@@ -17,15 +21,17 @@ class HomeMotivationalBox {
         this.loadLikeCount();
     }
 
+    // CACHE BUSTING ADDED - Har bar fresh data milega
     async loadQuotesFromJSON() {
         try {
             console.log('🔄 Loading JSON from URL...');
             
-            // USE THIS ABSOLUTE URL - IT WILL WORK 100%
+            // Cache busting parameters add kiye
+            const timestamp = Date.now();
+            const response = await fetch(`${this.jsonURL}?t=${timestamp}&v=${this.cacheBuster}&nocache=${Math.random()}`);
             
-            const response = await fetch('https://deepakchauhanxai.xyz/testing-dk/dk-community/data/motivational-shayari.json?v=' + Date.now());
-              if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
@@ -66,7 +72,6 @@ class HomeMotivationalBox {
         this.isDataLoaded = true;
     }
 
-    // ... rest of the code remains same as previous
     renderBox() {
         if (!this.isDataLoaded) {
             this.showLoadingState();
@@ -203,6 +208,37 @@ class HomeMotivationalBox {
     saveLikeCount() {
         localStorage.setItem('motivationalBoxLikes', this.likeCount.toString());
     }
+
+    // MANUAL REFRESH FUNCTION - JSON update ke baad call karo
+    async forceRefreshJSON() {
+        console.log('🔄 FORCE REFRESH: Loading fresh JSON data...');
+        
+        // Purani cache clear karo
+        this.cacheBuster = Date.now();
+        this.quotesData = [];
+        this.isDataLoaded = false;
+        
+        // Loading state show karo
+        this.showLoadingState();
+        
+        // Fresh data load karo
+        await this.loadQuotesFromJSON();
+        
+        // Content update karo
+        this.currentQuoteIndex = 0;
+        this.updateContent();
+        
+        this.showNotification('Motivational quotes updated! 🎉');
+        console.log('✅ Force refresh completed');
+    }
+
+    // Auto cache refresh every 2 minutes
+    startAutoCacheRefresh() {
+        setInterval(() => {
+            this.cacheBuster = Date.now();
+            console.log('🔄 Auto cache refresh');
+        }, 120000); // 2 minutes
+    }
 }
 
 // Global functions
@@ -222,6 +258,55 @@ function nextMotivationalQuote() {
     if (window.motivationalBoxInstance) {
         window.motivationalBoxInstance.nextQuote();
     }
+}
+
+// MANUAL REFRESH FUNCTIONS - JSON update ke baad use karo
+function refreshMotivationalData() {
+    if (window.motivationalBoxInstance) {
+        window.motivationalBoxInstance.forceRefreshJSON();
+    } else {
+        console.log('Motivational box instance not initialized yet');
+        showMotivationalNotification('Please wait, loading...');
+    }
+}
+
+function hardRefreshMotivational() {
+    // Sab kuch reset karo
+    if (window.motivationalBoxInstance) {
+        window.motivationalBoxInstance.cacheBuster = Date.now();
+        window.motivationalBoxInstance.quotesData = [];
+        window.motivationalBoxInstance.isDataLoaded = false;
+        window.motivationalBoxInstance.forceRefreshJSON();
+    }
+}
+
+function showMotivationalNotification(message) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #007cf0, #00dfd8);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        font-family: 'Poppins', sans-serif;
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
 }
 
 // CSS for animations
@@ -250,4 +335,13 @@ document.head.appendChild(motivationalBoxStyles);
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     window.motivationalBoxInstance = new HomeMotivationalBox();
+    // Auto cache refresh start karo
+    window.motivationalBoxInstance.startAutoCacheRefresh();
 });
+
+// Fallback initialization
+setTimeout(() => {
+    if (!window.motivationalBoxInstance) {
+        window.motivationalBoxInstance = new HomeMotivationalBox();
+    }
+}, 1000);
