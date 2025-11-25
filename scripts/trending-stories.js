@@ -1,4 +1,4 @@
-// trending-stories.js - Main functionality only
+// trending-stories.js - Clean Design with Share & Copy Only
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
 class TrendingStoriesPopup {
@@ -11,8 +11,6 @@ class TrendingStoriesPopup {
         this.loadMoreBtn = document.getElementById('loadMoreStories');
         this.storiesGrid = document.getElementById('storiesGrid');
         this.storiesCount = document.getElementById('storiesCount');
-        this.viewsCount = document.getElementById('viewsCount');
-        this.likesCount = document.getElementById('likesCount');
         
         console.log('Popup found:', !!this.popup);
         console.log('Open button found:', !!this.openBtn);
@@ -24,7 +22,6 @@ class TrendingStoriesPopup {
             return;
         }
         
-        // Language will be handled by trending-stories-language.js
         this.currentLanguage = 'en';
         this.stories = [];
         this.displayedStoryIds = new Set();
@@ -48,6 +45,8 @@ class TrendingStoriesPopup {
             
             const paths = [
                 'https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json',
+                'https://deepakchauhanxai.xyz/testing/data/trending-stories.json',
+                '/testing-dk/assets/trending-stories.json'
             ];
             
             let response;
@@ -83,10 +82,80 @@ class TrendingStoriesPopup {
 
     loadFallbackStories() {
         console.log('📝 Loading fallback stories...');
-        // Same fallback stories as before...
+        
         this.allStories = [
-            // Your existing fallback stories here...
+            {
+                id: 1,
+                user: {
+                    name: "Deepak Chauhan",
+                    role: "Founder - DK Community",
+                    avatar: "https://deepakchauhanxai.xyz/images/dk-community.jpg"
+                },
+                content: {
+                    en: "Just launched our new AI-powered image sharing platform! 🚀 The response has been amazing with over 10K users in first week.",
+                    hi: "हमने नया AI-powered image sharing platform लॉन्च किया है! 🚀 पहले ही हफ्ते में 10K+ users का amazing response मिला।",
+                    ur: "ہم نے نیا AI-powered image sharing platform لانچ کیا ہے! 🚀 پہلے ہفتے میں 10K+ users کا زبردست response ملا۔"
+                },
+                tags: ["launch", "success", "ai", "community"]
+            },
+            {
+                id: 2,
+                user: {
+                    name: "AI Bhai", 
+                    role: "Artificial Intelligence",
+                    avatar: "https://deepakchauhanxai.xyz/images/AI-bhai.png"
+                },
+                content: {
+                    en: "Analyzed user behavior patterns and found that motivational content gets 3x more engagement! 💡",
+                    hi: "User behavior patterns analyze करके पाया कि motivational content को 3x ज्यादा engagement मिलता है! 💡",
+                    ur: "User behavior patterns کا تجزیہ کرکے پتہ چلا کہ motivational content کو 3x زیادہ engagement ملتا ہے! 💡"
+                },
+                tags: ["analysis", "insights", "motivation", "ai"]
+            },
+            {
+                id: 3,
+                user: {
+                    name: "DK Community",
+                    role: "Brand Official", 
+                    avatar: "https://deepakchauhanxai.xyz/images/dk-community.jpg"
+                },
+                content: {
+                    en: "New feature alert! 🎉 Now you can download images directly and share across social media platforms.",
+                    hi: "New feature alert! 🎉 अब आप directly images download कर सकते हैं और social media पर share कर सकते हैं।",
+                    ur: "New feature alert! 🎉 اب آپ براہ راست images ڈاؤن لوڈ کر سکتے ہیں اور سوشل میڈیا پر شیئر کر سکتے ہیں۔"
+                },
+                tags: ["feature", "update", "download", "share"]
+            },
+            {
+                id: 4,
+                user: {
+                    name: "Deepak Chauhan",
+                    role: "Visionary Leader",
+                    avatar: "https://deepakchauhanxai.xyz/images/dk-community.jpg"
+                },
+                content: {
+                    en: "Human + AI collaboration is the future! Together we're creating something truly amazing. 🤝",
+                    hi: "Human + AI collaboration भविष्य है! साथ मिलकर हम कुछ truly amazing create कर रहे हैं। 🤝",
+                    ur: "Human + AI collaboration مستقبل ہے! مل کر ہم کچھ واقعی حیرت انگیز تخلیق کر رہے ہیں۔ 🤝"
+                },
+                tags: ["collaboration", "future", "innovation", "teamwork"]
+            },
+            {
+                id: 5,
+                user: {
+                    name: "AI Bhai",
+                    role: "Machine Learning",
+                    avatar: "https://deepakchauhanxai.xyz/images/AI-bhai.png"
+                },
+                content: {
+                    en: "Just processed 50K+ images through our AI system. The learning never stops! 🧠",
+                    hi: "हमारे AI system ने 50K+ images process की। Learning कभी नहीं रुकती! 🧠", 
+                    ur: "ہمارے AI system نے 50K+ images پراسیس کی۔ سیکھنا کبھی نہیں رکتا! 🧠"
+                },
+                tags: ["processing", "learning", "scale", "technology"]
+            }
         ];
+        
         console.log('✅ Fallback stories loaded:', this.allStories.length);
     }
 
@@ -157,7 +226,6 @@ class TrendingStoriesPopup {
     openPopup() {
         console.log('🎯 Opening popup...');
         
-        // Get current language from language handler
         if (window.trendingStoriesLanguage) {
             this.currentLanguage = window.trendingStoriesLanguage.currentLanguage;
             console.log('🌐 Current language from handler:', this.currentLanguage);
@@ -165,7 +233,6 @@ class TrendingStoriesPopup {
             console.log('⚠️ Language handler not available, using default');
         }
         
-        // 3 random stories select karo
         this.stories = this.getRandomStories(this.storiesPerPage);
         console.log('🎲 Selected random stories:', this.stories.map(s => s.id));
         
@@ -199,7 +266,7 @@ class TrendingStoriesPopup {
                     <div class="story-header">
                         <div class="story-avatar">
                             <img src="${story.user.avatar}" alt="${story.user.name}" 
-                                 onerror="this.src='images/AI-bhai.png'">
+                                 onerror="this.src='https://deepakchauhanxai.xyz/images/AI-bhai.png'">
                         </div>
                         <div class="story-user-info">
                             <h4>${story.user.name}</h4>
@@ -215,23 +282,20 @@ class TrendingStoriesPopup {
                         ${story.tags.map(tag => `<span class="story-tag">#${tag}</span>`).join('')}
                     </div>
                     
-                    <div class="story-stats">
-                        <div class="story-stat">
-                            <span>👁️</span>
-                            <span>${this.formatNumber(story.stats.views)}</span>
-                        </div>
-                        <div class="story-stat">
-                            <span>❤️</span>
-                            <span>${this.formatNumber(story.stats.likes)}</span>
-                        </div>
-                        <div class="story-stat">
+                    <!-- 🔥 ONLY SHARE & COPY BUTTONS -->
+                    <div class="story-actions">
+                        <button class="story-action-btn share-btn" onclick="trendingPopup.shareStory(${story.id})">
                             <span>📤</span>
-                            <span>${this.formatNumber(story.stats.shares)}</span>
-                        </div>
-                        <div class="story-stat">
-                            <span>📅</span>
-                            <span>${this.formatDate(story.stats.timestamp)}</span>
-                        </div>
+                            <span data-lang="en">Share</span>
+                            <span data-lang="hi">शेयर</span>
+                            <span data-lang="ur">شیئر</span>
+                        </button>
+                        <button class="story-action-btn copy-btn" onclick="trendingPopup.copyStory(${story.id})">
+                            <span>📋</span>
+                            <span data-lang="en">Copy</span>
+                            <span data-lang="hi">कॉपी</span>
+                            <span data-lang="ur">کاپی</span>
+                        </button>
                     </div>
                 </div>
             `;
@@ -239,9 +303,74 @@ class TrendingStoriesPopup {
             this.storiesGrid.innerHTML += storyHTML;
         });
 
+        this.updateLanguageTexts();
         this.updateStats();
         this.updateLoadMoreButton();
         console.log('✅ Stories rendered successfully');
+    }
+
+    // 🔥 SHARE STORY FUNCTION
+    shareStory(storyId) {
+        const story = this.allStories.find(s => s.id === storyId);
+        if (!story) return;
+
+        const content = story.content[this.currentLanguage] || story.content.en;
+        const shareText = `${story.user.name}: ${content}`;
+        const shareUrl = window.location.href;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'DK Community Story',
+                text: shareText,
+                url: shareUrl,
+            }).then(() => {
+                this.showNotification('Story shared successfully! 📤');
+            }).catch(() => {
+                this.copyToClipboard(shareText);
+            });
+        } else {
+            this.copyToClipboard(shareText);
+        }
+    }
+
+    // 🔥 COPY STORY FUNCTION
+    copyStory(storyId) {
+        const story = this.allStories.find(s => s.id === storyId);
+        if (!story) return;
+
+        const content = story.content[this.currentLanguage] || story.content.en;
+        const copyText = `${story.user.name}: ${content}`;
+        
+        this.copyToClipboard(copyText);
+    }
+
+    // 🔥 COPY TO CLIPBOARD
+    copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            this.showNotification('Copied to clipboard! 📋');
+        }).catch(() => {
+            // Fallback
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            this.showNotification('Copied to clipboard! 📋');
+        });
+    }
+
+    updateLanguageTexts() {
+        // Update all language texts in the popup
+        const elements = document.querySelectorAll('[data-lang]');
+        elements.forEach(element => {
+            element.style.display = 'none';
+        });
+
+        const currentLangElements = document.querySelectorAll(`[data-lang="${this.currentLanguage}"]`);
+        currentLangElements.forEach(element => {
+            element.style.display = 'inline';
+        });
     }
 
     loadMoreStories() {
@@ -254,12 +383,7 @@ class TrendingStoriesPopup {
 
     updateStats() {
         const totalStories = this.allStories.length;
-        const totalViews = this.allStories.reduce((sum, story) => sum + story.stats.views, 0);
-        const totalLikes = this.allStories.reduce((sum, story) => sum + story.stats.likes, 0);
-
         if (this.storiesCount) this.storiesCount.textContent = totalStories;
-        if (this.viewsCount) this.viewsCount.textContent = this.formatNumber(totalViews);
-        if (this.likesCount) this.likesCount.textContent = this.formatNumber(totalLikes);
     }
 
     updateLoadMoreButton() {
@@ -271,36 +395,29 @@ class TrendingStoriesPopup {
         }
     }
 
-    formatNumber(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M';
-        } else if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K';
-        }
-        return num.toString();
-    }
-
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        if (diffDays === 1) return 'Yesterday';
-        if (diffDays < 7) return `${diffDays}d ago`;
-        if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-        return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-    }
-
     showNotification(message) {
-        const existingNotification = document.querySelector('.notification');
+        const existingNotification = document.querySelector('.story-notification');
         if (existingNotification) {
             existingNotification.remove();
         }
 
         const notification = document.createElement('div');
-        notification.className = 'notification';
+        notification.className = 'story-notification';
         notification.textContent = message;
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10001;
+            animation: slideInRight 0.3s ease;
+            font-weight: 500;
+        `;
         
         document.body.appendChild(notification);
         
