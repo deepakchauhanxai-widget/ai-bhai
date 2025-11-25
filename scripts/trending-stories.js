@@ -47,10 +47,7 @@ class TrendingStoriesPopup {
             console.log('📁 Loading stories from JSON...');
             
             const paths = [
-                './assets/trending-stories.json',
-                '../assets/trending-stories.json',
-                'assets/trending-stories.json',
-                '/assets/trending-stories.json'
+                'https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json',
             ];
             
             let response;
