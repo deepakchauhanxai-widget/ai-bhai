@@ -1,4 +1,4 @@
-// trending-stories.js - Clean Design with Share & Copy Only
+// trending-stories.js - With Auto Update System
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
 class TrendingStoriesPopup {
@@ -14,8 +14,6 @@ class TrendingStoriesPopup {
         
         console.log('Popup found:', !!this.popup);
         console.log('Open button found:', !!this.openBtn);
-        console.log('Close button found:', !!this.closeBtn);
-        console.log('Stories grid found:', !!this.storiesGrid);
         
         if (!this.popup || !this.openBtn) {
             console.error('❌ Required elements not found!');
@@ -25,8 +23,10 @@ class TrendingStoriesPopup {
         this.currentLanguage = 'en';
         this.stories = [];
         this.displayedStoryIds = new Set();
-        this.storiesPerPage = 3;
+        this.storiesPerPage = 5; // 🔥 Multiple stories
         this.allStories = [];
+        this.lastUpdateTime = null;
+        this.updateInterval = null;
         
         this.init();
     }
@@ -35,8 +35,65 @@ class TrendingStoriesPopup {
         console.log('🎯 Initializing Trending Stories Popup...');
         await this.loadStoriesFromJSON();
         this.setupEventListeners();
-        this.updateStats();
+        this.startAutoUpdate();
         console.log('✅ Trending Stories Popup Ready!');
+    }
+
+    // 🔥 AUTO UPDATE SYSTEM
+    startAutoUpdate() {
+        // हर 2 मिनट में automatically check for updates
+        this.updateInterval = setInterval(async () => {
+            console.log('🔄 Auto-checking for JSON updates...');
+            await this.checkForUpdates();
+        }, 2 * 60 * 1000); // 2 minutes
+        
+        console.log('🔄 Auto-update system started (every 2 minutes)');
+    }
+
+    async checkForUpdates() {
+        try {
+            const response = await fetch('https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json?v=' + Date.now());
+            
+            if (!response.ok) return;
+            
+            const data = await response.json();
+            const newStories = data.stories || [];
+            
+            // Check if new stories are available
+            if (this.hasNewStories(newStories)) {
+                console.log('🆕 New stories found! Updating...');
+                this.allStories = newStories;
+                this.displayedStoryIds.clear(); // Reset displayed stories
+                
+                // If popup is open, refresh the stories
+                if (this.popup.classList.contains('active')) {
+                    this.stories = this.getRandomStories(this.storiesPerPage);
+                    this.renderStories();
+                    this.showNotification('New stories updated! 🎉');
+                }
+                
+                this.lastUpdateTime = Date.now();
+            }
+        } catch (error) {
+            console.log('❌ Auto-update check failed:', error);
+        }
+    }
+
+    hasNewStories(newStories) {
+        if (newStories.length !== this.allStories.length) return true;
+        
+        // Check if any story content has changed
+        for (let i = 0; i < newStories.length; i++) {
+            const newStory = newStories[i];
+            const oldStory = this.allStories[i];
+            
+            if (!oldStory || newStory.id !== oldStory.id || 
+                JSON.stringify(newStory.content) !== JSON.stringify(oldStory.content)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     async loadStoriesFromJSON() {
@@ -44,9 +101,8 @@ class TrendingStoriesPopup {
             console.log('📁 Loading stories from JSON...');
             
             const paths = [
-                'https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json',
-                'https://deepakchauhanxai.xyz/testing/data/trending-stories.json',
-                '/testing-dk/assets/trending-stories.json'
+                'https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json?v=' + Date.now(),
+                'https://deepakchauhanxai.xyz/testing/data/trending-stories.json?v=' + Date.now()
             ];
             
             let response;
@@ -70,8 +126,14 @@ class TrendingStoriesPopup {
             }
             
             const data = await response.json();
-            this.allStories = data.stories;
-            console.log(`✅ Stories loaded from JSON: ${this.allStories.length} stories`);
+            this.allStories = data.stories || [];
+            this.lastUpdateTime = Date.now();
+            
+            console.log(`✅ Stories loaded: ${this.allStories.length} stories`);
+            
+            if (this.allStories.length === 0) {
+                throw new Error('JSON loaded but no stories found');
+            }
             
         } catch (error) {
             console.error('❌ Error loading JSON:', error);
@@ -164,14 +226,14 @@ class TrendingStoriesPopup {
             !this.displayedStoryIds.has(story.id)
         );
 
-        if (availableStories.length < count) {
-            console.log('🔄 Resetting displayed stories');
+        if (availableStories.length === 0) {
+            console.log('🔄 All stories shown, resetting...');
             this.displayedStoryIds.clear();
             return this.allStories.slice(0, count);
         }
 
         const shuffled = [...availableStories].sort(() => 0.5 - Math.random());
-        const selectedStories = shuffled.slice(0, count);
+        const selectedStories = shuffled.slice(0, Math.min(count, availableStories.length));
 
         selectedStories.forEach(story => {
             this.displayedStoryIds.add(story.id);
@@ -229,16 +291,16 @@ class TrendingStoriesPopup {
         if (window.trendingStoriesLanguage) {
             this.currentLanguage = window.trendingStoriesLanguage.currentLanguage;
             console.log('🌐 Current language from handler:', this.currentLanguage);
-        } else {
-            console.log('⚠️ Language handler not available, using default');
         }
         
+        // 🔥 Multiple stories load करो
         this.stories = this.getRandomStories(this.storiesPerPage);
-        console.log('🎲 Selected random stories:', this.stories.map(s => s.id));
+        console.log('🎲 Selected stories:', this.stories.map(s => s.id));
         
         this.popup.classList.add('active');
         document.body.style.overflow = 'hidden';
         this.renderStories();
+        this.updateStats();
         console.log('✅ Popup opened successfully');
     }
 
@@ -282,15 +344,14 @@ class TrendingStoriesPopup {
                         ${story.tags.map(tag => `<span class="story-tag">#${tag}</span>`).join('')}
                     </div>
                     
-                    <!-- 🔥 ONLY SHARE & COPY BUTTONS -->
                     <div class="story-actions">
-                        <button class="story-action-btn share-btn" onclick="trendingPopup.shareStory(${story.id})">
+                        <button class="story-action-btn share-btn" onclick="window.trendingPopup.shareStory(${story.id})">
                             <span>📤</span>
                             <span data-lang="en">Share</span>
                             <span data-lang="hi">शेयर</span>
                             <span data-lang="ur">شیئر</span>
                         </button>
-                        <button class="story-action-btn copy-btn" onclick="trendingPopup.copyStory(${story.id})">
+                        <button class="story-action-btn copy-btn" onclick="window.trendingPopup.copyStory(${story.id})">
                             <span>📋</span>
                             <span data-lang="en">Copy</span>
                             <span data-lang="hi">कॉपी</span>
@@ -304,12 +365,22 @@ class TrendingStoriesPopup {
         });
 
         this.updateLanguageTexts();
-        this.updateStats();
         this.updateLoadMoreButton();
         console.log('✅ Stories rendered successfully');
     }
 
-    // 🔥 SHARE STORY FUNCTION
+    updateLanguageTexts() {
+        const elements = document.querySelectorAll('[data-lang]');
+        elements.forEach(element => {
+            element.style.display = 'none';
+        });
+
+        const currentLangElements = document.querySelectorAll(`[data-lang="${this.currentLanguage}"]`);
+        currentLangElements.forEach(element => {
+            element.style.display = 'inline';
+        });
+    }
+
     shareStory(storyId) {
         const story = this.allStories.find(s => s.id === storyId);
         if (!story) return;
@@ -333,7 +404,6 @@ class TrendingStoriesPopup {
         }
     }
 
-    // 🔥 COPY STORY FUNCTION
     copyStory(storyId) {
         const story = this.allStories.find(s => s.id === storyId);
         if (!story) return;
@@ -344,12 +414,10 @@ class TrendingStoriesPopup {
         this.copyToClipboard(copyText);
     }
 
-    // 🔥 COPY TO CLIPBOARD
     copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
             this.showNotification('Copied to clipboard! 📋');
         }).catch(() => {
-            // Fallback
             const textArea = document.createElement('textarea');
             textArea.value = text;
             document.body.appendChild(textArea);
@@ -357,19 +425,6 @@ class TrendingStoriesPopup {
             document.execCommand('copy');
             document.body.removeChild(textArea);
             this.showNotification('Copied to clipboard! 📋');
-        });
-    }
-
-    updateLanguageTexts() {
-        // Update all language texts in the popup
-        const elements = document.querySelectorAll('[data-lang]');
-        elements.forEach(element => {
-            element.style.display = 'none';
-        });
-
-        const currentLangElements = document.querySelectorAll(`[data-lang="${this.currentLanguage}"]`);
-        currentLangElements.forEach(element => {
-            element.style.display = 'inline';
         });
     }
 
@@ -404,12 +459,11 @@ class TrendingStoriesPopup {
         const notification = document.createElement('div');
         notification.className = 'story-notification';
         notification.textContent = message;
-        
         notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #4CAF50;
+            background: #10b981;
             color: white;
             padding: 12px 20px;
             border-radius: 8px;
@@ -417,6 +471,7 @@ class TrendingStoriesPopup {
             z-index: 10001;
             animation: slideInRight 0.3s ease;
             font-weight: 500;
+            font-family: 'Segoe UI', 'Inter', sans-serif;
         `;
         
         document.body.appendChild(notification);
@@ -429,6 +484,13 @@ class TrendingStoriesPopup {
                 }
             }, 300);
         }, 2000);
+    }
+
+    // Cleanup on destroy
+    destroy() {
+        if (this.updateInterval) {
+            clearInterval(this.updateInterval);
+        }
     }
 }
 
@@ -455,11 +517,11 @@ document.addEventListener('DOMContentLoaded', function() {
     window.trendingPopup = new TrendingStoriesPopup();
 });
 
-setTimeout(() => {
-    if (!window.trendingPopup) {
-        console.log('🔄 Fallback initialization');
-        window.trendingPopup = new TrendingStoriesPopup();
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (window.trendingPopup) {
+        window.trendingPopup.destroy();
     }
-}, 1000);
+});
 
 console.log('✅ trending-stories.js execution complete');
