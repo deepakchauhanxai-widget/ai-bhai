@@ -1,4 +1,4 @@
-// trending-stories.js - Main functionality only
+// trending-stories.js - Updated with only Share button
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
 class TrendingStoriesPopup {
@@ -24,7 +24,6 @@ class TrendingStoriesPopup {
             return;
         }
         
-        // Language will be handled by trending-stories-language.js
         this.currentLanguage = 'en';
         this.stories = [];
         this.displayedStoryIds = new Set();
@@ -83,9 +82,64 @@ class TrendingStoriesPopup {
 
     loadFallbackStories() {
         console.log('📝 Loading fallback stories...');
-        // Same fallback stories as before...
         this.allStories = [
-            // Your existing fallback stories here...
+            {
+                id: 1,
+                user: {
+                    name: "AI Bhai",
+                    role: "AI Assistant",
+                    avatar: "images/AI-bhai.png"
+                },
+                content: {
+                    en: "Just helped another developer debug their code! The satisfaction of solving complex problems never gets old. 🚀",
+                    hi: "एक और डेवलपर को उनके कोड को डीबग करने में मदद की! जटिल समस्याओं को हल करने की संतुष्टि कभी पुरानी नहीं पड़ती। 🚀"
+                },
+                tags: ["coding", "help", "debug"],
+                stats: {
+                    views: 1500,
+                    likes: 89,
+                    shares: 45,
+                    timestamp: "2024-01-15"
+                }
+            },
+            {
+                id: 2,
+                user: {
+                    name: "Tech Guru",
+                    role: "Senior Developer",
+                    avatar: "images/user1.jpg"
+                },
+                content: {
+                    en: "Built an amazing AI chatbot today that can understand multiple languages! The future is here. 🤖",
+                    hi: "आज एक अद्भुत AI चैटबॉट बनाया जो कई भाषाएं समझ सकता है! भविष्य यहाँ है। 🤖"
+                },
+                tags: ["ai", "chatbot", "innovation"],
+                stats: {
+                    views: 2300,
+                    likes: 156,
+                    shares: 78,
+                    timestamp: "2024-01-14"
+                }
+            },
+            {
+                id: 3,
+                user: {
+                    name: "Code Master",
+                    role: "Full Stack Dev",
+                    avatar: "images/user2.jpg"
+                },
+                content: {
+                    en: "Just completed a massive project with React and Node.js! The feeling of accomplishment is incredible. 💻",
+                    hi: "React और Node.js के साथ एक बड़ी प्रोजेक्ट पूरी की! उपलब्धि की भावना अविश्वसनीय है। 💻"
+                },
+                tags: ["react", "nodejs", "project"],
+                stats: {
+                    views: 1800,
+                    likes: 112,
+                    shares: 63,
+                    timestamp: "2024-01-13"
+                }
+            }
         ];
         console.log('✅ Fallback stories loaded:', this.allStories.length);
     }
@@ -157,7 +211,6 @@ class TrendingStoriesPopup {
     openPopup() {
         console.log('🎯 Opening popup...');
         
-        // Get current language from language handler
         if (window.trendingStoriesLanguage) {
             this.currentLanguage = window.trendingStoriesLanguage.currentLanguage;
             console.log('🌐 Current language from handler:', this.currentLanguage);
@@ -165,7 +218,6 @@ class TrendingStoriesPopup {
             console.log('⚠️ Language handler not available, using default');
         }
         
-        // 3 random stories select karo
         this.stories = this.getRandomStories(this.storiesPerPage);
         console.log('🎲 Selected random stories:', this.stories.map(s => s.id));
         
@@ -216,22 +268,10 @@ class TrendingStoriesPopup {
                     </div>
                     
                     <div class="story-stats">
-                        <div class="story-stat">
-                            <span>👁️</span>
-                            <span>${this.formatNumber(story.stats.views)}</span>
-                        </div>
-                        <div class="story-stat">
-                            <span>❤️</span>
-                            <span>${this.formatNumber(story.stats.likes)}</span>
-                        </div>
-                        <div class="story-stat">
+                        <button class="share-btn" onclick="trendingPopup.shareStory(${story.id})">
                             <span>📤</span>
-                            <span>${this.formatNumber(story.stats.shares)}</span>
-                        </div>
-                        <div class="story-stat">
-                            <span>📅</span>
-                            <span>${this.formatDate(story.stats.timestamp)}</span>
-                        </div>
+                            Share (${this.formatNumber(story.stats.shares)})
+                        </button>
                     </div>
                 </div>
             `;
@@ -242,6 +282,44 @@ class TrendingStoriesPopup {
         this.updateStats();
         this.updateLoadMoreButton();
         console.log('✅ Stories rendered successfully');
+    }
+
+    shareStory(storyId) {
+        const story = this.allStories.find(s => s.id === storyId);
+        if (!story) return;
+
+        // Increase share count
+        story.stats.shares += 1;
+        
+        // Show share options
+        this.showShareOptions(story);
+        
+        // Update the displayed count
+        this.renderStories();
+        
+        console.log(`📤 Story ${storyId} shared! Total shares: ${story.stats.shares}`);
+    }
+
+    showShareOptions(story) {
+        const shareText = `Check out this amazing story: "${story.content.en.substring(0, 100)}..."`;
+        const shareUrl = window.location.href;
+        
+        if (navigator.share) {
+            // Use Web Share API if available
+            navigator.share({
+                title: 'Trending Story',
+                text: shareText,
+                url: shareUrl,
+            })
+            .then(() => console.log('Successful share'))
+            .catch((error) => console.log('Error sharing:', error));
+        } else {
+            // Fallback: Copy to clipboard
+            const textToCopy = `${shareText}\n\n${shareUrl}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                this.showNotification('Story link copied to clipboard! 📋');
+            });
+        }
     }
 
     loadMoreStories() {
@@ -278,18 +356,6 @@ class TrendingStoriesPopup {
             return (num / 1000).toFixed(1) + 'K';
         }
         return num.toString();
-    }
-
-    formatDate(dateString) {
-        const date = new Date(dateString);
-        const now = new Date();
-        const diffTime = Math.abs(now - date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        if (diffDays === 1) return 'Yesterday';
-        if (diffDays < 7) return `${diffDays}d ago`;
-        if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-        return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
     }
 
     showNotification(message) {
