@@ -268,24 +268,63 @@
     font-size: 1.05rem;
 }
 
+/* Updated Story Stats - Only Share Button */
 .story-stats {
     display: flex;
-    gap: 20px;
+    justify-content: flex-end;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 15px;
 }
 
-.story-stat {
+.share-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #718096;
     font-size: 0.9rem;
-    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
-.story-stat span:first-child {
-    font-size: 1.1rem;
+.share-btn:hover {
+    background: linear-gradient(135deg, #45a049, #4CAF50);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
+
+.share-btn:active {
+    transform: translateY(0);
+}
+
+/* Story Tags */
+.story-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.story-tag {
+    background: linear-gradient(135deg, #ff6b6b, #ff9ff3);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: lowercase;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    transition: all 0.3s ease;
+}
+
+.story-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.5);
 }
 
 /* Popup Footer */
@@ -341,58 +380,6 @@
 
 .load-more-btn:hover .load-icon {
     transform: rotate(180deg);
-}
-
-/* Story Tags */
-.story-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.story-tag {
-    background: linear-gradient(135deg, #ff6b6b, #ff9ff3);
-    color: white;
-    padding: 4px 12px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: lowercase;
-    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-    transition: all 0.3s ease;
-}
-
-.story-tag:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.5);
-}
-
-/* Story Stats Enhancement */
-.story-stats {
-    display: flex;
-    gap: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    padding-top: 15px;
-}
-
-.story-stat {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #718096;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.story-stat:hover {
-    color: #ff6b6b;
-    transform: scale(1.05);
-}
-
-.story-stat span:first-child {
-    font-size: 1.1rem;
 }
 
 /* Mobile Responsive for Popup */
