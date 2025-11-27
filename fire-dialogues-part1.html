@@ -277,12 +277,12 @@
                 this.partNumber = partNumber;
                 this.baseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/fire-dialogues/';
                 this.lastFetchTime = 0;
-                this.cacheDuration = 30000; // 30 seconds cache only
+                this.cacheDuration = 10000; // 10 seconds cache only
                 
                 this.initializePage();
             }
 
-            // Get ALL shayaris - no daily rotation
+            // Get ALL shayaris - NO daily rotation, NO date calculation
             getAllShayaris() {
                 if (!this.pageData || !this.pageData.shayaris) return [];
                 return this.pageData.shayaris;
@@ -480,7 +480,7 @@
                 }, 2000);
             }
 
-            // Auto-refresh data every minute
+            // Auto-refresh data every 30 seconds
             setupAutoRefresh() {
                 setInterval(() => {
                     this.loadPageData(this.currentLanguage, true)
@@ -489,7 +489,7 @@
                             this.renderPageContent();
                             console.log('Auto-refreshed data');
                         });
-                }, 60000); // Refresh every 1 minute
+                }, 30000); // Refresh every 30 seconds
             }
 
             // Initialize page
