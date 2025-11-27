@@ -1,4 +1,4 @@
-// trending-stories.js - Final Cache Busting Version
+// trending-stories.js - Final Improved Version
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
 class TrendingStoriesPopup {
@@ -29,6 +29,8 @@ class TrendingStoriesPopup {
         this.displayedStoryIds = new Set();
         this.storiesPerPage = 3;
         this.allStories = [];
+        this.lastFetchTime = 0;
+        this.cacheDuration = 5000; // 5 seconds cache
         
         this.init();
     }
@@ -45,6 +47,13 @@ class TrendingStoriesPopup {
         try {
             console.log('📁 Loading stories from JSON...');
             
+            // Cache control - har 5 second mein fresh data lenge
+            const currentTime = Date.now();
+            if (currentTime - this.lastFetchTime < this.cacheDuration && this.allStories.length > 0) {
+                console.log('⚡ Using cached stories');
+                return;
+            }
+            
             const paths = [
                 'https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json',
             ];
@@ -55,14 +64,16 @@ class TrendingStoriesPopup {
                 try {
                     console.log(`🔍 Trying JSON path: ${path}`);
                     
-                    // Cache busting - no-store use karo
-                    response = await fetch(path, {
+                    // Smart cache busting - timestamp ke saath
+                    const timestamp = new Date().getTime();
+                    const cacheBustedPath = `${path}?t=${timestamp}`;
+                    
+                    console.log(`🔍 Cache busted path: ${cacheBustedPath}`);
+                    
+                    response = await fetch(cacheBustedPath, {
                         method: 'GET',
-                        cache: 'no-store', // 👈 YEH LINE IMPORTANT HAI
-                        headers: {
-                            'Cache-Control': 'no-cache, no-store, must-revalidate',
-                            'Pragma': 'no-cache'
-                        }
+                        // Cache control without CORS issues
+                        cache: 'no-cache'
                     });
                     
                     if (response.ok) {
@@ -81,7 +92,10 @@ class TrendingStoriesPopup {
             
             const data = await response.json();
             this.allStories = data.stories;
+            this.lastFetchTime = Date.now();
+            
             console.log(`✅ Fresh stories loaded: ${this.allStories.length} stories`);
+            console.log('📊 Latest stories:', this.allStories.map(s => ({ id: s.id, content: s.content.en.substring(0, 50) })));
             
         } catch (error) {
             console.error('❌ Error loading JSON:', error);
@@ -218,8 +232,11 @@ class TrendingStoriesPopup {
         console.log('✅ All event listeners setup');
     }
 
-    openPopup() {
+    async openPopup() {
         console.log('🎯 Opening popup...');
+        
+        // Popup open karte time fresh data load karo
+        await this.loadStoriesFromJSON();
         
         if (window.trendingStoriesLanguage) {
             this.currentLanguage = window.trendingStoriesLanguage.currentLanguage;
@@ -234,7 +251,7 @@ class TrendingStoriesPopup {
         this.popup.classList.add('active');
         document.body.style.overflow = 'hidden';
         this.renderStories();
-        console.log('✅ Popup opened successfully');
+        console.log('✅ Popup opened with fresh data');
     }
 
     closePopup() {
@@ -251,6 +268,8 @@ class TrendingStoriesPopup {
         }
 
         console.log('🎨 Rendering stories in language:', this.currentLanguage);
+        console.log('📝 Available stories:', this.allStories.length);
+        
         this.storiesGrid.innerHTML = '';
 
         this.stories.forEach((story) => {
@@ -390,19 +409,19 @@ class TrendingStoriesPopup {
         }, 2000);
     }
 
-    // NEW METHOD: Force refresh stories
-    async refreshStories() {
+    // NEW: Force refresh method
+    async forceRefreshStories() {
         console.log('🔄 Force refreshing stories...');
+        this.lastFetchTime = 0; // Cache reset
         this.displayedStoryIds.clear();
         await this.loadStoriesFromJSON();
         
         if (this.popup.classList.contains('active')) {
             this.stories = this.getRandomStories(this.storiesPerPage);
             this.renderStories();
-            this.showNotification('Stories refreshed! ✨');
         }
         
-        this.updateStats();
+        this.showNotification('Stories refreshed with latest data! 🔄');
     }
 }
 
@@ -427,9 +446,8 @@ function openTrendingStories() {
 function refreshTrendingStories() {
     console.log('🌍 Global refresh function called');
     if (window.trendingPopup) {
-        window.trendingPopup.refreshStories();
+        window.trendingPopup.forceRefreshStories();
     } else {
-        console.log('🔄 Creating new instance');
         window.trendingPopup = new TrendingStoriesPopup();
     }
 }
@@ -440,11 +458,12 @@ document.addEventListener('DOMContentLoaded', function() {
     window.trendingPopup = new TrendingStoriesPopup();
 });
 
-setTimeout(() => {
-    if (!window.trendingPopup) {
-        console.log('🔄 Fallback initialization');
-        window.trendingPopup = new TrendingStoriesPopup();
+// Auto-refresh every 30 seconds if popup is open
+setInterval(() => {
+    if (window.trendingPopup && window.trendingPopup.popup.classList.contains('active')) {
+        console.log('⏰ Auto-refreshing stories...');
+        window.trendingPopup.forceRefreshStories();
     }
-}, 1000);
+}, 30000);
 
 console.log('✅ trending-stories.js execution complete');
