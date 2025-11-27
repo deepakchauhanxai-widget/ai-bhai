@@ -159,6 +159,30 @@
             box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
         }
 
+        /* Refresh Button */
+        .refresh-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient);
+            color: var(--dark);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -218,6 +242,10 @@
     </style>
 </head>
 <body>
+    <button class="refresh-btn" onclick="fireDialoguesPage.forceRefresh()">
+        🔄 Refresh
+    </button>
+
     <div class="container">
         <div class="header">
             <h1 class="page-title" id="pageTitle">Fire Dialogues - Part 1</h1>
@@ -248,22 +276,16 @@
                 this.pageData = null;
                 this.partNumber = partNumber;
                 this.baseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/fire-dialogues/';
+                this.lastFetchTime = 0;
+                this.cacheDuration = 30000; // 30 seconds cache only
                 
                 this.initializePage();
             }
 
-            // Get daily shayari indices (10 per day)
-            getDailyShayariIndices() {
-                const startDate = new Date('2024-01-01');
-                const today = new Date();
-                const diffTime = Math.abs(today - startDate);
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                
-                const indices = [];
-                for (let i = 0; i < 10; i++) {
-                    indices.push((diffDays * 10 + i) % 100); // Assuming 100 shayaris total
-                }
-                return indices;
+            // Get ALL shayaris - no daily rotation
+            getAllShayaris() {
+                if (!this.pageData || !this.pageData.shayaris) return [];
+                return this.pageData.shayaris;
             }
 
             // Language detection
@@ -280,12 +302,17 @@
                 return 'en';
             }
 
-            // Fetch page data
+            // Fetch page data with cache busting
             async fetchPageData(language) {
                 try {
-                    const response = await fetch(`${this.baseURL}part${this.partNumber}-${language}.json`);
+                    const cacheBuster = `?t=${Date.now()}`; // Cache busting
+                    const response = await fetch(`${this.baseURL}part${this.partNumber}-${language}.json${cacheBuster}`);
+                    
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return await response.json();
+                    
+                    const data = await response.json();
+                    this.lastFetchTime = Date.now();
+                    return data;
                 } catch (error) {
                     console.error('Error fetching page data:', error);
                     // Fallback to English
@@ -296,14 +323,13 @@
                 }
             }
 
-            // Get today's shayaris
-            getTodaysShayaris() {
-                if (!this.pageData || !this.pageData.shayaris) return [];
-                
-                const indices = this.getDailyShayariIndices();
-                return indices.map(index => 
-                    this.pageData.shayaris[index % this.pageData.shayaris.length]
-                ).filter(shayari => shayari);
+            // Force refresh data
+            async forceRefresh() {
+                this.showToast('Refreshing data...');
+                await this.loadPageData(this.currentLanguage, true);
+                this.updatePageTitles();
+                this.renderPageContent();
+                this.showToast('Data refreshed successfully!');
             }
 
             // Share individual shayari
@@ -336,17 +362,26 @@
 
             // Show toast message
             showToast(message) {
+                // Remove existing toast
+                const existingToast = document.querySelector('.toast-message');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
                 const toast = document.createElement('div');
+                toast.className = 'toast-message';
                 toast.style.cssText = `
                     position: fixed;
                     bottom: 20px;
                     left: 50%;
                     transform: translateX(-50%);
-                    background: #333;
-                    color: white;
+                    background: var(--gradient);
+                    color: var(--dark);
                     padding: 12px 24px;
                     border-radius: 25px;
                     z-index: 10000;
+                    font-weight: 600;
+                    box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
                 `;
                 toast.textContent = message;
                 document.body.appendChild(toast);
@@ -358,13 +393,13 @@
                 }, 3000);
             }
 
-            // Render page content
+            // Render page content - ALL shayaris
             renderPageContent() {
-                const shayaris = this.getTodaysShayaris();
+                const shayaris = this.getAllShayaris();
                 const container = document.getElementById('contentContainer');
 
                 if (!shayaris.length) {
-                    container.innerHTML = '<div class="error-message">No shayaris available for today</div>';
+                    container.innerHTML = '<div class="error-message">No shayaris available</div>';
                     return;
                 }
 
@@ -415,13 +450,18 @@
                 }
             }
 
-            // Load page data
-            async loadPageData(language) {
-                try {
-                    this.pageData = await this.fetchPageData(language);
-                    console.log(`Fire Dialogues Part ${this.partNumber} data loaded for language:`, language);
-                } catch (error) {
-                    console.error('Failed to load page data:', error);
+            // Load page data with cache control
+            async loadPageData(language, forceRefresh = false) {
+                const now = Date.now();
+                const shouldRefresh = forceRefresh || (now - this.lastFetchTime > this.cacheDuration);
+
+                if (shouldRefresh) {
+                    try {
+                        this.pageData = await this.fetchPageData(language);
+                        console.log(`Fire Dialogues Part ${this.partNumber} data loaded for language:`, language);
+                    } catch (error) {
+                        console.error('Failed to load page data:', error);
+                    }
                 }
             }
 
@@ -431,20 +471,34 @@
                     this.handleLanguageChange(event.detail.language);
                 });
 
+                // Check for language changes every 2 seconds
                 setInterval(() => {
                     const newLang = this.syncWithWebsiteLanguage();
                     if (newLang !== this.currentLanguage) {
                         this.handleLanguageChange(newLang);
                     }
-                }, 1000);
+                }, 2000);
+            }
+
+            // Auto-refresh data every minute
+            setupAutoRefresh() {
+                setInterval(() => {
+                    this.loadPageData(this.currentLanguage, true)
+                        .then(() => {
+                            this.updatePageTitles();
+                            this.renderPageContent();
+                            console.log('Auto-refreshed data');
+                        });
+                }, 60000); // Refresh every 1 minute
             }
 
             // Initialize page
             async initializePage() {
                 this.setupLanguageListener();
+                this.setupAutoRefresh();
                 
                 this.currentLanguage = this.syncWithWebsiteLanguage();
-                await this.loadPageData(this.currentLanguage);
+                await this.loadPageData(this.currentLanguage, true); // Force refresh on init
                 this.updatePageTitles();
                 this.renderPageContent();
 
