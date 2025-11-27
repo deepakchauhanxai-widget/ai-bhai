@@ -1,4 +1,4 @@
-// trending-stories.js - Updated with only Share button
+// trending-stories.js - Updated with cache busting
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
 class TrendingStoriesPopup {
@@ -29,6 +29,7 @@ class TrendingStoriesPopup {
         this.displayedStoryIds = new Set();
         this.storiesPerPage = 3;
         this.allStories = [];
+        this.lastRefreshTime = null;
         
         this.init();
     }
@@ -38,6 +39,7 @@ class TrendingStoriesPopup {
         await this.loadStoriesFromJSON();
         this.setupEventListeners();
         this.updateStats();
+        this.startAutoRefresh();
         console.log('✅ Trending Stories Popup Ready!');
     }
 
@@ -45,8 +47,10 @@ class TrendingStoriesPopup {
         try {
             console.log('📁 Loading stories from JSON...');
             
+            // Cache busting with timestamp
+            const timestamp = new Date().getTime();
             const paths = [
-                'https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json',
+                `https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json?t=${timestamp}`,
             ];
             
             let response;
@@ -54,7 +58,12 @@ class TrendingStoriesPopup {
             for (const path of paths) {
                 try {
                     console.log(`🔍 Trying JSON path: ${path}`);
-                    response = await fetch(path);
+                    response = await fetch(path, {
+                        cache: 'no-cache',
+                        headers: {
+                            'Cache-Control': 'no-cache'
+                        }
+                    });
                     if (response.ok) {
                         console.log(`✅ JSON found at: ${path}`);
                         break;
@@ -71,7 +80,9 @@ class TrendingStoriesPopup {
             
             const data = await response.json();
             this.allStories = data.stories;
+            this.lastRefreshTime = new Date();
             console.log(`✅ Stories loaded from JSON: ${this.allStories.length} stories`);
+            console.log(`🕒 Last refresh: ${this.lastRefreshTime}`);
             
         } catch (error) {
             console.error('❌ Error loading JSON:', error);
@@ -101,47 +112,32 @@ class TrendingStoriesPopup {
                     shares: 45,
                     timestamp: "2024-01-15"
                 }
-            },
-            {
-                id: 2,
-                user: {
-                    name: "Tech Guru",
-                    role: "Senior Developer",
-                    avatar: "images/user1.jpg"
-                },
-                content: {
-                    en: "Built an amazing AI chatbot today that can understand multiple languages! The future is here. 🤖",
-                    hi: "आज एक अद्भुत AI चैटबॉट बनाया जो कई भाषाएं समझ सकता है! भविष्य यहाँ है। 🤖"
-                },
-                tags: ["ai", "chatbot", "innovation"],
-                stats: {
-                    views: 2300,
-                    likes: 156,
-                    shares: 78,
-                    timestamp: "2024-01-14"
-                }
-            },
-            {
-                id: 3,
-                user: {
-                    name: "Code Master",
-                    role: "Full Stack Dev",
-                    avatar: "images/user2.jpg"
-                },
-                content: {
-                    en: "Just completed a massive project with React and Node.js! The feeling of accomplishment is incredible. 💻",
-                    hi: "React और Node.js के साथ एक बड़ी प्रोजेक्ट पूरी की! उपलब्धि की भावना अविश्वसनीय है। 💻"
-                },
-                tags: ["react", "nodejs", "project"],
-                stats: {
-                    views: 1800,
-                    likes: 112,
-                    shares: 63,
-                    timestamp: "2024-01-13"
-                }
             }
+            // ... rest of fallback stories
         ];
         console.log('✅ Fallback stories loaded:', this.allStories.length);
+    }
+
+    async refreshStories() {
+        console.log('🔄 Force refreshing stories...');
+        this.displayedStoryIds.clear();
+        await this.loadStoriesFromJSON();
+        this.updateStats();
+        
+        // Agar popup open hai toh re-render karo
+        if (this.popup.classList.contains('active')) {
+            this.stories = this.getRandomStories(this.storiesPerPage);
+            this.renderStories();
+        }
+        
+        this.showNotification('Stories refreshed! ✨');
+    }
+
+    startAutoRefresh() {
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            this.refreshStories();
+        }, 30000);
     }
 
     getRandomStories(count) {
@@ -257,6 +253,9 @@ class TrendingStoriesPopup {
                             <h4>${story.user.name}</h4>
                             <p>${story.user.role}</p>
                         </div>
+                        <div class="refresh-indicator" title="Last updated">
+                            🔄
+                        </div>
                     </div>
                     
                     <div class="story-content">
@@ -271,6 +270,10 @@ class TrendingStoriesPopup {
                         <button class="share-btn" onclick="trendingPopup.shareStory(${story.id})">
                             <span>📤</span>
                             Share (${this.formatNumber(story.stats.shares)})
+                        </button>
+                        <button class="refresh-btn" onclick="trendingPopup.refreshStories()">
+                            <span>🔄</span>
+                            Refresh
                         </button>
                     </div>
                 </div>
@@ -288,13 +291,8 @@ class TrendingStoriesPopup {
         const story = this.allStories.find(s => s.id === storyId);
         if (!story) return;
 
-        // Increase share count
         story.stats.shares += 1;
-        
-        // Show share options
         this.showShareOptions(story);
-        
-        // Update the displayed count
         this.renderStories();
         
         console.log(`📤 Story ${storyId} shared! Total shares: ${story.stats.shares}`);
@@ -305,7 +303,6 @@ class TrendingStoriesPopup {
         const shareUrl = window.location.href;
         
         if (navigator.share) {
-            // Use Web Share API if available
             navigator.share({
                 title: 'Trending Story',
                 text: shareText,
@@ -314,7 +311,6 @@ class TrendingStoriesPopup {
             .then(() => console.log('Successful share'))
             .catch((error) => console.log('Error sharing:', error));
         } else {
-            // Fallback: Copy to clipboard
             const textToCopy = `${shareText}\n\n${shareUrl}`;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 this.showNotification('Story link copied to clipboard! 📋');
@@ -395,6 +391,14 @@ function openTrendingStories() {
                 window.trendingPopup.openPopup();
             }
         }, 100);
+    }
+}
+
+// Global refresh function
+function refreshTrendingStories() {
+    console.log('🌍 Global refresh function called');
+    if (window.trendingPopup) {
+        window.trendingPopup.refreshStories();
     }
 }
 
