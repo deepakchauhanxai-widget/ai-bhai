@@ -1,5 +1,3 @@
-bhai is js mein Aisa Kar De taki Json update Karti hi turant dikhe abhi kya ho raha hai update karne ke bad bhi old dikhta Hai 
-
 // trending-stories.js - Updated with only Share button
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
@@ -414,6 +412,3 @@ setTimeout(() => {
 }, 1000);
 
 console.log('✅ trending-stories.js execution complete');
-
-
-URL mein kuchh nahin lagana usse hi viral work nahin Karega bhai
