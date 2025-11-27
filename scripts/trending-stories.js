@@ -1,4 +1,4 @@
-// trending-stories.js - Updated with only Share button
+// trending-stories.js - Final Cache Busting Version
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
 class TrendingStoriesPopup {
@@ -54,7 +54,17 @@ class TrendingStoriesPopup {
             for (const path of paths) {
                 try {
                     console.log(`🔍 Trying JSON path: ${path}`);
-                    response = await fetch(path);
+                    
+                    // Cache busting - no-store use karo
+                    response = await fetch(path, {
+                        method: 'GET',
+                        cache: 'no-store', // 👈 YEH LINE IMPORTANT HAI
+                        headers: {
+                            'Cache-Control': 'no-cache, no-store, must-revalidate',
+                            'Pragma': 'no-cache'
+                        }
+                    });
+                    
                     if (response.ok) {
                         console.log(`✅ JSON found at: ${path}`);
                         break;
@@ -71,7 +81,7 @@ class TrendingStoriesPopup {
             
             const data = await response.json();
             this.allStories = data.stories;
-            console.log(`✅ Stories loaded from JSON: ${this.allStories.length} stories`);
+            console.log(`✅ Fresh stories loaded: ${this.allStories.length} stories`);
             
         } catch (error) {
             console.error('❌ Error loading JSON:', error);
@@ -379,6 +389,21 @@ class TrendingStoriesPopup {
             }, 300);
         }, 2000);
     }
+
+    // NEW METHOD: Force refresh stories
+    async refreshStories() {
+        console.log('🔄 Force refreshing stories...');
+        this.displayedStoryIds.clear();
+        await this.loadStoriesFromJSON();
+        
+        if (this.popup.classList.contains('active')) {
+            this.stories = this.getRandomStories(this.storiesPerPage);
+            this.renderStories();
+            this.showNotification('Stories refreshed! ✨');
+        }
+        
+        this.updateStats();
+    }
 }
 
 // Global functions
@@ -395,6 +420,17 @@ function openTrendingStories() {
                 window.trendingPopup.openPopup();
             }
         }, 100);
+    }
+}
+
+// NEW: Global refresh function
+function refreshTrendingStories() {
+    console.log('🌍 Global refresh function called');
+    if (window.trendingPopup) {
+        window.trendingPopup.refreshStories();
+    } else {
+        console.log('🔄 Creating new instance');
+        window.trendingPopup = new TrendingStoriesPopup();
     }
 }
 
