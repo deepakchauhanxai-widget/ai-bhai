@@ -159,6 +159,30 @@
             box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
         }
 
+        /* Refresh Button */
+        .refresh-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient);
+            color: var(--dark);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
         /* Footer */
         .footer {
             text-align: center;
@@ -197,6 +221,21 @@
             40% { transform: scale(1); }
         }
 
+        /* Toast Message */
+        .toast-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            color: var(--dark);
+            padding: 12px 24px;
+            border-radius: 25px;
+            z-index: 10000;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -218,6 +257,10 @@
     </style>
 </head>
 <body>
+    <button class="refresh-btn" onclick="fireDialoguesPage.forceRefresh()">
+        🔄 Instant Refresh
+    </button>
+
     <div class="container">
         <div class="header">
             <h1 class="page-title" id="pageTitle">Fire Dialogues - Part 2</h1>
@@ -247,23 +290,17 @@
                 this.currentLanguage = 'en';
                 this.pageData = null;
                 this.partNumber = partNumber;
-                this.baseURL = '.https://deepakchauhanxai.xyz/testing-dk/assets/fire-dialogues/';
+                this.baseURL = 'https://deepakchauhanxai.xyz/testing-dk/assets/fire-dialogues/';
+                this.lastFetchTime = 0;
+                this.cacheDuration = 10000; // 10 seconds cache only
                 
                 this.initializePage();
             }
 
-            // Get daily shayari indices (10 per day)
-            getDailyShayariIndices() {
-                const startDate = new Date('2024-01-01');
-                const today = new Date();
-                const diffTime = Math.abs(today - startDate);
-                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                
-                const indices = [];
-                for (let i = 0; i < 10; i++) {
-                    indices.push((diffDays * 10 + i) % 100);
-                }
-                return indices;
+            // Get ALL shayaris - NO daily rotation
+            getAllShayaris() {
+                if (!this.pageData || !this.pageData.shayaris) return [];
+                return this.pageData.shayaris;
             }
 
             // Language detection
@@ -280,101 +317,34 @@
                 return 'en';
             }
 
-            // Fetch page data
+            // Fetch page data with cache busting
             async fetchPageData(language) {
                 try {
-                    const timestamp = new Date().getTime();
-                    const response = await fetch(`${this.baseURL}part${this.partNumber}-${language}.json?t=${timestamp}`);
+                    const cacheBuster = `?t=${Date.now()}`; // Cache busting
+                    const response = await fetch(`${this.baseURL}part${this.partNumber}-${language}.json${cacheBuster}`);
                     
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     
                     const data = await response.json();
-                    console.log('Loaded Part 2 data:', data);
+                    this.lastFetchTime = Date.now();
                     return data;
                 } catch (error) {
                     console.error('Error fetching page data:', error);
-                    
                     // Fallback to English
                     if (language !== 'en') {
                         return this.fetchPageData('en');
                     }
-                    
-                    // Ultimate fallback
-                    return this.getFallbackData();
+                    throw error;
                 }
             }
 
-            // Fallback data
-            getFallbackData() {
-                return {
-                    pageTitle: "Fire Dialogues - Part 2",
-                    pageSubtitle: "Blue flames of wisdom and power",
-                    footerText: "Blue fire edition from Deepak Chauhan × AI Bhai",
-                    shayaris: [
-                        {
-                            content: "Samundar ki gehrai jaise meri soch, lehar jaise mera junoon",
-                            signature: "- Deepak Chauhan",
-                            category: "Depth"
-                        },
-                        {
-                            content: "Aasman ko chhoone ka iraada nahi, aasman ko apna banana hai",
-                            signature: "- AI Bhai",
-                            category: "Ambition"
-                        },
-                        {
-                            content: "Har muskil ne sikha di, asli takat kya hoti hai",
-                            signature: "- Deepak Chauhan",
-                            category: "Strength"
-                        },
-                        {
-                            content: "Mere vichar ocean ki tarah gehre, lekin stormy nahi peaceful",
-                            signature: "- AI Bhai",
-                            category: "Wisdom"
-                        },
-                        {
-                            content: "Zindagi ki leharon se dar kar nahi, unhe enjoy karna seekha",
-                            signature: "- Deepak Chauhan",
-                            category: "Positivity"
-                        },
-                        {
-                            content: "Blue flame ki tarah quiet but powerful, visible but mysterious",
-                            signature: "- AI Bhai",
-                            category: "Mystery"
-                        },
-                        {
-                            content: "Success ki journey ocean cross karne jaisi, har wave ek naya challenge",
-                            signature: "- Deepak Chauhan",
-                            category: "Journey"
-                        },
-                        {
-                            content: "Mere confidence ka temperature kabhi kam nahi hota",
-                            signature: "- AI Bhai",
-                            category: "Consistency"
-                        },
-                        {
-                            content: "Duniya kehte hai impossible, main kehta hoon try karte hain",
-                            signature: "- Deepak Chauhan",
-                            category: "Optimism"
-                        },
-                        {
-                            content: "Blue fire burns the hottest, just like my determination",
-                            signature: "- AI Bhai",
-                            category: "Determination"
-                        }
-                    ]
-                };
-            }
-
-            // Get today's shayaris
-            getTodaysShayaris() {
-                if (!this.pageData || !this.pageData.shayaris) return [];
-                
-                const indices = this.getDailyShayariIndices();
-                return indices.map(index => 
-                    this.pageData.shayaris[index % this.pageData.shayaris.length]
-                ).filter(shayari => shayari);
+            // Force refresh data
+            async forceRefresh() {
+                this.showToast('Refreshing data...');
+                await this.loadPageData(this.currentLanguage, true);
+                this.updatePageTitles();
+                this.renderPageContent();
+                this.showToast('Data refreshed successfully!');
             }
 
             // Share individual shayari
@@ -407,18 +377,14 @@
 
             // Show toast message
             showToast(message) {
+                // Remove existing toast
+                const existingToast = document.querySelector('.toast-message');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
                 const toast = document.createElement('div');
-                toast.style.cssText = `
-                    position: fixed;
-                    bottom: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background: #333;
-                    color: white;
-                    padding: 12px 24px;
-                    border-radius: 25px;
-                    z-index: 10000;
-                `;
+                toast.className = 'toast-message';
                 toast.textContent = message;
                 document.body.appendChild(toast);
                 
@@ -429,13 +395,13 @@
                 }, 3000);
             }
 
-            // Render page content
+            // Render page content - ALL shayaris
             renderPageContent() {
-                const shayaris = this.getTodaysShayaris();
+                const shayaris = this.getAllShayaris();
                 const container = document.getElementById('contentContainer');
 
                 if (!shayaris.length) {
-                    container.innerHTML = '<div class="error-message">No shayaris available for today</div>';
+                    container.innerHTML = '<div class="error-message">No shayaris available</div>';
                     return;
                 }
 
@@ -486,13 +452,18 @@
                 }
             }
 
-            // Load page data
-            async loadPageData(language) {
-                try {
-                    this.pageData = await this.fetchPageData(language);
-                    console.log(`Fire Dialogues Part ${this.partNumber} data loaded for language:`, language);
-                } catch (error) {
-                    console.error('Failed to load page data:', error);
+            // Load page data with cache control
+            async loadPageData(language, forceRefresh = false) {
+                const now = Date.now();
+                const shouldRefresh = forceRefresh || (now - this.lastFetchTime > this.cacheDuration);
+
+                if (shouldRefresh) {
+                    try {
+                        this.pageData = await this.fetchPageData(language);
+                        console.log(`Fire Dialogues Part ${this.partNumber} data loaded for language:`, language);
+                    } catch (error) {
+                        console.error('Failed to load page data:', error);
+                    }
                 }
             }
 
@@ -502,20 +473,34 @@
                     this.handleLanguageChange(event.detail.language);
                 });
 
+                // Check for language changes every 2 seconds
                 setInterval(() => {
                     const newLang = this.syncWithWebsiteLanguage();
                     if (newLang !== this.currentLanguage) {
                         this.handleLanguageChange(newLang);
                     }
-                }, 1000);
+                }, 2000);
+            }
+
+            // Auto-refresh data every 30 seconds
+            setupAutoRefresh() {
+                setInterval(() => {
+                    this.loadPageData(this.currentLanguage, true)
+                        .then(() => {
+                            this.updatePageTitles();
+                            this.renderPageContent();
+                            console.log('Auto-refreshed Part 2 data');
+                        });
+                }, 30000); // Refresh every 30 seconds
             }
 
             // Initialize page
             async initializePage() {
                 this.setupLanguageListener();
+                this.setupAutoRefresh();
                 
                 this.currentLanguage = this.syncWithWebsiteLanguage();
-                await this.loadPageData(this.currentLanguage);
+                await this.loadPageData(this.currentLanguage, true); // Force refresh on init
                 this.updatePageTitles();
                 this.renderPageContent();
 
