@@ -1,4 +1,4 @@
-// trending-stories.js - Updated with only Share button
+// trending-stories.js - Updated with Cache Busting
 console.log('🔥 scripts/trending-stories.js loaded successfully!');
 
 class TrendingStoriesPopup {
@@ -45,8 +45,10 @@ class TrendingStoriesPopup {
         try {
             console.log('📁 Loading stories from JSON...');
             
+            // ✅ SIRF YEH LINE CHANGE KI HAI - timestamp add kardi
+            const timestamp = new Date().getTime();
             const paths = [
-                'https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json',
+                `https://deepakchauhanxai.xyz/testing-dk/assets/trending-stories.json?t=${timestamp}`,
             ];
             
             let response;
@@ -71,12 +73,25 @@ class TrendingStoriesPopup {
             
             const data = await response.json();
             this.allStories = data.stories;
-            console.log(`✅ Stories loaded from JSON: ${this.allStories.length} stories`);
+            console.log(`✅ Fresh stories loaded: ${this.allStories.length} stories`);
             
         } catch (error) {
             console.error('❌ Error loading JSON:', error);
             console.log('🔄 Using fallback stories data');
             this.loadFallbackStories();
+        }
+    }
+
+    // ✅ YEHI EK AUR METHOD ADD KI HAI - Refresh ke liye
+    async refreshStories() {
+        console.log('🔄 Manually refreshing stories...');
+        this.displayedStoryIds.clear();
+        await this.loadStoriesFromJSON();
+        
+        if (this.popup.classList.contains('active')) {
+            this.stories = this.getRandomStories(this.storiesPerPage);
+            this.renderStories();
+            this.showNotification('Stories updated! ✨');
         }
     }
 
@@ -395,6 +410,16 @@ function openTrendingStories() {
                 window.trendingPopup.openPopup();
             }
         }, 100);
+    }
+}
+
+// ✅ YEHI EK AUR FUNCTION ADD KIYA HAI - Refresh ke liye
+function refreshTrendingStories() {
+    console.log('🌍 Global refresh function called');
+    if (window.trendingPopup) {
+        window.trendingPopup.refreshStories();
+    } else {
+        window.trendingPopup = new TrendingStoriesPopup();
     }
 }
 
