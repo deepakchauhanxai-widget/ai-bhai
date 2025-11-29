@@ -59,9 +59,13 @@ class SuccessTipPopup {
 
     async showRandomTip() {
         try {
-            console.log('Loading tips from:', this.tipsJsonUrl);
+            // ✅ CACHE BUSTING ADD KARDI - timestamp ke saath
+            const timestamp = new Date().getTime();
+            const cacheBustedUrl = `${this.tipsJsonUrl}?t=${timestamp}`;
             
-            const response = await fetch(this.tipsJsonUrl);
+            console.log('Loading tips from:', cacheBustedUrl);
+            
+            const response = await fetch(cacheBustedUrl);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -89,6 +93,12 @@ class SuccessTipPopup {
             alert('Tips load nahi ho paye. Internet check karo bhai!');
             this.showDefaultTip();
         }
+    }
+
+    // ✅ REFRESH METHOD ADD KARDI
+    async refreshTips() {
+        console.log('🔄 Refreshing tips...');
+        await this.showRandomTip();
     }
 
     convertNotificationToTip(notification, avatarUrl) {
@@ -207,6 +217,11 @@ class SuccessTipPopup {
                     <span class="btn-icon">🔁</span>
                     <span data-translate="next_tip">Next Tip</span>
                 </button>
+                <!-- ✅ REFRESH BUTTON ADD KARDI -->
+                <button class="action-btn refresh-btn" onclick="successTipPopup.refreshTips()">
+                    <span class="btn-icon">🔄</span>
+                    <span data-translate="refresh">Refresh</span>
+                </button>
             </div>
         `;
 
@@ -262,6 +277,13 @@ class SuccessTipPopup {
                 'hi': 'अगला टिप',
                 'ur': 'اگلا ٹپ',
                 'mr': 'पुढील टिप'
+            },
+            // ✅ REFRESH TRANSLATION ADD KARDI
+            'refresh': {
+                'en': 'Refresh',
+                'hi': 'रिफ्रेश',
+                'ur': 'ریفریش',
+                'mr': 'रिफ्रेश'
             }
         };
 
@@ -290,6 +312,14 @@ class SuccessTipPopup {
             navigator.clipboard.writeText(content);
             alert('Tip copied to clipboard! 📋');
         }
+    }
+}
+
+// ✅ GLOBAL REFRESH FUNCTION ADD KARDI
+function refreshSuccessTips() {
+    console.log('🌍 Global refresh success tips called');
+    if (window.successTipPopup) {
+        window.successTipPopup.refreshTips();
     }
 }
 
