@@ -3,6 +3,7 @@ class SuccessTipPopup {
         this.currentTip = null;
         this.currentLanguage = 'en';
         this.animations = ['left', 'right', 'top', 'bottom'];
+        this.tipsJsonUrl = 'https://deepakchauhanxai.xyz/testing-dk/assets/success-tip.json';
         this.init();
     }
 
@@ -13,16 +14,22 @@ class SuccessTipPopup {
 
     bindEvents() {
         // Success tip button click
-        document.getElementById('successTipBtn').addEventListener('click', () => {
-            this.showRandomTip();
-        });
+        const successTipBtn = document.getElementById('successTipBtn');
+        if (successTipBtn) {
+            successTipBtn.addEventListener('click', () => {
+                this.showRandomTip();
+            });
+        }
 
         // Close popup when clicking outside
-        document.getElementById('successTipPopup').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                this.hidePopup();
-            }
-        });
+        const popup = document.getElementById('successTipPopup');
+        if (popup) {
+            popup.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) {
+                    this.hidePopup();
+                }
+            });
+        }
 
         // Language change event
         document.addEventListener('languageChanged', (e) => {
@@ -52,26 +59,64 @@ class SuccessTipPopup {
 
     async showRandomTip() {
         try {
-            const response = await fetch('data/success-tips.json');
-            const data = await response.json();
+            console.log('Loading tips from:', this.tipsJsonUrl);
             
-            const randomIndex = Math.floor(Math.random() * data.success_tips.length);
-            this.currentTip = data.success_tips[randomIndex];
+            const response = await fetch(this.tipsJsonUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Loaded data:', data);
+            
+            // Check if notifications array exists
+            if (!data.notifications || !Array.isArray(data.notifications)) {
+                throw new Error('Invalid data format: notifications array not found');
+            }
+            
+            // Get random notification
+            const randomIndex = Math.floor(Math.random() * data.notifications.length);
+            const selectedNotification = data.notifications[randomIndex];
+            
+            // Convert notification format to tip format
+            this.currentTip = this.convertNotificationToTip(selectedNotification, data.avatar);
             
             this.showPopup();
+            
         } catch (error) {
             console.error('Error loading success tips:', error);
+            alert('Tips load nahi ho paye. Internet check karo bhai!');
             this.showDefaultTip();
         }
+    }
+
+    convertNotificationToTip(notification, avatarUrl) {
+        // Convert notification format to tip format that your code expects
+        return {
+            content: {
+                en: notification.en?.message || "Believe in yourself and all that you are.",
+                hi: notification.hi?.message || "खुद पर और उन सब चीजों पर विश्वास करो जो तुम हो।",
+                ur: notification.ur?.message || "اپنے آپ پر اور ان سب چیزوں پر یقین رکھو جو تم ہو۔",
+                mr: notification.mr?.message || "स्वतःवर आणि तुम्ही जे काही आहात त्यावर विश्वास ठेवा."
+            },
+            avatar: avatarUrl || "images/AI-bhai.png",
+            signature: {
+                en: "- AI Bhai × Deepak Chauhan",
+                hi: "- AI भाई × दीपक चौहान",
+                ur: "- AI بھائی × دیپک چوہان", 
+                mr: "- AI भाऊ × दीपक चौहान"
+            }
+        };
     }
 
     showDefaultTip() {
         this.currentTip = {
             content: {
-                en: "Believe in yourself and all that you are.",
-                hi: "खुद पर और उन सब चीजों पर विश्वास करो जो तुम हो।",
-                ur: "اپنے آپ پر اور ان سب چیزوں پر یقین رکھو جو تم ہو۔",
-                mr: "स्वतःवर आणि तुम्ही जे काही आहात त्यावर विश्वास ठेवा."
+                en: "Believe in yourself and all that you are. You're capable of amazing things!",
+                hi: "खुद पर और उन सब चीजों पर विश्वास करो जो तुम हो। तुम अद्भुत चीजों के लिए सक्षम हो!",
+                ur: "اپنے آپ پر اور ان سب چیزوں پر یقین رکھو جو تم ہو۔ تم حیرت انگیز چیزوں کے قابل ہو!",
+                mr: "स्वतःवर आणि तुम्ही जे काही आहात त्यावर विश्वास ठेवा. तुम आश्चर्यकारक गोष्टींसाठी सक्षम आहात!"
             },
             avatar: "images/AI-bhai.png",
             signature: {
@@ -88,6 +133,11 @@ class SuccessTipPopup {
         const popup = document.getElementById('successTipPopup');
         const container = document.getElementById('successTipContainer');
         
+        if (!popup || !container) {
+            console.error('Popup elements not found!');
+            return;
+        }
+        
         // Random animation direction
         const randomAnim = this.animations[Math.floor(Math.random() * this.animations.length)];
         container.className = `success-tip-popup popup-slide-${randomAnim}`;
@@ -101,7 +151,9 @@ class SuccessTipPopup {
 
     hidePopup() {
         const popup = document.getElementById('successTipPopup');
-        popup.style.display = 'none';
+        if (popup) {
+            popup.style.display = 'none';
+        }
         
         // Remove escape key listener
         document.removeEventListener('keydown', this.handleEscapeKey.bind(this));
@@ -117,6 +169,8 @@ class SuccessTipPopup {
         if (!this.currentTip) return;
 
         const container = document.getElementById('successTipContainer');
+        if (!container) return;
+
         const content = this.currentTip.content[this.currentLanguage] || this.currentTip.content.en;
         const signature = this.currentTip.signature[this.currentLanguage] || this.currentTip.signature.en;
 
@@ -220,16 +274,20 @@ class SuccessTipPopup {
     }
 
     handleShare() {
+        if (!this.currentTip) return;
+        
+        const content = this.currentTip.content[this.currentLanguage] || this.currentTip.content.en;
+        
         // Share functionality
         if (navigator.share) {
             navigator.share({
                 title: 'Success Tip - DK Community',
-                text: this.currentTip.content[this.currentLanguage],
+                text: content,
                 url: window.location.href
             });
         } else {
             // Fallback
-            navigator.clipboard.writeText(this.currentTip.content[this.currentLanguage]);
+            navigator.clipboard.writeText(content);
             alert('Tip copied to clipboard! 📋');
         }
     }
