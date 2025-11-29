@@ -1,115 +1,106 @@
-/* Success Tip Button */
+/* ===== SUCCESS TIP SECTION STYLES ===== */
 .success-tip-section {
-    padding: 20px;
-    text-align: center;
-    margin: 30px 0;
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
 }
 
 .success-tip-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
     border-radius: 50px;
-    padding: 15px 30px;
+    padding: 1rem 2rem;
     color: white;
-    font-size: 18px;
-    font-weight: 600;
+    font-weight: bold;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 0.5rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
+.success-tip-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.success-tip-btn:hover::before {
+    left: 100%;
+}
+
 .success-tip-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .success-tip-btn:active {
     transform: translateY(-1px);
 }
 
+.tip-icon {
+    font-size: 1.3rem;
+    animation: bounce 2s infinite;
+}
+
 .tip-sparkle {
-    animation: sparkle 2s infinite;
+    animation: sparkle 1.5s infinite;
 }
 
-@keyframes sparkle {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.1); }
-}
-
-/* Success Tip Popup */
+/* ===== POPUP OVERLAY STYLES ===== */
 .success-tip-popup-overlay {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: none;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
-    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
 }
 
+/* ===== POPUP CONTAINER STYLES ===== */
 .success-tip-popup {
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #48dbfb 100%);
     border-radius: 20px;
-    padding: 30px;
-    max-width: 90%;
-    width: 400px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    width: 90%;
+    max-width: 500px;
     position: relative;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    animation: slideInUp 0.4s ease;
 }
 
-/* Animation Classes */
-.popup-slide-left {
-    animation: slideInLeft 0.6s ease-out;
-}
+.popup-slide-left { animation: slideInLeft 0.4s ease; }
+.popup-slide-right { animation: slideInRight 0.4s ease; }
+.popup-slide-top { animation: slideInTop 0.4s ease; }
+.popup-slide-bottom { animation: slideInBottom 0.4s ease; }
 
-.popup-slide-right {
-    animation: slideInRight 0.6s ease-out;
-}
-
-.popup-slide-top {
-    animation: slideInTop 0.6s ease-out;
-}
-
-.popup-slide-bottom {
-    animation: slideInBottom 0.6s ease-out;
-}
-
-@keyframes slideInLeft {
-    from { transform: translateX(-100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideInTop {
-    from { transform: translateY(-100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes slideInBottom {
-    from { transform: translateY(100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* Popup Content */
+/* ===== POPUP HEADER STYLES ===== */
 .popup-header {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
 }
 
 .popup-avatar {
@@ -117,8 +108,8 @@
     height: 60px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid #ff0080;
-    position: relative;
+    border: 3px solid white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .popup-avatar img {
@@ -127,131 +118,194 @@
     object-fit: cover;
 }
 
-.popup-avatar::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #ff0080, #00ff88, #0080ff);
-    z-index: -1;
-    animation: rotate 3s linear infinite;
-}
-
-@keyframes rotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.popup-title {
-    flex: 1;
-}
-
 .popup-title h3 {
-    color: white;
     margin: 0;
-    font-size: 20px;
-    font-weight: 700;
+    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: bold;
 }
 
 .popup-title p {
-    color: rgba(255, 255, 255, 0.8);
-    margin: 5px 0 0 0;
-    font-size: 14px;
+    margin: 0;
+    color: #34495e;
+    font-size: 0.9rem;
+    opacity: 0.8;
 }
 
+/* ===== POPUP CONTENT STYLES ===== */
 .popup-content {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1.5rem;
     border-radius: 15px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .tip-text {
-    color: white;
-    font-size: 16px;
+    font-size: 1.1rem;
     line-height: 1.6;
+    color: #2c3e50;
     text-align: center;
     font-style: italic;
+    margin: 0 0 1rem 0;
 }
 
 .popup-signature {
     text-align: right;
-    color: #ff0080;
-    font-weight: 600;
-    margin-top: 15px;
-    font-size: 14px;
+    color: #7f8c8d;
+    font-weight: bold;
+    font-size: 0.9rem;
 }
 
-/* Action Buttons */
+/* ===== ACTION BUTTONS STYLES ===== */
 .popup-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .action-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
-    padding: 10px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-}
-
-.action-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
-}
-
-.action-btn .btn-icon {
-    font-size: 16px;
-}
-
-/* Close Button */
-.popup-close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: rgba(255, 255, 255, 0.2);
+    flex: 1;
+    min-width: 100px;
+    padding: 0.8rem 1rem;
     border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    color: white;
+    border-radius: 50px;
+    font-weight: bold;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 0.5rem;
     transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.like-btn {
+    background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 100%);
+    color: white;
+}
+
+.share-btn {
+    background: linear-gradient(135deg, #54a0ff 0%, #341f97 100%);
+    color: white;
+}
+
+.next-btn {
+    background: linear-gradient(135deg, #00d2d3 0%, #54a0ff 100%);
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn:active {
+    transform: translateY(0);
+}
+
+/* ===== CLOSE BUTTON STYLES ===== */
+.popup-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .popup-close-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.5);
     transform: rotate(90deg);
 }
 
-/* Responsive Design */
+/* ===== ANIMATIONS ===== */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideInUp {
+    from { 
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from { 
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from { 
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInTop {
+    from { 
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInBottom {
+    from { 
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
     .success-tip-popup {
-        width: 95%;
-        padding: 20px;
-        margin: 20px;
-    }
-    
-    .success-tip-btn {
-        padding: 12px 25px;
-        font-size: 16px;
+        padding: 1.5rem;
+        margin: 1rem;
     }
     
     .popup-header {
@@ -260,21 +314,10 @@
     }
     
     .popup-actions {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 480px) {
-    .success-tip-btn {
-        width: 100%;
-        justify-content: center;
+        flex-direction: column;
     }
     
-    .popup-content {
-        padding: 15px;
-    }
-    
-    .tip-text {
-        font-size: 14px;
+    .action-btn {
+        min-width: auto;
     }
 }
