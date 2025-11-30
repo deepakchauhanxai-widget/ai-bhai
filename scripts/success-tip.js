@@ -102,26 +102,64 @@ class SuccessTipPopup {
     }
 
     convertNotificationToTip(notification, avatarUrl) {
-        // Convert notification format to tip format that your code expects
+        // Get current language title and message
+        const title = notification[this.currentLanguage]?.title || notification.en?.title || "Success Tip";
+        const message = notification[this.currentLanguage]?.message || notification.en?.message || "Believe in yourself!";
+        const icon = notification.icon || "💡";
+        const type = notification.type || "motivation";
+
         return {
+            title: {
+                en: notification.en?.title || "Success Tip",
+                hi: notification.hi?.title || "सफलता टिप", 
+                ur: notification.ur?.title || "کامیابی کا ٹپ",
+                mr: notification.mr?.title || "यश टिप"
+            },
             content: {
-                en: notification.en?.message || "Believe in yourself and all that you are.",
-                hi: notification.hi?.message || "खुद पर और उन सब चीजों पर विश्वास करो जो तुम हो।",
-                ur: notification.ur?.message || "اپنے آپ پر اور ان سب چیزوں پر یقین رکھو جو تم ہو۔",
-                mr: notification.mr?.message || "स्वतःवर आणि तुम्ही जे काही आहात त्यावर विश्वास ठेवा."
+                en: message,
+                hi: notification.hi?.message || message,
+                ur: notification.ur?.message || message,
+                mr: notification.mr?.message || message
             },
             avatar: avatarUrl || "images/AI-bhai.png",
             signature: {
                 en: "- AI Bhai × Deepak Chauhan",
                 hi: "- AI भाई × दीपक चौहान",
-                ur: "- AI بھائی × دیپک چوہان", 
+                ur: "- AI بھائی × دیپک چوہان",
                 mr: "- AI भाऊ × दीपक चौहान"
-            }
+            },
+            icon: icon,
+            type: type
         };
+    }
+
+    // Naya helper function add karo
+    getTypeText(type) {
+        const typeMap = {
+            'success': { en: 'Success Tip', hi: 'सफलता टिप', ur: 'کامیابی کا ٹپ', mr: 'यश टिप' },
+            'motivation': { en: 'Daily Motivation', hi: 'दैनिक प्रेरणा', ur: 'روزانہ کی حوصلہ افزائی', mr: 'दैनंदिन प्रेरणा' },
+            'growth': { en: 'Growth Mindset', hi: 'ग्रोथ माइंडसेट', ur: 'ترقی کا ذہن', mr: 'वाढ मनोवृत्ती' },
+            'positive': { en: 'Positive Vibes', hi: 'पॉजिटिव वाइब्स', ur: 'مثبت جذبات', mr: 'सकारात्मक व्हायब्स' },
+            'hardwork': { en: 'Hard Work', hi: 'हार्ड वर्क', ur: 'محنت', mr: 'कष्ट' },
+            'confidence': { en: 'Self Confidence', hi: 'सेल्फ कॉन्फिडेंस', ur: 'خود اعتمادی', mr: 'स्वत्वविश्वास' },
+            'patience': { en: 'Patience Power', hi: 'पेशेंस पावर', ur: 'صبر کی طاقت', mr: 'संयम शक्ती' },
+            'learning': { en: 'Keep Learning', hi: 'लर्निंग जारी रखें', ur: 'سیکھتے رہیں', mr: 'शिकत रहा' },
+            'action': { en: 'Take Action', hi: 'एक्शन लें', ur: 'کارروائی کریں', mr: 'कृती करा' },
+            'mindset': { en: 'Winner Mindset', hi: 'विनर माइंडसेट', ur: 'فاتح کا ذہن', mr: 'विजेता मनोवृत्ती' }
+        };
+        
+        const typeData = typeMap[type] || typeMap['success'];
+        return typeData[this.currentLanguage] || typeData.en;
     }
 
     showDefaultTip() {
         this.currentTip = {
+            title: {
+                en: "Success Tip",
+                hi: "सफलता टिप",
+                ur: "کامیابی کا ٹپ",
+                mr: "यश टिप"
+            },
             content: {
                 en: "Believe in yourself and all that you are. You're capable of amazing things!",
                 hi: "खुद पर और उन सब चीजों पर विश्वास करो जो तुम हो। तुम अद्भुत चीजों के लिए सक्षम हो!",
@@ -134,7 +172,9 @@ class SuccessTipPopup {
                 hi: "- AI भाई × दीपक चौहान",
                 ur: "- AI بھائی × دیپک چوہان", 
                 mr: "- AI भाऊ × दीपक चौहान"
-            }
+            },
+            icon: "💡",
+            type: "success"
         };
         this.showPopup();
     }
@@ -181,8 +221,11 @@ class SuccessTipPopup {
         const container = document.getElementById('successTipContainer');
         if (!container) return;
 
+        const title = this.currentTip.title[this.currentLanguage] || this.currentTip.title.en;
         const content = this.currentTip.content[this.currentLanguage] || this.currentTip.content.en;
         const signature = this.currentTip.signature[this.currentLanguage] || this.currentTip.signature.en;
+        const icon = this.currentTip.icon || "💡";
+        const type = this.currentTip.type || "success";
 
         container.innerHTML = `
             <button class="popup-close-btn" onclick="successTipPopup.hidePopup()">
@@ -194,8 +237,11 @@ class SuccessTipPopup {
                     <img src="${this.currentTip.avatar}" alt="AI Bhai" onerror="this.src='images/AI-bhai.png'">
                 </div>
                 <div class="popup-title">
-                    <h3 data-translate="success_tip">Success Tip</h3>
-                    <p data-translate="daily_motivation">Daily Motivation</p>
+                    <h3>${title}</h3>
+                    <p class="tip-type-badge">
+                        <span class="tip-icon">${icon}</span>
+                        <span class="tip-type-text">${this.getTypeText(type)}</span>
+                    </p>
                 </div>
             </div>
             
