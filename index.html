@@ -920,8 +920,9 @@
 <script>
 function openScanPage() {
     const allowed = ['en','hi','ur','mr'];
-    let lang = localStorage.getItem("lang") || "en";
-    if (!allowed.includes(lang)) lang = 'en';
+    let lang = localStorage.getItem("preferredLanguage") || "en";
+
+    if (!allowed.includes(lang)) lang = "en";
 
     window.location.href = `/wallness/ai-wellness-scan-pro-max-${lang}.html`;
 }
