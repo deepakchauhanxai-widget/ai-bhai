@@ -352,7 +352,7 @@
             margin-bottom: 3px;
         }
         
-        .thought-hindi {
+        .thought-language {
             color: #a8d5e2;
             font-size: 12px;
             font-style: italic;
@@ -457,7 +457,7 @@
             font-weight: 600;
         }
         
-        .report-hindi {
+        .report-secondary {
             color: #8ac6d1;
             font-size: 18px;
             margin-bottom: 25px;
@@ -493,7 +493,7 @@
             opacity: 0.9;
         }
         
-        .metric-hindi {
+        .metric-secondary {
             font-size: 11px;
             color: #a8d5e2;
             margin-top: 4px;
@@ -514,7 +514,7 @@
             font-weight: 600;
         }
         
-        .observation-hindi {
+        .observation-secondary {
             color: #8ac6d1;
             font-size: 15px;
             margin-bottom: 12px;
@@ -528,7 +528,7 @@
             font-style: italic;
         }
         
-        .note-hindi {
+        .note-secondary {
             color: #a8d5e2;
             margin-top: 8px;
             font-size: 14px;
@@ -558,7 +558,7 @@
             font-weight: bold;
         }
         
-        .disclaimer-hindi {
+        .disclaimer-secondary {
             color: #ffd966;
             font-size: 14px;
             margin-top: 8px;
@@ -653,7 +653,7 @@
         <div id="scanTab" class="tab-content active">
             <!-- Language Toggle -->
             <div class="language-controls">
-                <button id="langToggleBtn">Switch to हिंदी</button>
+                <button id="langToggleBtn">English Only</button>
             </div>
             
             <!-- Camera Feed -->
@@ -683,7 +683,7 @@
             <!-- AI Report Card -->
             <div id="reportCard" class="report-card">
                 <div id="reportTitle" class="report-title">AI Wellness Scan Report</div>
-                <div id="reportTitleHi" class="report-hindi">AI वेलनेस स्कैन रिपोर्ट</div>
+                <div id="reportTitleSecondary" class="report-secondary">Complete Health Analysis Report</div>
                 
                 <!-- Status -->
                 <div class="status-text" style="justify-content: center; margin-bottom: 15px;">
@@ -696,19 +696,19 @@
                     <div class="metric-card">
                         <div id="pulseLabel" class="metric-label">Activity Indicator</div>
                         <div id="pulseValue" class="metric-value">72</div>
-                        <div id="pulseLabelHi" class="metric-hindi">सक्रियता सूचक</div>
+                        <div id="pulseLabelSecondary" class="metric-secondary">Physical Activity Level</div>
                     </div>
                     
                     <div class="metric-card">
                         <div id="stressLabel" class="metric-label">Relaxation Level</div>
                         <div id="stressValue" class="metric-value">65%</div>
-                        <div id="stressLabelHi" class="metric-hindi">आराम का स्तर</div>
+                        <div id="stressLabelSecondary" class="metric-secondary">Stress Management Score</div>
                     </div>
                     
                     <div class="metric-card">
                         <div id="attentionLabel" class="metric-label">Focus Score</div>
                         <div id="attentionValue" class="metric-value">88%</div>
-                        <div id="attentionLabelHi" class="metric-hindi">फोकस स्कोर</div>
+                        <div id="attentionLabelSecondary" class="metric-secondary">Mental Concentration Level</div>
                     </div>
                 </div>
                 
@@ -742,14 +742,14 @@
                 <!-- AI Observations -->
                 <div class="observation-box">
                     <div id="observationTitle" class="observation-title">AI Observation Summary</div>
-                    <div id="observationHindi" class="observation-hindi">AI अवलोकन सारांश</div>
+                    <div id="observationSecondary" class="observation-secondary">Comprehensive AI Analysis Results</div>
                     
                     <div id="expressionsText">Observed patterns: Relaxed (65%), Positive (28%)</div>
-                    <div id="expressionsTextHi" class="metric-hindi">देखे गए पैटर्न: आरामदेह (65%), सकारात्मक (28%)</div>
+                    <div id="expressionsTextSecondary" class="metric-secondary">Detected facial expression patterns and emotional states</div>
                     
                     <div class="ai-note">
-                        <div id="aiNote">AI Friend Note: Visual patterns show a calm and balanced state.</div>
-                        <div id="aiNoteHi" class="note-hindi">AI दोस्त नोट: दृश्य पैटर्न एक शांत और संतुलित स्थिति दिखाते हैं।</div>
+                        <div id="aiNote">AI Analysis Note: Visual patterns show a calm and balanced state with good focus indicators.</div>
+                        <div id="aiNoteSecondary" class="note-secondary">Detailed analysis of facial micro-expressions and wellness indicators</div>
                     </div>
                 </div>
                 
@@ -770,11 +770,10 @@
                     <div id="disclaimerTitle" class="disclaimer-title">⚠️ Important Notice</div>
                     <div id="disclaimerText">
                         This is an AI-generated wellness estimation for demonstration purposes only.<br>
-                        It is not a medical diagnosis or professional advice.
+                        It is not a medical diagnosis or professional advice. Consult healthcare professionals for medical concerns.
                     </div>
-                    <div id="disclaimerTextHi" class="disclaimer-hindi">
-                        यह AI द्वारा बनाया गया एक डेमो अनुमान है।<br>
-                        यह किसी भी प्रकार की चिकित्सा सलाह या निदान नहीं है।
+                    <div id="disclaimerTextSecondary" class="disclaimer-secondary">
+                        Demonstration system for AI wellness analysis - Not for medical use
                     </div>
                 </div>
             </div>
@@ -801,7 +800,7 @@
             <div class="voice-analysis">
                 <h3 style="color: #00e5ff; margin-bottom: 15px;">🎤 Voice Stress Analysis</h3>
                 <p style="margin-bottom: 20px; color: #8ac6d1;">
-                    Speak naturally for 10 seconds to analyze voice patterns
+                    Speak naturally for 10 seconds to analyze voice patterns and stress levels
                 </p>
                 
                 <div class="voice-visualizer" id="voiceVisualizer">
@@ -888,55 +887,43 @@
         const thoughtPatternsConfig = {
             'PROBLEM_SOLVING': {
                 title: 'Problem Solving State',
-                titleHi: 'समस्या-समाधान की स्थिति',
-                description: 'You appear to be deep in thought, possibly solving a problem or making decisions.',
-                descriptionHi: 'आप गहरी सोच में प्रतीत होते हैं, संभवतः किसी समस्या का समाधान कर रहे हैं या निर्णय ले रहे हैं।',
+                description: 'You appear to be deep in thought, possibly solving problems or making decisions. Indicators show focused cognitive activity.',
                 indicators: ['brow_furrow', 'lip_pursing', 'focused_gaze'],
                 icon: '🤔'
             },
             'STRESS_ANXIETY': {
                 title: 'Stress / Anxiety Detected',
-                titleHi: 'तनाव / चिंता का पता चला',
-                description: 'Forehead tension and eye strain suggest you might be stressed or worried about something.',
-                descriptionHi: 'माथे का तनाव और आँखों की थकान बताती है कि आप तनाव में हैं या किसी बात की चिंता कर रहे हैं।',
+                description: 'Forehead tension and eye strain suggest you might be experiencing stress or anxiety. Consider relaxation techniques.',
                 indicators: ['tense_forehead', 'rapid_blinking', 'jaw_tension'],
                 icon: '😟'
             },
             'CREATIVE_FLOW': {
                 title: 'Creative Flow State',
-                titleHi: 'रचनात्मक प्रवाह की स्थिति',
-                description: 'Relaxed yet focused expression indicates you might be in a creative thinking phase.',
-                descriptionHi: 'आरामदेह लेकिन केंद्रित भाव बताते हैं कि आप रचनात्मक सोच की अवस्था में हैं।',
+                description: 'Relaxed yet focused expression indicates you might be in a creative thinking phase with good mental flow.',
                 indicators: ['relaxed_brows', 'distant_gaze', 'slight_smile'],
                 icon: '💡'
             },
             'CONTENT_RELAXED': {
-                title: 'Content & Relaxed',
-                titleHi: 'संतुष्ट और आरामदेह',
-                description: 'Your facial muscles are relaxed, suggesting a state of contentment and peace.',
-                descriptionHi: 'आपके चेहरे की मांसपेशियां आरामदेह हैं, जो संतुष्टि और शांति की स्थिति दर्शाती हैं।',
+                title: 'Content & Relaxed State',
+                description: 'Your facial muscles are relaxed, suggesting a state of contentment, peace, and overall wellness.',
                 indicators: ['soft_eyes', 'symmetrical_smile', 'relaxed_jaw'],
                 icon: '😌'
             },
             'DETERMINATION': {
                 title: 'Determined State',
-                titleHi: 'दृढ़ संकल्प की स्थिति',
-                description: 'Firm jaw and focused eyes show determination and strong willpower.',
-                descriptionHi: 'मजबूत जबड़ा और केंद्रित आँखें दृढ़ संकल्प और मजबूत इच्छाशक्ति दर्शाती हैं।',
+                description: 'Firm jaw and focused eyes show determination, strong willpower, and goal-oriented thinking.',
                 indicators: ['jaw_clench', 'straight_eyebrows', 'intense_gaze'],
                 icon: '💪'
             },
             'CONFUSION': {
-                title: 'Confused / Thinking Hard',
-                titleHi: 'उलझन / गहरी सोच',
-                description: 'Asymmetrical facial expressions suggest confusion or deep contemplation.',
-                descriptionHi: 'असममित चेहरे के भाव उलझन या गहरे चिंतन का संकेत देते हैं।',
+                title: 'Confused / Deep Thinking',
+                description: 'Asymmetrical facial expressions suggest confusion or deep contemplation about complex matters.',
                 indicators: ['head_tilt', 'asymmetrical_brows', 'pursed_lips'],
                 icon: '🤨'
             }
         };
         
-        // ========== CONTENT TRANSLATIONS ==========
+        // ========== CONTENT ==========
         const content = {
             en: {
                 // UI Text
@@ -946,9 +933,9 @@
                 btnScanning: "Analyzing All Parameters...",
                 statusReady: "Ready for AI wellness scan",
                 statusLoadingModels: "Loading AI models...",
-                statusCameraReady: "Camera ready",
-                statusAnalyzing: "AI is observing facial patterns...",
-                statusComplete: "Analysis complete",
+                statusCameraReady: "Camera ready for scanning",
+                statusAnalyzing: "AI is analyzing facial patterns...",
+                statusComplete: "Analysis complete - Report generated",
                 
                 // Report Content
                 reportTitle: "AI Wellness Scan Report",
@@ -958,41 +945,13 @@
                 attentionLabel: "Focus Score",
                 observationsTitle: "AI Observation Summary",
                 expressions: "Observed patterns: Relaxed (65%), Positive (28%)",
-                aiNote: "AI Friend Note: Visual patterns show a calm and balanced state.",
+                aiNote: "AI Analysis Note: Visual patterns show a calm and balanced state with good focus indicators.",
                 disclaimerTitle: "⚠️ Important Notice",
-                disclaimer: "This is an AI-generated wellness estimation for demonstration purposes only.<br>It is not a medical diagnosis or professional advice.",
+                disclaimer: "This is an AI-generated wellness estimation for demonstration purposes only.<br>It is not a medical diagnosis or professional advice. Consult healthcare professionals for medical concerns.",
                 
                 // Thought Analysis
                 thoughtTitle: "🧠 Thought Pattern Analysis",
-                thoughtDisclaimer: "Note: This is a probabilistic estimation based on facial micro-expressions."
-            },
-            hi: {
-                // UI Text
-                title: "🧠 AI वेलनेस स्कैन प्रो",
-                subtitle: "पूर्ण स्वास्थ्य निगरानी प्रणाली",
-                btnReady: "📸 पूर्ण स्कैन शुरू करें",
-                btnScanning: "सभी पैरामीटर विश्लेषण...",
-                statusReady: "AI वेलनेस स्कैन के लिए तैयार",
-                statusLoadingModels: "AI मॉडल लोड हो रहे हैं...",
-                statusCameraReady: "कैमरा तैयार",
-                statusAnalyzing: "AI चेहरे के पैटर्न देख रहा है...",
-                statusComplete: "विश्लेषण पूर्ण",
-                
-                // Report Content
-                reportTitle: "AI वेलनेस स्कैन रिपोर्ट",
-                reportStatus: "स्कैन स्थिति: विश्लेषण पूर्ण",
-                pulseLabel: "सक्रियता सूचक",
-                stressLabel: "आराम का स्तर",
-                attentionLabel: "फोकस स्कोर",
-                observationsTitle: "AI अवलोकन सारांश",
-                expressions: "देखे गए पैटर्न: आरामदेह (65%), सकारात्मक (28%)",
-                aiNote: "AI दोस्त नोट: दृश्य पैटर्न एक शांत और संतुलित स्थिति दिखाते हैं।",
-                disclaimerTitle: "⚠️ महत्वपूर्ण सूचना",
-                disclaimer: "यह AI द्वारा बनाया गया एक डेमो अनुमान है।<br>यह किसी भी प्रकार की चिकित्सा सलाह या निदान नहीं है।",
-                
-                // Thought Analysis
-                thoughtTitle: "🧠 विचार पैटर्न विश्लेषण",
-                thoughtDisclaimer: "नोट: यह चेहरे के सूक्ष्म भावों के आधार पर एक संभाव्य अनुमान है।"
+                thoughtDisclaimer: "Note: This is a probabilistic estimation based on facial micro-expressions and AI pattern recognition."
             }
         };
         
@@ -1073,7 +1032,7 @@
                 await faceapi.nets.faceExpressionNet.loadFromUri('/AI-scan/models');
                 
                 modelsReady = true;
-                updateStatus("AI models loaded", "green");
+                updateStatus("AI models loaded successfully", "green");
                 
             } catch (error) {
                 console.warn("Model loading failed:", error);
@@ -1347,13 +1306,13 @@
                     <div class="thought-confidence">${pattern.confidence}%</div>
                     <div class="thought-details">
                         <div class="thought-title">
-                            ${config.icon} ${currentLanguage === 'en' ? config.title : config.titleHi}
+                            ${config.icon} ${config.title}
                         </div>
                         <div class="thought-desc">
-                            ${currentLanguage === 'en' ? config.description : config.descriptionHi}
+                            ${config.description}
                         </div>
-                        <div class="thought-hindi">
-                            Confidence: ${pattern.confidence}%
+                        <div class="thought-language">
+                            Confidence Level: ${pattern.confidence}%
                         </div>
                     </div>
                 `;
@@ -1504,16 +1463,6 @@
                 displayThoughtPatterns(data.thoughtPatterns);
             }
             
-            // Hindi expressions
-            const hindiExpressions = data.expression
-                .replace('Relaxed', 'आरामदेह')
-                .replace('Positive', 'सकारात्मक')
-                .replace('Neutral', 'तटस्थ')
-                .replace('Happy', 'खुश');
-            
-            document.getElementById('expressionsTextHi').textContent = 
-                `देखे गए पैटर्न: ${hindiExpressions}`;
-            
             setTimeout(() => {
                 canvas.style.display = 'none';
                 video.style.display = 'block';
@@ -1632,7 +1581,7 @@
                         </div>
                         ${data.thoughtPatterns && data.thoughtPatterns.length > 0 ? 
                             `<div style="font-size: 11px; color: #a8d5e2; margin-top: 5px;">
-                                Thoughts: ${data.thoughtPatterns.length} detected
+                                Thought Patterns: ${data.thoughtPatterns.length} detected
                             </div>` : ''
                         }
                     `;
@@ -1972,38 +1921,9 @@ Observations: ${document.getElementById('expressionsText').textContent}
         
         // ========== LANGUAGE TOGGLE ==========
         langToggleBtn.addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'en' ? 'hi' : 'en';
-            updateUIForLanguage();
+            // Language toggle removed - keeping only English
+            alert('This system operates in English only for consistency.');
         });
-        
-        function updateUIForLanguage() {
-            const lang = content[currentLanguage];
-            
-            langToggleBtn.textContent = currentLanguage === 'en' ? 'Switch to हिंदी' : 'Switch to English';
-            
-            document.getElementById('mainTitle').textContent = lang.title;
-            document.getElementById('mainSubtitle').textContent = lang.subtitle;
-            btnText.textContent = lang.btnReady;
-            
-            if (reportCard.style.display === 'block') {
-                document.getElementById('reportTitle').textContent = lang.reportTitle;
-                document.getElementById('reportTitleHi').textContent = lang.reportTitle;
-                document.getElementById('reportStatus').textContent = lang.reportStatus;
-                document.getElementById('pulseLabel').textContent = lang.pulseLabel;
-                document.getElementById('pulseLabelHi').textContent = lang.pulseLabel;
-                document.getElementById('stressLabel').textContent = lang.stressLabel;
-                document.getElementById('stressLabelHi').textContent = lang.stressLabel;
-                document.getElementById('attentionLabel').textContent = lang.attentionLabel;
-                document.getElementById('attentionLabelHi').textContent = lang.attentionLabel;
-                document.getElementById('observationTitle').textContent = lang.observationsTitle;
-                document.getElementById('observationHindi').textContent = lang.observationsTitle;
-                document.getElementById('aiNote').textContent = lang.aiNote;
-                document.getElementById('aiNoteHi').textContent = lang.aiNote;
-                document.getElementById('disclaimerTitle').textContent = lang.disclaimerTitle;
-                document.getElementById('disclaimerText').innerHTML = lang.disclaimer;
-                document.getElementById('disclaimerTextHi').innerHTML = lang.disclaimer;
-            }
-        }
         
         // ========== STATUS UPDATE HELPER ==========
         function updateStatus(message, color) {
