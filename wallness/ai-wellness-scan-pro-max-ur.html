@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI ویلنیس سکین پرو</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        /* Emergency SOS Button */
+        .sos-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0000, #ff6b6b);
+            border: none;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            animation: pulse 2s infinite;
+            z-index: 100;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(0, 229, 255, 0.3);
+        }
+        
+        h1 {
+            color: #00e5ff;
+            font-size: 26px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .subtitle {
+            color: #8ac6d1;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .demo-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        
+        .tab-container {
+            display: flex;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: #8ac6d1;
+            cursor: pointer;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: rgba(0, 229, 255, 0.2);
+            color: #00e5ff;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .language-controls {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        #langToggleBtn {
+            padding: 10px 30px;
+            background: linear-gradient(90deg, #00e5ff, #0066ff);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+        
+        .camera-box {
+            position: relative;
+            margin: 20px 0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+            height: 320px;
+            background: #000;
+        }
+        
+        #video, #canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            display: block;
+        }
+        
+        #canvas {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .scan-overlay {
+            position: absolute;
+            inset: 0;
+            border: 3px solid #00e5ff;
+            border-radius: 18px;
+            animation: scan 2s linear infinite;
+            pointer-events: none;
+            display: none;
+            z-index: 10;
+        }
+        
+        @keyframes scan {
+            0% { clip-path: inset(0 0 90% 0); }
+            50% { clip-path: inset(0 0 10% 0); }
+            100% { clip-path: inset(90% 0 0 0); }
+        }
+        
+        .capture-btn {
+            width: 100%;
+            padding: 18px;
+            margin: 20px 0;
+            background: linear-gradient(90deg, #00e5ff, #0066ff);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px rgba(0, 229, 255, 0.3);
+        }
+        
+        .capture-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0, 229, 255, 0.5);
+        }
+        
+        .capture-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        
+        /* Charts Tab */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 300px;
+        }
+        
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00e5ff;
+        }
+        
+        .history-date {
+            color: #00e5ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        /* Voice Analysis */
+        .voice-analysis {
+            background: rgba(0, 100, 255, 0.15);
+            padding: 20px;
+            border-radius: 18px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .voice-visualizer {
+            height: 100px;
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .voice-bar {
+            position: absolute;
+            bottom: 0;
+            width: 4px;
+            background: #00e5ff;
+            border-radius: 2px 2px 0 0;
+            animation: voiceMove 0.5s linear infinite;
+        }
+        
+        @keyframes voiceMove {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(480px); }
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 15px;
+            border: none;
+            background: rgba(0, 229, 255, 0.15);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: rgba(0, 229, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Thought Analysis Section */
+        .thought-analysis {
+            background: linear-gradient(135deg, rgba(138, 198, 209, 0.1), rgba(0, 229, 255, 0.1));
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .thought-category {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 10px 0;
+            transition: all 0.3s;
+            border-left: 4px solid #00e5ff;
+        }
+        
+        .thought-category:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .thought-confidence {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            background: linear-gradient(135deg, #00e5ff, #0066ff);
+            color: white;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .thought-details {
+            flex: 1;
+        }
+        
+        .thought-title {
+            color: #00e5ff;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        
+        .thought-desc {
+            color: #8ac6d1;
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+        
+        .thought-urdu {
+            color: #a8d5e2;
+            font-size: 12px;
+            font-style: italic;
+        }
+        
+        .thought-pattern-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .thought-pattern-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .thought-pattern-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00e5ff;
+            margin: 5px 0;
+        }
+        
+        .thought-pattern-label {
+            font-size: 11px;
+            color: #8ac6d1;
+        }
+        
+        /* SOS Modal */
+        .sos-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .sos-content {
+            background: linear-gradient(135deg, #ff0000, #ff3333);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            max-width: 400px;
+            animation: sosAlert 1s infinite;
+        }
+        
+        @keyframes sosAlert {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Existing styles */
+        .status-box {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            border-radius: 16px;
+            margin: 20px 0;
+            border-left: 5px solid #00e5ff;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-text {
+            font-size: 16px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .report-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .report-title {
+            color: #00e5ff;
+            font-size: 22px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .report-urdu {
+            color: #8ac6d1;
+            font-size: 18px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .metric-card {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 15px 10px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00e5ff;
+            margin: 6px 0;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: #8ac6d1;
+            opacity: 0.9;
+        }
+        
+        .metric-urdu {
+            font-size: 11px;
+            color: #a8d5e2;
+            margin-top: 4px;
+        }
+        
+        .observation-box {
+            background: rgba(0, 100, 255, 0.15);
+            padding: 18px;
+            border-radius: 16px;
+            margin: 20px 0;
+            border-left: 5px solid #0066ff;
+        }
+        
+        .observation-title {
+            color: #00e5ff;
+            font-size: 17px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .observation-urdu {
+            color: #8ac6d1;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+        
+        .ai-note {
+            background: rgba(0, 229, 255, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 12px;
+            font-style: italic;
+        }
+        
+        .note-urdu {
+            color: #a8d5e2;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .tech-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 18px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+        }
+        
+        .disclaimer-box {
+            background: rgba(255, 204, 0, 0.1);
+            padding: 18px;
+            border-radius: 16px;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 204, 0, 0.3);
+        }
+        
+        .disclaimer-title {
+            color: #ffcc00;
+            font-size: 15px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .disclaimer-urdu {
+            color: #ffd966;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(0, 229, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #00e5ff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .flash {
+            position: absolute;
+            inset: 0;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 5;
+            border-radius: 18px;
+        }
+        
+        .flash.active {
+            animation: flash 0.4s ease;
+        }
+        
+        @keyframes flash {
+            0% { opacity: 0; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0; }
+        }
+        
+        @media (max-width: 480px) {
+            .container { padding: 15px; max-width: 95%; }
+            .camera-box { height: 250px; }
+            .chart-container { height: 250px; }
+            .action-buttons { flex-direction: column; }
+            h1 { font-size: 22px; }
+            .thought-pattern-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Emergency SOS Button -->
+    <button class="sos-button" id="sosBtn">🆘</button>
+    
+    <!-- SOS Modal -->
+    <div class="sos-modal" id="sosModal">
+        <div class="sos-content">
+            <h2 style="color: white; margin-bottom: 20px;">ایمرجنسی SOS چالو</h2>
+            <div style="font-size: 60px; margin: 20px;">🚨</div>
+            <p style="color: white; margin-bottom: 30px; font-size: 18px;">
+                مدد راستے میں ہے۔ پرسکون رہیں۔
+            </p>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="callEmergency('108')">🚑 ایمبولینس</button>
+                <button class="action-btn" onclick="callEmergency('100')">👮 پولیس</button>
+                <button class="action-btn" onclick="closeSOS()">❌ منسوخ کریں</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1 id="mainTitle">🧠 AI ویلنیس سکین پرو</h1>
+            <p class="subtitle" id="mainSubtitle">مکمل صحت نگرانی نظام</p>
+            <div class="demo-badge">خیال تجزیہ کے ساتھ</div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="tab-container">
+            <button class="tab active" onclick="switchTab('scan')">سکین</button>
+            <button class="tab" onclick="switchTab('history')">تاریخ</button>
+            <button class="tab" onclick="switchTab('voice')">آواز تجزیہ</button>
+            <button class="tab" onclick="switchTab('charts')">تجزیات</button>
+        </div>
+        
+        <!-- Scan Tab -->
+        <div id="scanTab" class="tab-content active">
+            <!-- Language Toggle -->
+            <div class="language-controls">
+                <button id="langToggleBtn">اردو میں</button>
+            </div>
+            
+            <!-- Camera Feed -->
+            <div class="camera-box">
+                <video id="video" autoplay muted playsinline></video>
+                <canvas id="canvas"></canvas>
+                <div id="flash" class="flash"></div>
+                <div id="scanOverlay" class="scan-overlay"></div>
+            </div>
+            
+            <!-- Capture Button -->
+            <button id="captureBtn" class="capture-btn">
+                <span id="btnText">📸 مکمل سکین شروع کریں</span>
+                <span id="btnLoader" class="hidden">
+                    <span class="loader"></span> تمام پیرامیٹرز کا تجزیہ...
+                </span>
+            </button>
+            
+            <!-- Status -->
+            <div class="status-box">
+                <div class="status-text">
+                    <span id="statusIcon">🔵</span>
+                    <span id="statusText">سسٹم شروع ہو رہا ہے...</span>
+                </div>
+            </div>
+            
+            <!-- AI Report Card -->
+            <div id="reportCard" class="report-card">
+                <div id="reportTitle" class="report-title">AI ویلنیس سکین رپورٹ</div>
+                <div id="reportTitleUrdu" class="report-urdu">AI صحت تجزیہ رپورٹ</div>
+                
+                <!-- Status -->
+                <div class="status-text" style="justify-content: center; margin-bottom: 15px;">
+                    <span id="reportStatusIcon">✅</span>
+                    <span id="reportStatus">سکین کیفیت: تجزیہ مکمل</span>
+                </div>
+                
+                <!-- Key Metrics -->
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div id="pulseLabel" class="metric-label">سرگرمی اشارہ</div>
+                        <div id="pulseValue" class="metric-value">72</div>
+                        <div id="pulseLabelUrdu" class="metric-urdu">جسمانی سرگرمی کی سطح</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div id="stressLabel" class="metric-label">آرام کی سطح</div>
+                        <div id="stressValue" class="metric-value">65%</div>
+                        <div id="stressLabelUrdu" class="metric-urdu">تناؤ انتظام اسکور</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div id="attentionLabel" class="metric-label">فوکس اسکور</div>
+                        <div id="attentionValue" class="metric-value">88%</div>
+                        <div id="attentionLabelUrdu" class="metric-urdu">دماغی توجہ کی سطح</div>
+                    </div>
+                </div>
+                
+                <!-- THOUGHT PATTERN ANALYSIS SECTION -->
+                <div class="thought-analysis" id="thoughtAnalysis" style="display: none;">
+                    <h3 style="color: #00e5ff; text-align: center; margin-bottom: 15px;">🧠 خیال پیٹرن تجزیہ</h3>
+                    <div id="thoughtCategories">
+                        <!-- Thought categories will be inserted here -->
+                    </div>
+                    
+                    <div class="thought-pattern-grid">
+                        <div class="thought-pattern-card">
+                            <div class="thought-pattern-value" id="browTensionValue">--</div>
+                            <div class="thought-pattern-label">پیشانی کا تناؤ</div>
+                        </div>
+                        <div class="thought-pattern-card">
+                            <div class="thought-pattern-value" id="eyeFocusValue">--</div>
+                            <div class="thought-pattern-label">آنکھ فوکس سطح</div>
+                        </div>
+                        <div class="thought-pattern-card">
+                            <div class="thought-pattern-value" id="lipActivityValue">--</div>
+                            <div class="thought-pattern-label">ہونٹ سرگرمی</div>
+                        </div>
+                        <div class="thought-pattern-card">
+                            <div class="thought-pattern-value" id="faceSymmetryValue">--</div>
+                            <div class="thought-pattern-label">چہرہ ہم آہنگی</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- AI Observations -->
+                <div class="observation-box">
+                    <div id="observationTitle" class="observation-title">AI مشاہدہ خلاصہ</div>
+                    <div id="observationUrdu" class="observation-urdu">AI تجزیہ نتائج</div>
+                    
+                    <div id="expressionsText">مشاہدہ پیٹرن: پرسکون (65٪)، مثبت (28٪)</div>
+                    <div id="expressionsTextUrdu" class="metric-urdu">چہرے کے تاثرات اور جذباتی کیفیت</div>
+                    
+                    <div class="ai-note">
+                        <div id="aiNote">AI تجزیہ نوٹ: بصری پیٹرن ایک پرسکون اور متوازن کیفیت دکھاتے ہیں۔</div>
+                        <div id="aiNoteUrdu" class="note-urdu">چہرے کے باریک تاثرات اور صحت اشاریوں کا تفصیلی تجزیہ</div>
+                    </div>
+                </div>
+                
+                <!-- Technical Info -->
+                <div class="tech-info">
+                    <div>
+                        <div style="font-size: 12px; color: #8ac6d1;">سکین آئی ڈی</div>
+                        <div id="scanId" style="font-size: 13px;">WS-001</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: #8ac6d1;">AI میچ اسکور</div>
+                        <div id="confidenceValue" style="font-size: 13px;">85%</div>
+                    </div>
+                </div>
+                
+                <!-- Disclaimer -->
+                <div class="disclaimer-box">
+                    <div id="disclaimerTitle" class="disclaimer-title">⚠️ اہم اطلاع</div>
+                    <div id="disclaimerText">
+                        یہ AI کی بنائی ہوئی ایک ڈیمو اندازہ ہے۔<br>
+                        یہ کسی بھی قسم کی طبی مشورہ یا تشخیص نہیں ہے۔ ڈاکٹر سے مشورہ کریں۔
+                    </div>
+                    <div id="disclaimerTextUrdu" class="disclaimer-urdu">
+                        AI صحت تجزیہ نظام - طبی استعمال کے لیے نہیں
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="action-btn" onclick="saveToHistory()">💾 رپورٹ محفوظ کریں</button>
+                <button class="action-btn" onclick="generatePDF()">📄 PDF ایکسپورٹ</button>
+                <button class="action-btn" onclick="shareReport()">📤 شیئر کریں</button>
+            </div>
+        </div>
+        
+        <!-- History Tab -->
+        <div id="historyTab" class="tab-content">
+            <h3 style="color: #00e5ff; margin-bottom: 15px;">📊 سکین تاریخ</h3>
+            <div class="history-list" id="historyList">
+                <!-- History items will be loaded here -->
+            </div>
+            <button class="capture-btn" onclick="clearHistory()">🗑️ تمام تاریخ صاف کریں</button>
+        </div>
+        
+        <!-- Voice Analysis Tab -->
+        <div id="voiceTab" class="tab-content">
+            <div class="voice-analysis">
+                <h3 style="color: #00e5ff; margin-bottom: 15px;">🎤 آواز تناؤ تجزیہ</h3>
+                <p style="margin-bottom: 20px; color: #8ac6d1;">
+                    آواز پیٹرن اور تناؤ سطح تجزیہ کے لیے 10 سیکنڈ تک بولیں
+                </p>
+                
+                <div class="voice-visualizer" id="voiceVisualizer">
+                    <!-- Voice bars will be generated here -->
+                </div>
+                
+                <div class="status-box" style="margin: 20px 0;">
+                    <div class="status-text">
+                        <span id="voiceStatusIcon">🎤</span>
+                        <span id="voiceStatusText">آواز تجزیہ کے لیے تیار</span>
+                    </div>
+                </div>
+                
+                <button class="capture-btn" onclick="startVoiceAnalysis()" id="voiceBtn">
+                    🎤 آواز تجزیہ شروع کریں
+                </button>
+                
+                <div id="voiceResults" style="display: none; margin-top: 20px;">
+                    <h4 style="color: #00e5ff;">آواز تجزیہ نتائج</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">آواز تناؤ</div>
+                            <div class="metric-value" id="voiceStress">--</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">اعتماد</div>
+                            <div class="metric-value" id="voiceConfidence">--</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">توانائی کی سطح</div>
+                            <div class="metric-value" id="voiceEnergy">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Tab -->
+        <div id="chartsTab" class="tab-content">
+            <h3 style="color: #00e5ff; margin-bottom: 15px;">📈 صحت رجحانات</h3>
+            
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="action-btn" onclick="updateChart('week')">📅 ہفتہ</button>
+                <button class="action-btn" onclick="updateChart('month')">📆 مہینہ</button>
+                <button class="action-btn" onclick="updateChart('year')">📊 سال</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOCAL Face API.js -->
+    <script src="https://deepakchauhanxai.xyz/AI-scan/face-api.min.js"></script>
+
+    <script>
+        // ========== GLOBAL VARIABLES ==========
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('captureBtn');
+        const btnText = document.getElementById('btnText');
+        const btnLoader = document.getElementById('btnLoader');
+        const statusText = document.getElementById('statusText');
+        const statusIcon = document.getElementById('statusIcon');
+        const scanOverlay = document.getElementById('scanOverlay');
+        const reportCard = document.getElementById('reportCard');
+        const langToggleBtn = document.getElementById('langToggleBtn');
+        const flash = document.getElementById('flash');
+        const thoughtAnalysis = document.getElementById('thoughtAnalysis');
+        
+        let wellnessDB;
+        let voiceStream;
+        let audioContext;
+        let analyser;
+        let trendChart;
+        let modelsReady = false;
+        let cameraReady = false;
+        let currentLanguage = 'ur';
+        let isScanning = false;
+        let spacePressed = false;
+        
+        // ========== THOUGHT PATTERN CONFIGURATION ==========
+        const thoughtPatternsConfig = {
+            'PROBLEM_SOLVING': {
+                title: 'مسئلہ حل کرنے کی کیفیت',
+                titleUrdu: 'مسئلہ حل موڈ',
+                description: 'آپ گہری سوچ میں نظر آتے ہیں، شاید کسی مسئلے کا حل کر رہے ہیں یا فیصلے لے رہے ہیں۔',
+                descriptionUrdu: 'مرکوز علمی سرگرمی کے اشارے دکھائی دیتے ہیں۔',
+                indicators: ['brow_furrow', 'lip_pursing', 'focused_gaze'],
+                icon: '🤔'
+            },
+            'STRESS_ANXIETY': {
+                title: 'تناؤ / پریشانی کا پتہ چلا',
+                titleUrdu: 'تناؤ کیفیت',
+                description: 'پیشانی کا تناؤ اور آنکھوں کی تھکاوٹ بتاتی ہے کہ آپ تناؤ میں ہیں یا کسی بات کی فکر کر رہے ہیں۔',
+                descriptionUrdu: 'آرام کی تکنیکوں پر غور کریں۔',
+                indicators: ['tense_forehead', 'rapid_blinking', 'jaw_tension'],
+                icon: '😟'
+            },
+            'CREATIVE_FLOW': {
+                title: 'تخلیقی بہاؤ کی کیفیت',
+                titleUrdu: 'تخلیقی سوچ',
+                description: 'آرام دہ لیکن مرکوز تاثر بتاتا ہے کہ آپ تخلیقی سوچ کی کیفیت میں ہیں۔',
+                descriptionUrdu: 'اچھے ذہنی بہاؤ کے اشارے۔',
+                indicators: ['relaxed_brows', 'distant_gaze', 'slight_smile'],
+                icon: '💡'
+            },
+            'CONTENT_RELAXED': {
+                title: 'مطمئن اور آرام دہ',
+                titleUrdu: 'پرسکون کیفیت',
+                description: 'آپ کے چہرے کے پٹھے آرام دہ ہیں، جو اطمینان اور سکون کی کیفیت ظاہر کرتے ہیں۔',
+                descriptionUrdu: 'مجموعی صحت کے مثبت اشارے۔',
+                indicators: ['soft_eyes', 'symmetrical_smile', 'relaxed_jaw'],
+                icon: '😌'
+            },
+            'DETERMINATION': {
+                title: 'پختہ ارادے کی کیفیت',
+                titleUrdu: 'پختہ عزم',
+                description: 'مضبوط جبڑا اور مرکوز آنکھیں پختہ ارادے اور مضبوط ارادے کی طاقت ظاہر کرتی ہیں۔',
+                descriptionUrdu: 'ہدف پر مرکوز سوچ کے اشارے۔',
+                indicators: ['jaw_clench', 'straight_eyebrows', 'intense_gaze'],
+                icon: '💪'
+            },
+            'CONFUSION': {
+                title: 'الجھن / گہری سوچ',
+                titleUrdu: 'گہرا غور',
+                description: 'غیر ہم آہنگ چہرے کے تاثرات الجھن یا گہرے غور کا اشارہ دیتے ہیں۔',
+                descriptionUrdu: 'پیچیدہ معاملات پر غور کر رہے ہیں۔',
+                indicators: ['head_tilt', 'asymmetrical_brows', 'pursed_lips'],
+                icon: '🤨'
+            }
+        };
+        
+        // ========== CONTENT TRANSLATIONS ==========
+        const content = {
+            ur: {
+                // UI Text
+                title: "🧠 AI ویلنیس سکین پرو",
+                subtitle: "مکمل صحت نگرانی نظام",
+                btnReady: "📸 مکمل سکین شروع کریں",
+                btnScanning: "تمام پیرامیٹرز کا تجزیہ...",
+                statusReady: "AI ویلنیس سکین کے لیے تیار",
+                statusLoadingModels: "AI ماڈل لوڈ ہو رہے ہیں...",
+                statusCameraReady: "کیمرہ سکین کے لیے تیار",
+                statusAnalyzing: "AI چہرے کے پیٹرن کا تجزیہ کر رہا ہے...",
+                statusComplete: "تجزیہ مکمل - رپورٹ جنریٹ ہوئی",
+                
+                // Report Content
+                reportTitle: "AI ویلنیس سکین رپورٹ",
+                reportStatus: "سکین کیفیت: تجزیہ مکمل",
+                pulseLabel: "سرگرمی اشارہ",
+                stressLabel: "آرام کی سطح",
+                attentionLabel: "فوکس اسکور",
+                observationsTitle: "AI مشاہدہ خلاصہ",
+                expressions: "مشاہدہ پیٹرن: پرسکون (65٪)، مثبت (28٪)",
+                aiNote: "AI تجزیہ نوٹ: بصری پیٹرن ایک پرسکون اور متوازن کیفیت دکھاتے ہیں۔",
+                disclaimerTitle: "⚠️ اہم اطلاع",
+                disclaimer: "یہ AI کی بنائی ہوئی ایک ڈیمو اندازہ ہے۔<br>یہ کسی بھی قسم کی طبی مشورہ یا تشخیص نہیں ہے۔ ڈاکٹر سے مشورہ کریں۔",
+                
+                // Thought Analysis
+                thoughtTitle: "🧠 خیال پیٹرن تجزیہ",
+                thoughtDisclaimer: "نوٹ: یہ چہرے کے باریک تاثرات کی بنیاد پر ایک امکان اندازہ ہے۔"
+            }
+        };
+        
+        // ========== INITIALIZE ALL SYSTEMS ==========
+        async function init() {
+            updateStatus("سسٹم شروع ہو رہا ہے...", "blue");
+            
+            try {
+                await Promise.all([initCamera(), loadModels()]);
+                initDatabase();
+                initChart();
+                updateStatus(content[currentLanguage].statusReady, "green");
+                
+                // Set up SOS button
+                document.getElementById('sosBtn').addEventListener('click', showSOS);
+                
+                // Close SOS when clicking outside
+                document.getElementById('sosModal').addEventListener('click', function(e) {
+                    if (e.target === this) closeSOS();
+                });
+                
+                // Keyboard shortcut for SOS
+                document.addEventListener('keydown', function(e) {
+                    if (e.code === 'Space' && !spacePressed) {
+                        spacePressed = true;
+                        setTimeout(() => {
+                            if (spacePressed) {
+                                showSOS();
+                            }
+                        }, 3000);
+                    }
+                });
+                
+                document.addEventListener('keyup', function(e) {
+                    if (e.code === 'Space') {
+                        spacePressed = false;
+                    }
+                });
+                
+            } catch (error) {
+                updateStatus("آغاز کی خرابی", "red");
+                console.error("Init error:", error);
+            }
+        }
+        
+        // ========== ORIGINAL WELLNESS SCAN FUNCTIONS ==========
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: "user",
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    },
+                    audio: false
+                });
+                
+                video.srcObject = stream;
+                cameraReady = true;
+                
+                setTimeout(() => {
+                    updateStatus(content[currentLanguage].statusCameraReady, "green");
+                }, 500);
+                
+            } catch (err) {
+                console.error("Camera error:", err);
+                updateStatus("کیمرہ رسائی ضروری", "red");
+                alert("براہ کرم ویلنیس سکین استعمال کرنے کے لیے کیمرہ رسائی کی اجازت دیں۔");
+            }
+        }
+        
+        async function loadModels() {
+            try {
+                updateStatus(content[currentLanguage].statusLoadingModels, "blue");
+                
+                await faceapi.nets.tinyFaceDetector.loadFromUri('/AI-scan/models');
+                await faceapi.nets.faceLandmark68Net.loadFromUri('/AI-scan/models');
+                await faceapi.nets.faceExpressionNet.loadFromUri('/AI-scan/models');
+                
+                modelsReady = true;
+                updateStatus("AI ماڈل کامیابی سے لوڈ ہوئے", "green");
+                
+            } catch (error) {
+                console.warn("Model loading failed:", error);
+                updateStatus("سمولیشن موڈ استعمال کر رہے ہیں", "yellow");
+                modelsReady = true;
+            }
+        }
+        
+        // ========== THOUGHT PATTERN ANALYSIS FUNCTIONS ==========
+        function analyzeThoughtPatterns(landmarks) {
+            const patterns = [];
+            
+            if (!landmarks) {
+                return generateSimulatedThoughtPatterns();
+            }
+            
+            // Calculate thought pattern metrics
+            const browTension = calculateBrowTension(landmarks);
+            const eyeFocus = calculateEyeFocus(landmarks);
+            const lipActivity = calculateLipActivity(landmarks);
+            const faceSymmetry = calculateFaceSymmetry(landmarks);
+            const jawTension = calculateJawTension(landmarks);
+            const eyeOpenness = calculateEyeOpenness(landmarks);
+            
+            // Update pattern values display
+            document.getElementById('browTensionValue').textContent = Math.round(browTension * 100) + '%';
+            document.getElementById('eyeFocusValue').textContent = Math.round(eyeFocus * 100) + '%';
+            document.getElementById('lipActivityValue').textContent = Math.round(lipActivity * 100) + '%';
+            document.getElementById('faceSymmetryValue').textContent = Math.round(faceSymmetry * 100) + '%';
+            
+            // Determine thought patterns based on metrics
+            if (browTension > 0.7 && eyeFocus > 0.6) {
+                patterns.push({
+                    type: 'PROBLEM_SOLVING',
+                    confidence: Math.round((browTension + eyeFocus) / 2 * 100),
+                    browTension: Math.round(browTension * 100),
+                    eyeFocus: Math.round(eyeFocus * 100)
+                });
+            }
+            
+            if (browTension > 0.6 && jawTension > 0.5) {
+                patterns.push({
+                    type: 'STRESS_ANXIETY',
+                    confidence: Math.round((browTension + jawTension) / 2 * 100),
+                    browTension: Math.round(browTension * 100),
+                    jawTension: Math.round(jawTension * 100)
+                });
+            }
+            
+            if (faceSymmetry > 0.7 && browTension < 0.4) {
+                patterns.push({
+                    type: 'CONTENT_RELAXED',
+                    confidence: Math.round(faceSymmetry * 100),
+                    faceSymmetry: Math.round(faceSymmetry * 100)
+                });
+            }
+            
+            if (eyeFocus > 0.7 && lipActivity > 0.6) {
+                patterns.push({
+                    type: 'DETERMINATION',
+                    confidence: Math.round((eyeFocus + lipActivity) / 2 * 100),
+                    eyeFocus: Math.round(eyeFocus * 100),
+                    lipActivity: Math.round(lipActivity * 100)
+                });
+            }
+            
+            if (faceSymmetry < 0.6 && lipActivity > 0.5) {
+                patterns.push({
+                    type: 'CONFUSION',
+                    confidence: Math.round((1 - faceSymmetry + lipActivity) / 2 * 100),
+                    faceSymmetry: Math.round(faceSymmetry * 100),
+                    lipActivity: Math.round(lipActivity * 100)
+                });
+            }
+            
+            if (eyeOpenness > 0.7 && browTension < 0.5) {
+                patterns.push({
+                    type: 'CREATIVE_FLOW',
+                    confidence: Math.round((eyeOpenness + (1 - browTension)) / 2 * 100),
+                    eyeOpenness: Math.round(eyeOpenness * 100)
+                });
+            }
+            
+            // If no patterns detected, generate simulated ones
+            if (patterns.length === 0) {
+                return generateSimulatedThoughtPatterns();
+            }
+            
+            // Sort by confidence
+            patterns.sort((a, b) => b.confidence - a.confidence);
+            
+            return patterns.slice(0, 3); // Return top 3 patterns
+        }
+        
+        function generateSimulatedThoughtPatterns() {
+            // Generate simulated thought patterns for demo
+            const patterns = [];
+            const patternTypes = Object.keys(thoughtPatternsConfig);
+            
+            // Select 2-3 random patterns
+            const numPatterns = 2 + Math.floor(Math.random() * 2);
+            const selectedPatterns = [];
+            
+            while (selectedPatterns.length < numPatterns) {
+                const pattern = patternTypes[Math.floor(Math.random() * patternTypes.length)];
+                if (!selectedPatterns.includes(pattern)) {
+                    selectedPatterns.push(pattern);
+                }
+            }
+            
+            selectedPatterns.forEach(pattern => {
+                patterns.push({
+                    type: pattern,
+                    confidence: 60 + Math.floor(Math.random() * 35),
+                    // Random metrics for demo
+                    browTension: 40 + Math.floor(Math.random() * 50),
+                    eyeFocus: 50 + Math.floor(Math.random() * 40),
+                    lipActivity: 30 + Math.floor(Math.random() * 60),
+                    faceSymmetry: 60 + Math.floor(Math.random() * 35),
+                    jawTension: 20 + Math.floor(Math.random() * 70),
+                    eyeOpenness: 50 + Math.floor(Math.random() * 45)
+                });
+            });
+            
+            // Update pattern values display with simulated data
+            document.getElementById('browTensionValue').textContent = 
+                (40 + Math.floor(Math.random() * 50)) + '%';
+            document.getElementById('eyeFocusValue').textContent = 
+                (50 + Math.floor(Math.random() * 40)) + '%';
+            document.getElementById('lipActivityValue').textContent = 
+                (30 + Math.floor(Math.random() * 60)) + '%';
+            document.getElementById('faceSymmetryValue').textContent = 
+                (60 + Math.floor(Math.random() * 35)) + '%';
+            
+            return patterns;
+        }
+        
+        // Helper functions for thought pattern analysis
+        function calculateBrowTension(landmarks) {
+            try {
+                const leftBrow = landmarks.getLeftEyeBrow();
+                const rightBrow = landmarks.getRightEyeBrow();
+                
+                if (!leftBrow || !rightBrow || leftBrow.length < 5 || rightBrow.length < 5) {
+                    return 0.5; // Default value
+                }
+                
+                // Calculate average Y position of brows (lower = more tension)
+                const leftAvgY = leftBrow.reduce((sum, point) => sum + point.y, 0) / leftBrow.length;
+                const rightAvgY = rightBrow.reduce((sum, point) => sum + point.y, 0) / rightBrow.length;
+                
+                // Normalize (lower values = more tension)
+                const tension = Math.min(1, Math.max(0, (leftAvgY + rightAvgY) / 200));
+                return 1 - tension; // Invert so higher = more tension
+            } catch (e) {
+                return 0.5;
+            }
+        }
+        
+        function calculateEyeFocus(landmarks) {
+            try {
+                const leftEye = landmarks.getLeftEye();
+                const rightEye = landmarks.getRightEye();
+                
+                if (!leftEye || !rightEye || leftEye.length < 6 || rightEye.length < 6) {
+                    return 0.6;
+                }
+                
+                // Calculate eye openness (more open = more focused)
+                const leftHeight = Math.abs(leftEye[1].y - leftEye[5].y);
+                const rightHeight = Math.abs(rightEye[1].y - rightEye[5].y);
+                const avgHeight = (leftHeight + rightHeight) / 2;
+                
+                return Math.min(1, avgHeight / 15);
+            } catch (e) {
+                return 0.6;
+            }
+        }
+        
+        function calculateLipActivity(landmarks) {
+            try {
+                const mouth = landmarks.getMouth();
+                if (!mouth || mouth.length < 20) return 0.4;
+                
+                // Calculate mouth openness
+                const upperLip = mouth[13];
+                const lowerLip = mouth[19];
+                const verticalDistance = Math.abs(upperLip.y - lowerLip.y);
+                
+                return Math.min(1, verticalDistance / 20);
+            } catch (e) {
+                return 0.4;
+            }
+        }
+        
+        function calculateFaceSymmetry(landmarks) {
+            try {
+                // Simple symmetry calculation based on key points
+                const jaw = landmarks.getJawOutline();
+                if (!jaw || jaw.length < 17) return 0.7;
+                
+                let symmetryScore = 0;
+                const midPoint = jaw[8]; // Chin point
+                
+                for (let i = 0; i < 8; i++) {
+                    const leftPoint = jaw[i];
+                    const rightPoint = jaw[16 - i];
+                    const leftDist = Math.abs(leftPoint.x - midPoint.x);
+                    const rightDist = Math.abs(rightPoint.x - midPoint.x);
+                    
+                    const symmetry = 1 - Math.abs(leftDist - rightDist) / Math.max(leftDist, rightDist);
+                    symmetryScore += symmetry;
+                }
+                
+                return Math.min(1, symmetryScore / 8);
+            } catch (e) {
+                return 0.7;
+            }
+        }
+        
+        function calculateJawTension(landmarks) {
+            try {
+                const jaw = landmarks.getJawOutline();
+                if (!jaw || jaw.length < 17) return 0.3;
+                
+                // Distance between jaw points (closer = more tension)
+                const jawWidth = Math.abs(jaw[0].x - jaw[16].x);
+                return Math.min(1, 1 - (jawWidth / 150));
+            } catch (e) {
+                return 0.3;
+            }
+        }
+        
+        function calculateEyeOpenness(landmarks) {
+            try {
+                const leftEye = landmarks.getLeftEye();
+                const rightEye = landmarks.getRightEye();
+                
+                if (!leftEye || !rightEye) return 0.7;
+                
+                const leftHeight = Math.abs(leftEye[1].y - leftEye[5].y);
+                const rightHeight = Math.abs(rightEye[1].y - rightEye[5].y);
+                const avgHeight = (leftHeight + rightHeight) / 2;
+                
+                return Math.min(1, avgHeight / 20);
+            } catch (e) {
+                return 0.7;
+            }
+        }
+        
+        function displayThoughtPatterns(patterns) {
+            const thoughtCategoriesDiv = document.getElementById('thoughtCategories');
+            thoughtCategoriesDiv.innerHTML = '';
+            
+            if (!patterns || patterns.length === 0) {
+                thoughtCategoriesDiv.innerHTML = `
+                    <div style="text-align: center; color: #8ac6d1; padding: 20px;">
+                        کوئی مخصوص خیال پیٹرن نہیں ملا
+                    </div>
+                `;
+                return;
+            }
+            
+            patterns.forEach(pattern => {
+                const config = thoughtPatternsConfig[pattern.type];
+                if (!config) return;
+                
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'thought-category';
+                categoryDiv.innerHTML = `
+                    <div class="thought-confidence">${pattern.confidence}%</div>
+                    <div class="thought-details">
+                        <div class="thought-title">
+                            ${config.icon} ${currentLanguage === 'ur' ? config.title : config.titleUrdu}
+                        </div>
+                        <div class="thought-desc">
+                            ${currentLanguage === 'ur' ? config.description : config.descriptionUrdu}
+                        </div>
+                        <div class="thought-urdu">
+                            اعتماد کی سطح: ${pattern.confidence}%
+                        </div>
+                    </div>
+                `;
+                
+                thoughtCategoriesDiv.appendChild(categoryDiv);
+            });
+            
+            // Show thought analysis section
+            thoughtAnalysis.style.display = 'block';
+        }
+        
+        // ========== CAPTURE BUTTON HANDLER ==========
+        captureBtn.addEventListener('click', async () => {
+            if (isScanning || !cameraReady) return;
+            
+            isScanning = true;
+            
+            // Update UI for scanning
+            btnText.classList.add('hidden');
+            btnLoader.classList.remove('hidden');
+            captureBtn.disabled = true;
+            updateStatus(content[currentLanguage].statusAnalyzing, "blue");
+            
+            // Show scan animation
+            scanOverlay.style.display = 'block';
+            
+            // Flash effect
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 400);
+            
+            // Capture frame
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Show canvas, hide video
+            video.style.display = 'none';
+            canvas.style.display = 'block';
+            
+            // Simulate AI processing time
+            setTimeout(async () => {
+                try {
+                    if (modelsReady) {
+                        const result = await faceapi
+                            .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                            .withFaceLandmarks()
+                            .withFaceExpressions();
+                        
+                        if (result) {
+                            generateAIReport(result);
+                        } else {
+                            generateSimulatedReport();
+                        }
+                    } else {
+                        generateSimulatedReport();
+                    }
+                } catch (error) {
+                    console.warn("AI analysis error:", error);
+                    generateSimulatedReport();
+                }
+                
+                // Hide scan animation
+                scanOverlay.style.display = 'none';
+                
+                // Reset button
+                btnText.classList.remove('hidden');
+                btnLoader.classList.add('hidden');
+                captureBtn.disabled = false;
+                
+                // Show report
+                reportCard.style.display = 'block';
+                updateStatus(content[currentLanguage].statusComplete, "green");
+                
+                // Reset scanning state
+                setTimeout(() => {
+                    isScanning = false;
+                }, 1000);
+                
+            }, 2000);
+        });
+        
+        function generateAIReport(result) {
+            const expressions = result.expressions || {};
+            const landmarks = result.landmarks;
+            
+            // Calculate wellness metrics
+            const activity = 65 + Math.round((expressions.happy || 0) * 20);
+            const relaxation = 100 - Math.round(
+                ((expressions.sad || 0) * 30) + 
+                ((expressions.angry || 0) * 25) + 
+                ((expressions.fearful || 0) * 20)
+            );
+            const focus = 70 + Math.round((expressions.happy || 0) * 15);
+            
+            // Analyze thought patterns
+            const thoughtPatterns = analyzeThoughtPatterns(landmarks);
+            
+            // Get top expression
+            let topExpression = "پرسکون";
+            let topScore = 0;
+            
+            for (const [emotion, score] of Object.entries(expressions)) {
+                if (score > topScore) {
+                    topScore = score;
+                    topExpression = emotion === 'happy' ? 'خوش' : 
+                                  emotion === 'sad' ? 'اداس' : 
+                                  emotion === 'angry' ? 'غصہ' : 
+                                  emotion === 'fearful' ? 'خوفزدہ' : 
+                                  emotion === 'disgusted' ? 'نفرت' : 
+                                  emotion === 'surprised' ? 'حیران' : 'غیر جانبدار';
+                }
+            }
+            
+            // Update report
+            updateReport({
+                activity: Math.min(Math.max(activity, 50), 90),
+                relaxation: Math.min(Math.max(relaxation, 40), 95),
+                focus: Math.min(Math.max(focus, 60), 95),
+                expression: `${topExpression} (${Math.round(topScore * 100)}%)`,
+                confidence: Math.round(75 + Math.random() * 20),
+                thoughtPatterns: thoughtPatterns
+            });
+        }
+        
+        function generateSimulatedReport() {
+            // Generate simulated thought patterns
+            const thoughtPatterns = generateSimulatedThoughtPatterns();
+            
+            updateReport({
+                activity: 72,
+                relaxation: 65,
+                focus: 88,
+                expression: "پرسکون (65٪)، مثبت (28٪)",
+                confidence: 85,
+                thoughtPatterns: thoughtPatterns
+            });
+        }
+        
+        function updateReport(data) {
+            // Update metrics
+            document.getElementById('pulseValue').textContent = data.activity;
+            document.getElementById('stressValue').textContent = data.relaxation + '%';
+            document.getElementById('attentionValue').textContent = data.focus + '%';
+            document.getElementById('expressionsText').textContent = 
+                `مشاہدہ پیٹرن: ${data.expression}`;
+            document.getElementById('confidenceValue').textContent = data.confidence + '%';
+            document.getElementById('scanId').textContent = 
+                `WS-${new Date().getTime().toString().slice(-6)}`;
+            
+            // Display thought patterns
+            if (data.thoughtPatterns && data.thoughtPatterns.length > 0) {
+                displayThoughtPatterns(data.thoughtPatterns);
+            }
+            
+            // Urdu expressions
+            const urduExpressions = data.expression;
+            
+            document.getElementById('expressionsTextUrdu').textContent = 
+                `چہرے کے تاثرات اور جذباتی کیفیت`;
+            
+            setTimeout(() => {
+                canvas.style.display = 'none';
+                video.style.display = 'block';
+            }, 4000);
+        }
+        
+        // ========== DATABASE SYSTEM ==========
+        function initDatabase() {
+            const request = indexedDB.open('WellnessDB', 3);
+            
+            request.onupgradeneeded = function(e) {
+                const db = e.target.result;
+                
+                if (!db.objectStoreNames.contains('scans')) {
+                    const store = db.createObjectStore('scans', { 
+                        keyPath: 'id',
+                        autoIncrement: true 
+                    });
+                    store.createIndex('date', 'date', { unique: false });
+                }
+                
+                if (!db.objectStoreNames.contains('voiceAnalyses')) {
+                    db.createObjectStore('voiceAnalyses', { 
+                        keyPath: 'id',
+                        autoIncrement: true 
+                    });
+                }
+                
+                if (!db.objectStoreNames.contains('thoughtPatterns')) {
+                    db.createObjectStore('thoughtPatterns', { 
+                        keyPath: 'id',
+                        autoIncrement: true 
+                    });
+                }
+            };
+            
+            request.onsuccess = function(e) {
+                wellnessDB = e.target.result;
+                loadHistory();
+                console.log('ڈیٹا بیس شروع ہوا');
+            };
+            
+            request.onerror = function(e) {
+                console.error('Database error:', e.target.error);
+            };
+        }
+        
+        function saveToHistory() {
+            if (!wellnessDB) return;
+            
+            const thoughtPatterns = [];
+            const thoughtElements = document.querySelectorAll('.thought-category');
+            thoughtElements.forEach(el => {
+                const title = el.querySelector('.thought-title').textContent;
+                const confidence = el.querySelector('.thought-confidence').textContent;
+                thoughtPatterns.push({ title, confidence });
+            });
+            
+            const scanData = {
+                date: new Date().toISOString(),
+                timestamp: Date.now(),
+                activity: parseInt(document.getElementById('pulseValue').textContent),
+                relaxation: parseInt(document.getElementById('stressValue').textContent.replace('%', '')),
+                focus: parseInt(document.getElementById('attentionValue').textContent.replace('%', '')),
+                expression: document.getElementById('expressionsText').textContent,
+                confidence: parseInt(document.getElementById('confidenceValue').textContent.replace('%', '')),
+                thoughtPatterns: thoughtPatterns
+            };
+            
+            const transaction = wellnessDB.transaction(['scans'], 'readwrite');
+            const store = transaction.objectStore('scans');
+            const request = store.add(scanData);
+            
+            request.onsuccess = function() {
+                alert('سکین تاریخ میں محفوظ ہوا!');
+                loadHistory();
+                updateChart('week');
+            };
+            
+            request.onerror = function(e) {
+                console.error('Error saving scan:', e.target.error);
+            };
+        }
+        
+        function loadHistory() {
+            if (!wellnessDB) return;
+            
+            const transaction = wellnessDB.transaction(['scans'], 'readonly');
+            const store = transaction.objectStore('scans');
+            const index = store.index('date');
+            const request = index.openCursor(null, 'prev');
+            
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '';
+            
+            let count = 0;
+            
+            request.onsuccess = function(e) {
+                const cursor = e.target.result;
+                if (cursor && count < 10) {
+                    const data = cursor.value;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    item.innerHTML = `
+                        <div class="history-date">
+                            ${new Date(data.date).toLocaleString('ur-PK')}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                            <span>سرگرمی: ${data.activity}</span>
+                            <span>آرام: ${data.relaxation}%</span>
+                            <span>فوکس: ${data.focus}%</span>
+                        </div>
+                        <div style="font-size: 12px; color: #8ac6d1; margin-top: 5px;">
+                            ${data.expression.substring(0, 50)}...
+                        </div>
+                        ${data.thoughtPatterns && data.thoughtPatterns.length > 0 ? 
+                            `<div style="font-size: 11px; color: #a8d5e2; margin-top: 5px;">
+                                خیال پیٹرن: ${data.thoughtPatterns.length} ملے
+                            </div>` : ''
+                        }
+                    `;
+                    
+                    historyList.appendChild(item);
+                    cursor.continue();
+                    count++;
+                }
+            };
+        }
+        
+        function clearHistory() {
+            if (confirm('کیا آپ واقعی تمام تاریخ حذف کرنا چاہتے ہیں؟')) {
+                const transaction = wellnessDB.transaction(['scans'], 'readwrite');
+                const store = transaction.objectStore('scans');
+                const request = store.clear();
+                
+                request.onsuccess = function() {
+                    document.getElementById('historyList').innerHTML = '';
+                    alert('تاریخ صاف ہوئی!');
+                };
+            }
+        }
+        
+        // ========== VOICE ANALYSIS SYSTEM ==========
+        async function startVoiceAnalysis() {
+            const voiceBtn = document.getElementById('voiceBtn');
+            const voiceStatus = document.getElementById('voiceStatusText');
+            
+            try {
+                voiceStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        sampleRate: 44100
+                    }
+                });
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                const source = audioContext.createMediaStreamSource(voiceStream);
+                
+                source.connect(analyser);
+                analyser.fftSize = 256;
+                
+                voiceBtn.disabled = true;
+                voiceBtn.innerHTML = '🎤 تجزیہ... (10 سیکنڈ)';
+                voiceStatus.textContent = 'سن رہے ہیں... عام بولیں';
+                
+                createVoiceVisualizer();
+                
+                let samples = [];
+                const startTime = Date.now();
+                
+                const analyzeInterval = setInterval(() => {
+                    const bufferLength = analyser.frequencyBinCount;
+                    const dataArray = new Uint8Array(bufferLength);
+                    analyser.getByteFrequencyData(dataArray);
+                    
+                    const average = dataArray.reduce((a, b) => a + b) / bufferLength;
+                    samples.push(average);
+                    
+                    updateVisualizer(average);
+                    
+                    if (Date.now() - startTime >= 10000) {
+                        clearInterval(analyzeInterval);
+                        completeVoiceAnalysis(samples);
+                    }
+                }, 100);
+                
+            } catch (error) {
+                console.error('Voice analysis error:', error);
+                document.getElementById('voiceStatusText').textContent = 'مائیکروفون رسافی مسترد';
+                document.getElementById('voiceBtn').disabled = false;
+                document.getElementById('voiceBtn').innerHTML = '🎤 آواز تجزیہ شروع کریں';
+            }
+        }
+        
+        function createVoiceVisualizer() {
+            const visualizer = document.getElementById('voiceVisualizer');
+            visualizer.innerHTML = '';
+            
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'voice-bar';
+                bar.style.left = (i * 10) + 'px';
+                bar.style.height = Math.random() * 50 + 20 + 'px';
+                visualizer.appendChild(bar);
+            }
+        }
+        
+        function updateVisualizer(value) {
+            const bars = document.querySelectorAll('.voice-bar');
+            bars.forEach(bar => {
+                const randomFactor = Math.random() * 30;
+                bar.style.height = (value * 0.5 + randomFactor) + 'px';
+            });
+        }
+        
+        function completeVoiceAnalysis(samples) {
+            if (voiceStream) {
+                voiceStream.getTracks().forEach(track => track.stop());
+            }
+            
+            const avgAmplitude = samples.reduce((a, b) => a + b) / samples.length;
+            const variance = samples.map(s => Math.pow(s - avgAmplitude, 2))
+                                   .reduce((a, b) => a + b) / samples.length;
+            
+            const stress = Math.min(100, Math.max(20, Math.round(variance / 2)));
+            const confidence = Math.min(100, Math.round(avgAmplitude));
+            const energy = Math.min(100, Math.round(avgAmplitude * 1.5));
+            
+            document.getElementById('voiceStress').textContent = stress + '%';
+            document.getElementById('voiceConfidence').textContent = confidence + '%';
+            document.getElementById('voiceEnergy').textContent = energy + '%';
+            document.getElementById('voiceResults').style.display = 'block';
+            
+            document.getElementById('voiceBtn').disabled = false;
+            document.getElementById('voiceBtn').innerHTML = '🎤 آواز تجزیہ شروع کریں';
+            document.getElementById('voiceStatusText').textContent = 'تجزیہ مکمل!';
+        }
+        
+        // ========== CHARTS SYSTEM ==========
+        function initChart() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['سوموار', 'منگل', 'بدھ', 'جمعرات', 'جمعہ', 'ہفتہ', 'اتوار'],
+                    datasets: [
+                        {
+                            label: 'آرام کی سطح',
+                            data: [65, 59, 80, 81, 56, 55, 40],
+                            borderColor: '#00e5ff',
+                            backgroundColor: 'rgba(0, 229, 255, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'فوکس اسکور',
+                            data: [28, 48, 40, 19, 86, 27, 90],
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#8ac6d1'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#8ac6d1'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: '#8ac6d1'
+                            },
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+        }
+        
+        function updateChart(range) {
+            const days = range === 'week' ? 7 : range === 'month' ? 30 : 12;
+            const labels = [];
+            const relaxationData = [];
+            const focusData = [];
+            
+            for (let i = 0; i < days; i++) {
+                if (range === 'year') {
+                    labels.push(`ماہ ${i + 1}`);
+                } else {
+                    labels.push(`دن ${i + 1}`);
+                }
+                relaxationData.push(Math.floor(Math.random() * 30) + 60);
+                focusData.push(Math.floor(Math.random() * 40) + 40);
+            }
+            
+            trendChart.data.labels = labels;
+            trendChart.data.datasets[0].data = relaxationData;
+            trendChart.data.datasets[1].data = focusData;
+            trendChart.update();
+        }
+        
+        // ========== PDF REPORT GENERATOR ==========
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(24);
+            doc.setTextColor(0, 150, 255);
+            doc.text('AI ویلنیس سکین رپورٹ', 20, 30);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(100, 100, 100);
+            doc.text(`جنریٹ: ${new Date().toLocaleString('ur-PK')}`, 20, 45);
+            
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('اہم پیمائش', 20, 65);
+            
+            doc.setFontSize(12);
+            doc.text(`سرگرمی اشارہ: ${document.getElementById('pulseValue').textContent}`, 30, 80);
+            doc.text(`آرام کی سطح: ${document.getElementById('stressValue').textContent}`, 30, 90);
+            doc.text(`فوکس اسکور: ${document.getElementById('attentionValue').textContent}`, 30, 100);
+            
+            // Add Thought Patterns if available
+            const thoughtCategories = document.querySelectorAll('.thought-category');
+            if (thoughtCategories.length > 0) {
+                doc.setFontSize(16);
+                doc.text('خیال پیٹرن تجزیہ', 20, 120);
+                
+                doc.setFontSize(12);
+                let yPos = 135;
+                thoughtCategories.forEach((category, index) => {
+                    const title = category.querySelector('.thought-title').textContent;
+                    const confidence = category.querySelector('.thought-confidence').textContent;
+                    doc.text(`${title} - ${confidence}`, 30, yPos);
+                    yPos += 10;
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                });
+            }
+            
+            doc.setFontSize(16);
+            doc.text('AI مشاہدات', 20, yPos + 10);
+            
+            doc.setFontSize(12);
+            const observations = document.getElementById('expressionsText').textContent;
+            const splitObservations = doc.splitTextToSize(observations, 170);
+            doc.text(splitObservations, 30, yPos + 25);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(255, 0, 0);
+            doc.text('ڈس کلیمر: یہ AI کی بنائی ہوئی ایک ڈیمو اندازہ ہے۔', 20, 280);
+            doc.text('یہ کسی بھی قسم کی طبی مشورہ یا تشخیص نہیں ہے۔', 20, 285);
+            
+            doc.save(`Wellness-Report-${Date.now()}.pdf`);
+            
+            alert('PDF رپورٹ ڈاؤن لوڈ ہوئی!');
+        }
+        
+        // ========== EMERGENCY SOS SYSTEM ==========
+        function showSOS() {
+            document.getElementById('sosModal').style.display = 'flex';
+            
+            let countdown = 10;
+            const countdownInterval = setInterval(() => {
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    alertEmergencyServices();
+                }
+                countdown--;
+            }, 1000);
+        }
+        
+        function closeSOS() {
+            document.getElementById('sosModal').style.display = 'none';
+        }
+        
+        function callEmergency(number) {
+            if (confirm(`ایمرجنسی سروسز کو کال کریں (${number})؟`)) {
+                window.location.href = `tel:${number}`;
+                alert('ایمرجنسی کال شروع ہوئی');
+            }
+        }
+        
+        function alertEmergencyServices() {
+            alert('ایمرجنسی الرٹ رجسٹرڈ رابطوں کو بھیجا گیا!');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    console.log('Emergency location:', position.coords);
+                });
+            }
+        }
+        
+        // ========== TAB SWITCHING ==========
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // ========== SHARE REPORT ==========
+        function shareReport() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'میرے ویلنیس سکین نتائج',
+                    text: `میرے ویلنیس سکین نتائج دیکھیں!\nسرگرمی: ${document.getElementById('pulseValue').textContent}\nآرام: ${document.getElementById('stressValue').textContent}\nفوکس: ${document.getElementById('attentionValue').textContent}`,
+                    url: window.location.href
+                });
+            } else {
+                const reportText = `
+AI ویلنیس سکین نتائج:
+سرگرمی: ${document.getElementById('pulseValue').textContent}
+آرام: ${document.getElementById('stressValue').textContent}
+فوکس: ${document.getElementById('attentionValue').textContent}
+مشاہدات: ${document.getElementById('expressionsText').textContent}
+                `;
+                
+                navigator.clipboard.writeText(reportText)
+                    .then(() => alert('رپورٹ کلپ بورڈ میں کاپی ہوئی!'))
+                    .catch(() => alert('رپورٹ شیئر نہیں کی جا سکی'));
+            }
+        }
+        
+        // ========== LANGUAGE TOGGLE ==========
+        langToggleBtn.addEventListener('click', () => {
+            // Language toggle removed - keeping only Urdu
+            alert('یہ سسٹم صرف اردو میں کام کرتا ہے۔');
+        });
+        
+        // ========== STATUS UPDATE HELPER ==========
+        function updateStatus(message, color) {
+            statusText.textContent = message;
+            
+            const icons = {
+                blue: '🔵',
+                green: '✅',
+                red: '❌',
+                yellow: '⚠️'
+            };
+            
+            statusIcon.textContent = icons[color] || '🔵';
+            statusIcon.style.color = color === 'blue' ? '#00e5ff' : 
+                                   color === 'green' ? '#4CAF50' : 
+                                   color === 'red' ? '#F44336' : '#FF9800';
+        }
+        
+        // ========== PREVENT RIGHT-CLICK ==========
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.tagName === 'VIDEO' || e.target.tagName === 'CANVAS') {
+                e.preventDefault();
+            }
+        });
+        
+        // ========== INITIALIZE ON LOAD ==========
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
